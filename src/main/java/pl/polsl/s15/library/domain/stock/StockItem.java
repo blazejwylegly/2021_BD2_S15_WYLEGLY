@@ -14,12 +14,7 @@ public class StockItem {
     @Column(nullable = false)
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "items_photos",
-            joinColumns = @JoinColumn(name = "item_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    )
+    @ManyToMany(mappedBy = "items")
     private List<ItemPhoto> photos;
 
 }
