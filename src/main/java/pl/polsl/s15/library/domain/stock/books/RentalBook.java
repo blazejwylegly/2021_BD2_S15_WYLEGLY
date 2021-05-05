@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "rental_books")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class RentalBook extends Book {
 
     @Column(unique = true)

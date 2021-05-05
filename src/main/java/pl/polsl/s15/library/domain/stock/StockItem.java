@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class StockItem {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class StockItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,7 +14,11 @@ public class StockItem {
     @Column(nullable = false)
     private String description;
 
-    @ManyToMany(mappedBy = "items")
+    @ManyToMany
+    @JoinTable(
+            name = "items_photos",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "photo_id")
+    )
     private List<ItemPhoto> photos;
-
 }
