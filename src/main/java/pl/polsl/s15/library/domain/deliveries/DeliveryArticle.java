@@ -1,10 +1,14 @@
 package pl.polsl.s15.library.domain.deliveries;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.polsl.s15.library.domain.stock.ArticleDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "delivery_articles")
 public class DeliveryArticle {
@@ -14,8 +18,10 @@ public class DeliveryArticle {
 
     private int amount;
 
+    @Column(name = "delivery_request_date")
     private LocalDateTime deliveryRequestDate;
 
+    @Column(name = "expected_delivery_date")
     private LocalDateTime expectedDeliveryDate;
 
     @ManyToOne

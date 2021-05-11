@@ -1,10 +1,14 @@
 package pl.polsl.s15.library.domain.user;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.polsl.s15.library.domain.user.account.AccountCredentials;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {

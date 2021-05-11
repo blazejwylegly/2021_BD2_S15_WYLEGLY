@@ -1,10 +1,14 @@
 package pl.polsl.s15.library.domain.user.account;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.polsl.s15.library.domain.user.User;
 
 import javax.persistence.*;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "permissions")
 public class AccountPermissions {
