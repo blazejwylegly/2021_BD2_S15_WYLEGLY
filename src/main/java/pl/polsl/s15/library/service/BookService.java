@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.domain.stock.ItemPhoto;
 import pl.polsl.s15.library.domain.stock.books.Book;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
+import pl.polsl.s15.library.dtos.BookBasicDTO;
 import pl.polsl.s15.library.dtos.BookDTO;
 import pl.polsl.s15.library.repository.BookRepository;
 import pl.polsl.s15.library.repository.RentalBookRepository;
@@ -20,9 +21,9 @@ import java.util.stream.Collectors;
 @Service
 public class BookService {
 
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    private RentalBookRepository rentalBookRepository;
+    private final RentalBookRepository rentalBookRepository;
 
     private Long calculateNumberOfOccupiedRentalBook(Book book) {
         Long number = 0L;
@@ -69,9 +70,44 @@ public class BookService {
 
     }
 
+    private BookBasicDTO assignToBookBasicDTO(Book book) {
+        if (book instanceof RentalBook) {
+            RentalBook rentalBook = (RentalBook) book;
+            return new BookBasicDTO(
+                    book.getId(),
+                    book.getDetails().getName(),
+                    book.getDetails().getAuthor(),
+                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
+                    rentalBook.getIsOccupied(),
+                    rentalBook.getDetails().getBooks().size(),
+                    Optional.of(calculateNumberOfOccupiedRentalBook(book))
+            );
+        } else {
+            return new BookBasicDTO(
+                    book.getId(),
+                    book.getDetails().getName(),
+                    book.getDetails().getAuthor(),
+                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
+                    null,
+                    book.getDetails().getBooks().size(),
+                    null
+            );
+        }
+    }
+
+    private Page<Book> findAllBooks(Pageable pageable){
+        return bookRepository.findAll(pageable);
+    }
+
     public Page<BookDTO> findAllFull(Pageable pageable) {
-        final Page<Book> books = bookRepository.findAll(pageable);
+        final Page<Book> books = findAllBooks(pageable);
         return books.map(book -> assignToBookDTO(book));
     }
+
+    public Page<BookBasicDTO> findAllBasic(Pageable pageable) {
+        final Page<Book> books = findAllBooks(pageable);
+        return books.map(book -> assignToBookBasicDTO(book));
+    }
+
 
 }

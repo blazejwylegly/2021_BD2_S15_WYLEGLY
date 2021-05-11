@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import pl.polsl.s15.library.dtos.BookBasicDTO;
 import pl.polsl.s15.library.dtos.BookDTO;
 import pl.polsl.s15.library.service.BookService;
 
@@ -35,5 +36,13 @@ public class BookController {
         return bookService.findAllFull(pageable);
     }
 
-
+    @Operation(summary = "Get basic info about books")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Basic information about the books was returned"),
+            @ApiResponse(code = 400, message = "Cannot return all basic about books")
+    })
+    @GetMapping(value = "/basic")
+    public Page<BookBasicDTO> findAllBasic(@PageableDefault Pageable pageable){
+        return bookService.findAllBasic(pageable);
+    }
 }
