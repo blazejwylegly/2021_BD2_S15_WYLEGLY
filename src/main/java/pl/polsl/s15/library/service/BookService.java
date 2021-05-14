@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.polsl.s15.library.domain.stock.books.BookDetails;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.repository.BookRepository;
@@ -81,5 +82,39 @@ public class BookService {
                 rentalBook.setDetails(newDetails);
             rentalBookRepository.save(rentalBook);
         }
+    }
+    @Transactional
+    public long occupyBook(long serialNumber)
+    {
+        Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
+        if(optRentalBook.isPresent())
+        {
+            RentalBook rentalBook = optRentalBook.get();
+            boolean result = rentalBook.Occupy();
+            if(result)
+            {
+                rentalBookRepository.save(rentalBook);
+                return 0;
+            }
+            return 1;
+        }
+        return 2;
+    }
+    @Transactional
+    public long freeBook(long serialNumber)
+    {
+        Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
+        if(optRentalBook.isPresent())
+        {
+            RentalBook rentalBook = optRentalBook.get();
+            boolean result = rentalBook.Free();
+            if(result)
+            {
+                rentalBookRepository.save(rentalBook);
+                return 0;
+            }
+            return 1;
+        }
+        return 2;
     }
 }

@@ -1,11 +1,13 @@
 package pl.polsl.s15.library.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.s15.library.service.BookService;
 
 @RestController
@@ -41,5 +43,23 @@ public class StockController {
                  @RequestParam(name = "serialNumber")long serialNumber)
     {
         bookService.updateBook(name,author,publisher,publicationDate,description,serialNumber);
+    }
+    @PostMapping("/occupy")
+    void occupyBook(@RequestParam(name = "serialNumber")long serialNumber)
+    {
+        long result = bookService.occupyBook(serialNumber);
+        if(result == 1)
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED);
+        if(result == 2)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+    @PostMapping("/free")
+    void freeBook(@RequestParam(name = "serialNumber")long serialNumber)
+    {
+        long result = bookService.freeBook(serialNumber);
+        if(result == 1)
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED);
+        if(result == 2)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }

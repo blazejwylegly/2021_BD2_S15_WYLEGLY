@@ -25,6 +25,7 @@ public class RentalBook extends Book {
     {
         super(details,desc);
         this.serialNumber = serialNumber;
+        this.isOccupied = false;
     }
     //is you try occupy occupied book, false is returned to indicate error
     public boolean Occupy()
@@ -39,7 +40,7 @@ public class RentalBook extends Book {
     {
         if(!isOccupied)
             return false;
-        this.isOccupied = true;
+        this.isOccupied = false;
         return true;
     }
 }
