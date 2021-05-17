@@ -14,6 +14,13 @@ import pl.polsl.s15.library.exception.NoSuchBookException;
 import pl.polsl.s15.library.repository.BookRepository;
 import pl.polsl.s15.library.repository.RentalBookRepository;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +33,8 @@ public class BookService {
 
     private final RentalBookRepository rentalBookRepository;
 
+    private final ItemPhotoService itemPhotoService;
+
     private Long calculateNumberOfOccupiedRentalBook(Book book) {
         Long number = 0L;
         for (Book b : book.getDetails().getBooks()) {
@@ -37,7 +46,7 @@ public class BookService {
         return number;
     }
 
-    private BookFullDTO assignToBookDTO(Book book) {
+    private BookFullDTO assignToBookFullDTO(Book book) {
         if (book instanceof RentalBook) {
             RentalBook rentalBook = (RentalBook) book;
             return new BookFullDTO(
@@ -46,7 +55,7 @@ public class BookService {
                     book.getDetails().getName(),
                     book.getDetails().getAuthor(),
                     Optional.of(book.getDetails().getPublisher()),
-                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
+                    itemPhotoService.convertBufferedImageToByte(itemPhotoService.getPhotos(book)),
                     book.getDescription(),
                     Optional.ofNullable(book.getDetails().getPublicationDate()),
                     rentalBook.getIsOccupied(),
@@ -60,7 +69,7 @@ public class BookService {
                     book.getDetails().getName(),
                     book.getDetails().getAuthor(),
                     Optional.of(book.getDetails().getPublisher()),
-                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
+                    itemPhotoService.convertBufferedImageToByte(itemPhotoService.getPhotos(book)),
                     book.getDescription(),
                     Optional.ofNullable(book.getDetails().getPublicationDate()),
                     null,
@@ -78,7 +87,11 @@ public class BookService {
                     book.getId(),
                     book.getDetails().getName(),
                     book.getDetails().getAuthor(),
-                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
+                    itemPhotoService.getPhotos(book).stream().map(photo->
+                            itemPhotoService.convertBufferedImageToByte(
+                                    itemPhotoService.resizeImage(photo,100,100)
+                            )
+                    ).collect(Collectors.toList()),
                     rentalBook.getIsOccupied(),
                     rentalBook.getDetails().getBooks().size(),
                     Optional.of(calculateNumberOfOccupiedRentalBook(book))
@@ -88,7 +101,11 @@ public class BookService {
                     book.getId(),
                     book.getDetails().getName(),
                     book.getDetails().getAuthor(),
-                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
+                    itemPhotoService.getPhotos(book).stream().map(photo->
+                            itemPhotoService.convertBufferedImageToByte(
+                                    itemPhotoService.resizeImage(photo,100,100)
+                            )
+                    ).collect(Collectors.toList()),
                     null,
                     book.getDetails().getBooks().size(),
                     null
@@ -106,7 +123,7 @@ public class BookService {
 
     public Page<BookFullDTO> findAllFull(Pageable pageable) {
         final Page<Book> books = findAll(pageable);
-        return books.map(book -> assignToBookDTO(book));
+        return books.map(book -> assignToBookFullDTO(book));
     }
 
     public Page<BookBasicDTO> findAllBasic(Pageable pageable) {
@@ -120,6 +137,6 @@ public class BookService {
     }
 
     public BookFullDTO findFullById(Long id) {
-        return assignToBookDTO(findById(id));
+        return assignToBookFullDTO(findById(id));
     }
 }

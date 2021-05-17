@@ -14,11 +14,12 @@ import java.util.List;
 public class ItemPhoto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String url;
+    @Lob
+    private byte [] file;
 
     @ManyToMany
     @JoinTable(

@@ -1,5 +1,6 @@
 package pl.polsl.s15.library.controller;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,11 +9,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import pl.polsl.s15.library.domain.stock.ItemPhoto;
 import pl.polsl.s15.library.dtos.BookBasicDTO;
 import pl.polsl.s15.library.dtos.BookFullDTO;
+import pl.polsl.s15.library.repository.ItemPhotoRepository;
 import pl.polsl.s15.library.service.BookService;
+
+import java.awt.*;
+import java.util.Base64;
 
 @AllArgsConstructor
 @Validated
@@ -21,6 +29,7 @@ import pl.polsl.s15.library.service.BookService;
 public class BookController {
 
     private BookService bookService;
+
 
     @Operation(summary = "Get full info about books")
     @ApiResponses(value = {
