@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pl.polsl.s15.library.dtos.BookExceptionDTO;
 import pl.polsl.s15.library.exception.NoSuchBookException;
 
 @RestControllerAdvice

@@ -11,7 +11,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookDTO {
+public class BookFullDTO {
     private Long bookId;
     private Optional<Long> serialNumber;
     private String name;

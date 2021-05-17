@@ -9,7 +9,7 @@ import pl.polsl.s15.library.domain.stock.ItemPhoto;
 import pl.polsl.s15.library.domain.stock.books.Book;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.dtos.BookBasicDTO;
-import pl.polsl.s15.library.dtos.BookDTO;
+import pl.polsl.s15.library.dtos.BookFullDTO;
 import pl.polsl.s15.library.exception.NoSuchBookException;
 import pl.polsl.s15.library.repository.BookRepository;
 import pl.polsl.s15.library.repository.RentalBookRepository;
@@ -37,10 +37,10 @@ public class BookService {
         return number;
     }
 
-    private BookDTO assignToBookDTO(Book book) {
+    private BookFullDTO assignToBookDTO(Book book) {
         if (book instanceof RentalBook) {
             RentalBook rentalBook = (RentalBook) book;
-            return new BookDTO(
+            return new BookFullDTO(
                     book.getId(),
                     Optional.ofNullable(rentalBook.getSerialNumber()),
                     book.getDetails().getName(),
@@ -54,7 +54,7 @@ public class BookService {
                     Optional.of(calculateNumberOfOccupiedRentalBook(book))
             );
         } else {
-            return new BookDTO(
+            return new BookFullDTO(
                     book.getId(),
                     null,
                     book.getDetails().getName(),
@@ -104,7 +104,7 @@ public class BookService {
         return bookRepository.findById(id).orElseThrow(() -> new NoSuchBookException(id));
     }
 
-    public Page<BookDTO> findAllFull(Pageable pageable) {
+    public Page<BookFullDTO> findAllFull(Pageable pageable) {
         final Page<Book> books = findAll(pageable);
         return books.map(book -> assignToBookDTO(book));
     }
@@ -119,7 +119,7 @@ public class BookService {
         return assignToBookBasicDTO(findById(id));
     }
 
-    public BookDTO findFullById(Long id) {
+    public BookFullDTO findFullById(Long id) {
         return assignToBookDTO(findById(id));
     }
 }

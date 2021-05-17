@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.s15.library.dtos.BookBasicDTO;
-import pl.polsl.s15.library.dtos.BookDTO;
+import pl.polsl.s15.library.dtos.BookFullDTO;
 import pl.polsl.s15.library.service.BookService;
 
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class BookController {
     })
     @GetMapping(value = "/full")
     @ResponseStatus(HttpStatus.OK)
-    public Page<BookDTO> findAllFull(@PageableDefault Pageable pageable) {
+    public Page<BookFullDTO> findAllFull(@PageableDefault Pageable pageable) {
         return bookService.findAllFull(pageable);
     }
 
@@ -61,7 +61,7 @@ public class BookController {
     })
     @ResponseBody
     @GetMapping(value = "/full/{id}")
-    public BookDTO findFullById(@PathVariable Long id){
+    public BookFullDTO findFullById(@PathVariable Long id) {
         return bookService.findFullById(id);
     }
 
