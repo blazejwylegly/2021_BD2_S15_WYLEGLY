@@ -10,6 +10,7 @@ import pl.polsl.s15.library.domain.stock.books.Book;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.dtos.BookBasicDTO;
 import pl.polsl.s15.library.dtos.BookDTO;
+import pl.polsl.s15.library.exception.NoSuchBookException;
 import pl.polsl.s15.library.repository.BookRepository;
 import pl.polsl.s15.library.repository.RentalBookRepository;
 
@@ -95,19 +96,30 @@ public class BookService {
         }
     }
 
-    private Page<Book> findAllBooks(Pageable pageable){
+    private Page<Book> findAll(Pageable pageable){
         return bookRepository.findAll(pageable);
     }
 
+    private Book findById(Long id){
+        return bookRepository.findById(id).orElseThrow(() -> new NoSuchBookException(id));
+    }
+
     public Page<BookDTO> findAllFull(Pageable pageable) {
-        final Page<Book> books = findAllBooks(pageable);
+        final Page<Book> books = findAll(pageable);
         return books.map(book -> assignToBookDTO(book));
     }
 
     public Page<BookBasicDTO> findAllBasic(Pageable pageable) {
-        final Page<Book> books = findAllBooks(pageable);
+        final Page<Book> books = findAll(pageable);
         return books.map(book -> assignToBookBasicDTO(book));
     }
 
 
+    public BookBasicDTO findBasicById(Long id) {
+        return assignToBookBasicDTO(findById(id));
+    }
+
+    public BookDTO findFullById(Long id) {
+        return assignToBookDTO(findById(id));
+    }
 }

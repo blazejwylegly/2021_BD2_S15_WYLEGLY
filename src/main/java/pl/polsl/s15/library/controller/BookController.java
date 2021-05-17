@@ -9,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.polsl.s15.library.dtos.BookBasicDTO;
 import pl.polsl.s15.library.dtos.BookDTO;
 import pl.polsl.s15.library.service.BookService;
@@ -45,4 +42,27 @@ public class BookController {
     public Page<BookBasicDTO> findAllBasic(@PageableDefault Pageable pageable){
         return bookService.findAllBasic(pageable);
     }
+
+    @Operation(summary = "Get basic info about books")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Basic information about the books was returned"),
+            @ApiResponse(code = 400, message = "Cannot return all basic about books")
+    })
+    @ResponseBody
+    @GetMapping(value = "/basic/{id}")
+    public BookBasicDTO findBasicById(@PathVariable Long id){
+        return bookService.findBasicById(id);
+    }
+
+    @Operation(summary = "Get full info about books with id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Full information about the books was returned"),
+            @ApiResponse(code = 400, message = "Cannot return all full about books")
+    })
+    @ResponseBody
+    @GetMapping(value = "/full/{id}")
+    public BookDTO findFullById(@PathVariable Long id){
+        return bookService.findFullById(id);
+    }
+
 }
