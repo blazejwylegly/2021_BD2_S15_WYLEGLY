@@ -1,5 +1,6 @@
 package pl.polsl.s15.library.domain.stock.books;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.polsl.s15.library.domain.reservations.Reservation;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "rental_books")
 public class RentalBook extends Book {
@@ -26,6 +28,11 @@ public class RentalBook extends Book {
         super(details,desc);
         this.serialNumber = serialNumber;
         this.isOccupied = false;
+    }
+    public void SetDetailsIfChanged(BookDetails details)
+    {
+        if(!getDetails().equals(details))
+            setDetails(details);
     }
     //is you try occupy occupied book, false is returned to indicate error
     public boolean Occupy()
