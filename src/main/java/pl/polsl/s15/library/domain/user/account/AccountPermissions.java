@@ -1,12 +1,19 @@
 package pl.polsl.s15.library.domain.user.account;
 
+import lombok.*;
 import pl.polsl.s15.library.domain.user.User;
+import pl.polsl.s15.library.domain.user.account.roles.Role;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Table(name = "permissions")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountPermissions {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,13 +22,13 @@ public class AccountPermissions {
     @OneToOne(mappedBy = "permissions")
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "permissions_authorities",
-            joinColumns = @JoinColumn(name ="account_id"),
-            inverseJoinColumns = @JoinColumn(name = "authority_id")
-    )
-    private Set<Authority> authorities;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "permissions_authorities",
+//            joinColumns = @JoinColumn(name ="account_id"),
+//            inverseJoinColumns = @JoinColumn(name = "authority_id")
+//    )
+//    private Set<Authority> authorities;
 
     @ManyToMany
     @JoinTable(

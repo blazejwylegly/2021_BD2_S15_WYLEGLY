@@ -1,11 +1,17 @@
 package pl.polsl.s15.library.domain.user.account;
 
+import lombok.*;
 import pl.polsl.s15.library.domain.user.User;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "credentials")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountCredentials {
 
     @Id
@@ -13,10 +19,10 @@ public class AccountCredentials {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String login;
+    private String username;
 
     @Column(nullable = false, unique = true)
-    private String encoded_password;
+    private String password;
 
     @Column(nullable = false, unique = true)
     private String salt;
