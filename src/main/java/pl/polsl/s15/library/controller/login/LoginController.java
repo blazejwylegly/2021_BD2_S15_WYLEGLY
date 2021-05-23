@@ -33,28 +33,27 @@ public class LoginController {
         this.authResponseMapper = authResponseMapper;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         try {
             return attemptAuthentication(request);
         } catch (BadCredentialsException ex) {
+            System.out.println("Exception!!!");
             throw new InvalidCredentialsException("Invalid credentials provided");
         }
     }
 
     private ResponseEntity<AuthResponse> attemptAuthentication(AuthRequest request) throws BadCredentialsException {
         Authentication auth = authenticationManager.authenticate(
-                authAttemptPrincipal(request.getUsername(), request.getPlainPassword())
+                authAttemptPrincipal(request.getUsername(), request.getPassword())
         );
 
         Date issuedAt = new Date();
         User user = (User) auth.getPrincipal();
+        String accessToken = jwtUtility.generateAccessToken(user, issuedAt);
         return ResponseEntity.ok()
-                .header(
-                        HttpHeaders.AUTHORIZATION,
-                        jwtUtility.generateAccessToken(user, issuedAt)
-                )
-                .body(AuthResponseMapper.authRequestSuccessful(user, issuedAt));
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .body(AuthResponseMapper.authRequestSuccessful(user));
     }
 
     private UsernamePasswordAuthenticationToken authAttemptPrincipal(String username, String password) {

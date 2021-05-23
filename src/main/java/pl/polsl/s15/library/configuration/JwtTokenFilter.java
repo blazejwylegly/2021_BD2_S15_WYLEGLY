@@ -44,7 +44,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         retrieveAuthentication(request)
                 .ifPresentOrElse(
                         this::updateSecurityContextWithAuthenticatedUser,
-                        () -> new RuntimeException()
+                        () -> System.out.println("User not present")
                 );
     }
 

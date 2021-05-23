@@ -71,8 +71,12 @@ public class JwtAuthSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void configureEndpointPermissions(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity = httpSecurity.authorizeRequests().antMatchers("/").permitAll().and()
-                .authorizeRequests().antMatchers("/console/**").permitAll().and();
+        httpSecurity = httpSecurity.authorizeRequests().antMatchers("/**").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/console/**").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+                .and();
 
     }
 
