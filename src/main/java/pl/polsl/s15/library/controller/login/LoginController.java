@@ -1,8 +1,6 @@
 package pl.polsl.s15.library.controller.login;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.polsl.s15.library.commons.exceptions.InvalidCredentialsException;
 import pl.polsl.s15.library.controller.login.dto.AuthDTOMapper;
 import pl.polsl.s15.library.controller.login.dto.AuthRequestDTO;
 import pl.polsl.s15.library.controller.login.dto.AuthResponseDTO;
@@ -29,54 +26,60 @@ public class LoginController {
 
     private final JwtUtility jwtUtility;
     private final AuthenticationManager authenticationManager;
-    private final AuthDTOMapper authDTOMapper;
+    private final AuthDTOMapper dtoMapper;
     private final UserService userService;
 
     public LoginController(JwtUtility jwtUtility,
                            AuthenticationManager authenticationManager,
-                           AuthDTOMapper authDTOMapper,
+                           AuthDTOMapper dtoMapper,
                            UserService userService) {
         this.jwtUtility = jwtUtility;
         this.authenticationManager = authenticationManager;
-        this.authDTOMapper = authDTOMapper;
+        this.dtoMapper = dtoMapper;
         this.userService = userService;
     }
 
     @PostMapping("/auth")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO request) {
         try {
-            return attemptAuthentication(request);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(authenticationSuccessResponse(request));
         } catch (Exception ex) {
-            throw new InvalidCredentialsException("Invalid credentials provided" + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(authenticationFailedResponse(request, ex.getMessage()));
         }
     }
 
-    private ResponseEntity<AuthResponseDTO> attemptAuthentication(AuthRequestDTO request) {
-        Authentication auth = retrievePrioritizedAuthenticationPrincipal(request);
+    private AuthResponseDTO authenticationSuccessResponse(AuthRequestDTO request) {
+        Authentication auth = retrieveAnyAuthenticationPrincipal(request);
         Date issuedAt = new Date();
         User user = (User) auth.getPrincipal();
         String accessToken = jwtUtility.generateAccessToken(user, issuedAt);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .body(AuthDTOMapper.authRequestSuccessful(user));
+        return dtoMapper.authRequestSuccessful(user, accessToken);
     }
 
-    private Authentication retrievePrioritizedAuthenticationPrincipal(AuthRequestDTO request) throws BadCredentialsException{
-        Optional<Authentication> emailAuth = retrieveEmailBasedAuthentication(request);
-        Optional<Authentication> usernameAuth = retrieveUsernameBasedAuthentication(request);
+    private AuthResponseDTO authenticationFailedResponse(AuthRequestDTO request, String errorMessage) {
+        return dtoMapper.authRequestFailed(request, errorMessage);
+    }
 
-        if(emailAuth.isPresent())
+    private Authentication retrieveAnyAuthenticationPrincipal(AuthRequestDTO request) {
+        Optional<Authentication> emailAuth = retrieveEmailBasedAuthentication(request);
+        if (emailAuth.isPresent()) {
             return emailAuth.get();
-        else if (usernameAuth.isPresent())
+        }
+
+        Optional<Authentication> usernameAuth = retrieveUsernameBasedAuthentication(request);
+        if (usernameAuth.isPresent()) {
             return usernameAuth.get();
-        else
-            throw new BadCredentialsException("Invalid username and email address provided!");
+        }
+
+        throw new BadCredentialsException("Invalid username and email address provided!");
     }
 
     private Optional<Authentication> retrieveUsernameBasedAuthentication(AuthRequestDTO request) {
         return request.getUsername().map(
                 username -> authenticationManager.authenticate(
-                        authAttemptPrincipal(username, request.getPassword())
+                        new UsernamePasswordAuthenticationToken(username, request.getPassword())
                 )
         );
     }
@@ -88,22 +91,8 @@ public class LoginController {
 
         return optionalUser.map(
                 user -> authenticationManager.authenticate(
-                        authAttemptPrincipal(user.getUsername(), request.getPassword())
+                        new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
                 )
         );
-    }
-
-    private UsernamePasswordAuthenticationToken authAttemptPrincipal(String username, String password) {
-        return new UsernamePasswordAuthenticationToken(
-                username, password
-        );
-    }
-
-    @AllArgsConstructor
-    @Getter
-    private enum PrimaryAuthType {
-        EMAIL("EMAIL"),
-        USERNAME("USERNAME");
-        private String authType;
     }
 }

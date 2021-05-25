@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.s15.library.controller.registration.dto.RegistrationDTOMapper;
 import pl.polsl.s15.library.controller.registration.dto.RegistrationRequestDTO;
-import pl.polsl.s15.library.controller.registration.dto.RegistrationResponseDTO;
 import pl.polsl.s15.library.commons.exceptions.UserAlreadyRegisteredException;
+import pl.polsl.s15.library.controller.registration.dto.RegistrationResponseDTO;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.service.UserService;
 
@@ -32,10 +32,10 @@ public class RegistrationController {
         try {
             userService.createUser(user);
             return ResponseEntity.ok()
-                    .body(dtoMapper.successfulUserRegistration(user));
+                    .body(dtoMapper.userRegistrationSuccessful());
         } catch (UserAlreadyRegisteredException ex) {
             return ResponseEntity.badRequest()
-                    .body(dtoMapper.userRegistrationFailed(request, ex.getMessage()));
+                    .body(dtoMapper.userRegistrationFailed(request));
         }
     }
 }

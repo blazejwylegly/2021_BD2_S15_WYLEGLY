@@ -1,15 +1,14 @@
 package pl.polsl.s15.library.controller.registration.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import pl.polsl.s15.library.dtos.ResponseDTO;
 
-import java.util.Date;
-
-@AllArgsConstructor
 @Getter
-@Setter
-public class RegistrationResponseDTO {
-    protected String message;
-    protected Date timestamp;
+public class RegistrationResponseDTO extends ResponseDTO {
+
+    @Builder
+    private RegistrationResponseDTO(String message) {
+        super(message);
+    }
 }

@@ -5,7 +5,16 @@ import pl.polsl.s15.library.domain.user.User;
 
 @Component
 public class AuthDTOMapper {
-    public static AuthResponseDTO authRequestSuccessful(User user) {
-        return AuthResponseDTO.of(user.getUsername(), "Authentication successful");
+    public AuthResponseDTO authRequestSuccessful(User user, String accessToken) {
+        return AuthResponseDTO.builder()
+                .message("Authentication successful!")
+                .accessToken(accessToken)
+                .build();
+    }
+
+    public AuthResponseDTO authRequestFailed(AuthRequestDTO request, String errorMessage) {
+        return AuthResponseDTO.builder()
+                .message(errorMessage)
+                .build();
     }
 }

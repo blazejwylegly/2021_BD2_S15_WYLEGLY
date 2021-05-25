@@ -12,7 +12,8 @@ import java.util.Date;
 @Component
 public class RegistrationDTOMapper {
 
-    private static final String REGISTRATION_SUCCESS_MSG = "Successfully registered new user";
+    private static final String REGISTRATION_SUCCESS_MSG = "User registration successful";
+    private static final String REGISTRATION_FAIL_MSG = "User registration failed";
 
     private PasswordEncoder passwordEncoder;
 
@@ -23,23 +24,21 @@ public class RegistrationDTOMapper {
 
     public User mapRegistrationRequestToUser(RegistrationRequestDTO request) {
         AccountCredentials credentials = accountCredentials(request);
-        AccountPermissions permissions = new AccountPermissions();
         return User.builder()
                 .credentials(credentials)
-                //.permissions(permissions)
                 .build();
     }
 
-    public RegistrationResponseDTO successfulUserRegistration(User user) {
-        return RegistrationSuccessfulResponseDTO.builder()
+    public RegistrationResponseDTO userRegistrationSuccessful() {
+        return RegistrationResponseDTO.builder()
                 .message(REGISTRATION_SUCCESS_MSG)
-                .username(user.getUsername())
-                .emailAddress(user.getCredentials().getEmailAddress())
                 .build();
     }
 
-    public RegistrationResponseDTO userRegistrationFailed(RegistrationRequestDTO request, String causeMessage) {
-        return new RegistrationResponseDTO(causeMessage, new Date());
+    public RegistrationResponseDTO userRegistrationFailed(RegistrationRequestDTO request) {
+        return RegistrationResponseDTO.builder()
+                .message(REGISTRATION_FAIL_MSG)
+                .build();
     }
 
     private AccountCredentials accountCredentials(RegistrationRequestDTO request) {
