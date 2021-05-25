@@ -11,8 +11,6 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "permissions")
-@Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

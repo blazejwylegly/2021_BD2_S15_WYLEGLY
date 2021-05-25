@@ -135,7 +135,7 @@ public class BookService {
 
     public BookFullDTO findFullById(Long id) {
         return assignToBookDTO(findById(id));
-    private final RentalBookRepository rentalBookRepository;
+    }
 
     public void addBook(RentalBook rentalBook)
     {
@@ -154,7 +154,7 @@ public class BookService {
             RentalBook rentalBook = optRentalBook.get();
             rentalBook.SetDetailsIfChanged(details);
             if(description!=null)
-            rentalBook.setDescription(description);
+                rentalBook.setDescription(description);
             rentalBookRepository.save(rentalBook);
         }
         else
@@ -192,4 +192,5 @@ public class BookService {
         else
             throw new NoSuchBookException(serialNumber);
     }
+
 }

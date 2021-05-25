@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "roles")
+@Table
 @NoArgsConstructor
 public class Role implements GrantedAuthority {
     @Id

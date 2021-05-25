@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.controller;
+package pl.polsl.s15.library.controller.stock;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -16,7 +16,7 @@ import pl.polsl.s15.library.service.BookService;
 
 @AllArgsConstructor
 @Validated
-@RequestMapping("/library/api/books")
+@RequestMapping("/api/books")
 @RestController
 public class BookController {
 
@@ -57,7 +57,7 @@ public class BookController {
     @Operation(summary = "Get full info about books with id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Full information about the books was returned"),
-            @ApiResponse(code = 400, message = "Cannot return all full about books")
+            @ApiResponse(code = 404, message = "Cannot return all full about books")
     })
     @ResponseBody
     @GetMapping(value = "/full/{id}")

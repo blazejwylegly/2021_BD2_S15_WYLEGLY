@@ -1,6 +1,7 @@
 package pl.polsl.s15.library.helper;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,8 +13,8 @@ public class BookControllerAdvice {
 
     @ExceptionHandler(NoSuchBookException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleNoSuchBookException(NoSuchBookException e){
-        return e.getMessage();
+    public ResponseEntity<?> handleNoSuchBookException(NoSuchBookException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage() + "dupa");
     }
 }
