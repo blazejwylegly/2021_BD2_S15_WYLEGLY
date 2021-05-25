@@ -2,6 +2,7 @@ package pl.polsl.s15.library.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,9 +12,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -21,10 +24,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class JwtAuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
+    private WebMvcConfigurer globalCorsConfigurer;
 
-    @Autowired
-    public JwtAuthSecurityConfig(UserDetailsService userDetailsService) {
+    public JwtAuthSecurityConfig(UserDetailsService userDetailsService,
+                                 @Qualifier("corsConfigurer") WebMvcConfigurer globalCorsConfigurer) {
         this.userDetailsService = userDetailsService;
+        this.globalCorsConfigurer = globalCorsConfigurer;
     }
 
     /*
@@ -50,9 +55,11 @@ public class JwtAuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        configureHttpStatelessSessionManagement(http);
-        configureEndpointPermissions(http);
-        configureCorsAndCsrf(http);
+        http.cors().and().csrf().disable()
+                .authorizeRequests().antMatchers("/**").permitAll();
+//        configureHttpStatelessSessionManagement(http);
+//        configureEndpointPermissions(http);
+//        configureCorsAndCsrf(http);
     }
 
     @Override

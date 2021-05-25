@@ -10,24 +10,21 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class AccountCredentials {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String salt;
-
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String emailAddress;
 
     @OneToOne(mappedBy = "credentials")

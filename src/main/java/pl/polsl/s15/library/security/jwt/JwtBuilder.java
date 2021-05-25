@@ -55,8 +55,12 @@ public class JwtBuilder {
 
     private Map<String, Object> preparePermissionClaims(AccountPermissions permissions) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", permissions.getRoles());
-        claims.put("authorities", Collections.emptySet());
+        if (permissions == null) {
+            log.warn("No permissions found inside JWT!");
+        } else {
+            claims.put("roles", permissions.getRoles());
+            claims.put("authorities", Collections.emptySet());
+        }
         return claims;
     }
 
