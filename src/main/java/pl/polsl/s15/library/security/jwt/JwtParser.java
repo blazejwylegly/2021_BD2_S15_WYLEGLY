@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pl.polsl.s15.library.domain.user.User;
+import pl.polsl.s15.library.commons.exceptions.InvalidJwtException;
 
 import javax.xml.bind.DatatypeConverter;
 

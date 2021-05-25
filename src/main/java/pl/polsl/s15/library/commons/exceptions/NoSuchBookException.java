@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.exception;
+package pl.polsl.s15.library.commons.exceptions;
 
 public class NoSuchBookException extends RuntimeException{
     public NoSuchBookException(Long id){

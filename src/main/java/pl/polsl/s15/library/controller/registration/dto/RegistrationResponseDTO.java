@@ -9,7 +9,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RegistrationResponse {
+public class RegistrationResponseDTO {
     protected String message;
     protected Date timestamp;
 }

@@ -2,24 +2,19 @@ package pl.polsl.s15.library.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.s15.library.domain.stock.books.BookDetails;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
-import pl.polsl.s15.library.exception.BookAlreadyFreeException;
-import pl.polsl.s15.library.exception.BookAlreadyOccupiedException;
+import pl.polsl.s15.library.commons.exceptions.BookAlreadyFreeException;
+import pl.polsl.s15.library.commons.exceptions.BookAlreadyOccupiedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.domain.stock.ItemPhoto;
 import pl.polsl.s15.library.domain.stock.books.Book;
-import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.dtos.BookBasicDTO;
 import pl.polsl.s15.library.dtos.BookFullDTO;
-import pl.polsl.s15.library.exception.NoSuchBookException;
+import pl.polsl.s15.library.commons.exceptions.NoSuchBookException;
 import pl.polsl.s15.library.repository.BookRepository;
 import pl.polsl.s15.library.repository.RentalBookRepository;
 

@@ -10,18 +10,18 @@ import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 import java.util.Date;
 
 @Component
-public class RegistrationDtoMapper {
+public class RegistrationDTOMapper {
 
     private static final String REGISTRATION_SUCCESS_MSG = "Successfully registered new user";
 
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegistrationDtoMapper(PasswordEncoder passwordEncoder) {
+    public RegistrationDTOMapper(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User mapRegistrationRequestToUser(RegistrationRequest request) {
+    public User mapRegistrationRequestToUser(RegistrationRequestDTO request) {
         AccountCredentials credentials = accountCredentials(request);
         AccountPermissions permissions = new AccountPermissions();
         return User.builder()
@@ -30,19 +30,19 @@ public class RegistrationDtoMapper {
                 .build();
     }
 
-    public RegistrationResponse successfulUserRegistration(User user) {
-        return RegistrationSuccessfulResponse.builder()
+    public RegistrationResponseDTO successfulUserRegistration(User user) {
+        return RegistrationSuccessfulResponseDTO.builder()
                 .message(REGISTRATION_SUCCESS_MSG)
                 .username(user.getUsername())
                 .emailAddress(user.getCredentials().getEmailAddress())
                 .build();
     }
 
-    public RegistrationResponse userRegistrationFailed(RegistrationRequest request, String causeMessage) {
-        return new RegistrationResponse(causeMessage, new Date());
+    public RegistrationResponseDTO userRegistrationFailed(RegistrationRequestDTO request, String causeMessage) {
+        return new RegistrationResponseDTO(causeMessage, new Date());
     }
 
-    private AccountCredentials accountCredentials(RegistrationRequest request) {
+    private AccountCredentials accountCredentials(RegistrationRequestDTO request) {
         return AccountCredentials.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))

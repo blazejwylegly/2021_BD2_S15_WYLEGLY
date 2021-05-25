@@ -1,11 +1,11 @@
-package pl.polsl.s15.library.controller.login;
+package pl.polsl.s15.library.controller.login.dto;
 
 import lombok.Data;
 
 import java.util.Optional;
 
 @Data
-public class AuthRequest {
+public class AuthRequestDTO {
     private String username;
     private String password;
     private String email;
