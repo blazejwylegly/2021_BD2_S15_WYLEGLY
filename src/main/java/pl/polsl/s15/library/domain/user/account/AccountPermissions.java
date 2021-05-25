@@ -7,6 +7,8 @@ import pl.polsl.s15.library.domain.user.account.roles.Role;
 import javax.persistence.*;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "permissions")
 @Getter

@@ -1,13 +1,17 @@
 package pl.polsl.s15.library.domain.user;
 
+import lombok.Getter;
+import lombok.Setter;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.reservations.Reservation;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
-@Table(name="clients")
+@Table(name = "clients")
 public class Client extends User {
     @OneToOne
     @JoinColumn(name = "cart_id")

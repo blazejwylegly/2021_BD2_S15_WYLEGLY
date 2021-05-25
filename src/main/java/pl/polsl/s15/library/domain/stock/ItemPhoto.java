@@ -1,9 +1,14 @@
 package pl.polsl.s15.library.domain.stock;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "photos")
 public class ItemPhoto {
