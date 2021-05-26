@@ -2,24 +2,32 @@ package pl.polsl.s15.library.domain.stock.books;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import pl.polsl.s15.library.domain.stock.ArticleDetails;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "book_details")
 public class BookDetails extends ArticleDetails {
 
-    public String name;
-    public String author;
-    public String publisher;
-    public LocalDate publicationDate;
+    private String name;
+    private String author;
+    private String publisher;
+
+    @Column(name = "publication_date")
+    private LocalDate publicationDate;
 
     @OneToMany(mappedBy = "details", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books;

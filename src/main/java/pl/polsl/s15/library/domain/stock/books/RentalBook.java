@@ -3,12 +3,14 @@ package pl.polsl.s15.library.domain.stock.books;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Getter;
 import pl.polsl.s15.library.domain.reservations.Reservation;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,9 +18,10 @@ import java.util.List;
 @Table(name = "rental_books")
 public class RentalBook extends Book {
 
-    @Column(unique = true)
+    @Column(unique = true, name = "serial_number")
     private Long serialNumber;
 
+    @Column(name = "is_occupied")
     private Boolean isOccupied;
 
     @OneToMany(mappedBy = "rentalBook", cascade = CascadeType.ALL, orphanRemoval = true)
