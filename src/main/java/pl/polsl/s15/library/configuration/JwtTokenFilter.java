@@ -36,45 +36,32 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        authenticateUserWithJwtAuth(request);
+        getToken(request)
+                .map(token -> authenticateUser(token, request))
+                .ifPresent(this::updateSecurityContextWithAuthenticatedUser);
         filterChain.doFilter(request, response);
     }
 
-    private void authenticateUserWithJwtAuth(HttpServletRequest request) {
-        retrieveAuthentication(request)
-                .ifPresent(this::updateSecurityContextWithAuthenticatedUser);
-    }
-
-    private Optional<Authentication> retrieveAuthentication(HttpServletRequest request) {
-        Optional<String> token = extractToken(request);
-        return token.map(t -> buildAuthenticationWithJwt(t, request));
-    }
-
-    private Authentication buildAuthenticationWithJwt(String token, HttpServletRequest request) {
+    private Authentication authenticateUser(String token, HttpServletRequest request) {
         UserDetails userDetails = userService.loadUserByUsername(jwtUtility.getUsernameFromToken(token));
-        UsernamePasswordAuthenticationToken authentication = mapUserToAuthentication(userDetails);
+        var authentication = mapUserToAuth(userDetails);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return authentication;
     }
 
-    private UsernamePasswordAuthenticationToken mapUserToAuthentication(UserDetails user) {
-        return new UsernamePasswordAuthenticationToken(user, null);
-    }
-
-    private Optional<String> extractToken(HttpServletRequest request) {
-        return this.extractTokenFromHeaderIfExists(
-                request.getHeader(HttpHeaders.AUTHORIZATION)
+    UsernamePasswordAuthenticationToken mapUserToAuth(UserDetails userDetails) {
+        return new UsernamePasswordAuthenticationToken(
+                userDetails.getUsername(), userDetails.getPassword()
         );
     }
 
-    private Optional<String> extractTokenFromHeaderIfExists(String authHeader) {
-        return Optional.ofNullable(authHeader)
-        .filter(header -> header.startsWith("Bearer "))
-        .map(header -> header.split(" ")[1].trim());
+    Optional<String> getToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
+                .filter(header -> header.startsWith("Bearer "))
+                .map(header -> header.split(" ")[1].trim());
     }
 
     private void updateSecurityContextWithAuthenticatedUser(Authentication auth) {
         SecurityContextHolder.getContext().setAuthentication(auth);
-
     }
 }

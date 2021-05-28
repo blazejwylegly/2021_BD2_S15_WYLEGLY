@@ -25,6 +25,10 @@ public class JwtUtility {
     }
 
     public String generateAccessToken(User user, Date issuedAt) {
-        return builder.generateToken(user, new Date());
+        return builder.generateToken(user, issuedAt);
+    }
+
+    public String generateAccessToken(User user) {
+        return generateAccessToken(user, new Date());
     }
 }
