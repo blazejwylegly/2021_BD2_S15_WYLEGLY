@@ -17,7 +17,7 @@ public class BookFullDTO {
     private String name;
     private String author;
     private Optional<String> publisher;
-    private List<String> urls;
+//    private List<String> urls;
     private String description;
     private Optional<LocalDate> publicationDate;
     private Boolean isOccupied;
