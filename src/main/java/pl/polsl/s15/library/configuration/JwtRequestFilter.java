@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtUtility jwtUtility;
     private final UserDetailsService userService;
 
     @Autowired
-    public JwtTokenFilter(JwtUtility jwtUtility, UserDetailsService userService) {
+    public JwtRequestFilter(JwtUtility jwtUtility, UserDetailsService userService) {
         this.jwtUtility = jwtUtility;
         this.userService = userService;
     }
@@ -43,7 +43,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private Authentication authenticateUser(String token, HttpServletRequest request) {
-        UserDetails userDetails = userService.loadUserByUsername(jwtUtility.getUsernameFromToken(token));
+        final UserDetails userDetails = userService.loadUserByUsername(jwtUtility.getUsernameFromToken(token));
         var authentication = mapUserToAuth(userDetails);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return authentication;
@@ -51,7 +51,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     UsernamePasswordAuthenticationToken mapUserToAuth(UserDetails userDetails) {
         return new UsernamePasswordAuthenticationToken(
-                userDetails.getUsername(), userDetails.getPassword()
+                userDetails.getUsername(), null, null
         );
     }
 
