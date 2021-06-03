@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.polsl.s15.library.controller.registration.dto.RegistrationDTOMapper;
-import pl.polsl.s15.library.controller.registration.dto.RegistrationRequestDTO;
-import pl.polsl.s15.library.commons.exceptions.UserAlreadyRegisteredException;
-import pl.polsl.s15.library.controller.registration.dto.RegistrationResponseDTO;
+import pl.polsl.s15.library.dtos.common.api.ResponseDTO;
+import pl.polsl.s15.library.dtos.registration.RegistrationDTOMapper;
+import pl.polsl.s15.library.dtos.registration.RegistrationRequestDTO;
+import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.service.UserService;
 
@@ -27,15 +27,10 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegistrationResponseDTO> registerNewUser(@RequestBody RegistrationRequestDTO request) {
+    public ResponseEntity<ResponseDTO> registerNewUser(@RequestBody RegistrationRequestDTO request) {
         User user = dtoMapper.mapRegistrationRequestToUser(request);
-        try {
-            userService.createUser(user);
-            return ResponseEntity.ok()
-                    .body(dtoMapper.userRegistrationSuccessful());
-        } catch (UserAlreadyRegisteredException ex) {
-            return ResponseEntity.badRequest()
-                    .body(dtoMapper.userRegistrationFailed(request));
-        }
+        userService.createUser(user);
+        return ResponseEntity.ok()
+                .body(dtoMapper.userRegistrationSuccessful());
     }
 }
