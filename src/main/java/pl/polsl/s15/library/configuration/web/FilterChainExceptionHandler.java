@@ -31,7 +31,7 @@ public class FilterChainExceptionHandler extends OncePerRequestFilter {
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } catch (Exception exception) {
-            log.warn("Error occurred during request filtering! Details {}", exception.getMessage());
+            log.warn("Error occurred during request filtering!\n Details {}", exception.getMessage());
             exceptionResolver.resolveException(
                     httpServletRequest,
                     httpServletResponse,

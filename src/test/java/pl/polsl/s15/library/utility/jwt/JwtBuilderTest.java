@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import pl.polsl.s15.library.commons.utils.JwtBuilder;
+import pl.polsl.s15.library.commons.utils.JwtParser;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.security.BaseSecurityTest;
 

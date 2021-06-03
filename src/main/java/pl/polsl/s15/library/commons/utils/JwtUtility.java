@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.utility.jwt;
+package pl.polsl.s15.library.commons.utils;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;

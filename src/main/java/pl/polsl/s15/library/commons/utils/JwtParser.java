@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.utility.jwt;
+package pl.polsl.s15.library.commons.utils;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +24,8 @@ public class JwtParser {
         try {
             return tryToParseClaims(jwt);
         } catch (JwtException e) {
-            log.warn("JWT Validation error: " + e.getMessage(), e);
-            throw new InvalidJwtException("JWT Validation Error: " + e.getMessage(), e);
+            log.warn("JWT Validation error - {}", e.getMessage());
+            throw new InvalidJwtException("JWT Validation Error - " + e.getMessage(), e);
         }
     }
 

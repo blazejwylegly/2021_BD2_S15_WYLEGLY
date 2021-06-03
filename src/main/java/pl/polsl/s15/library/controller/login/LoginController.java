@@ -17,7 +17,7 @@ import pl.polsl.s15.library.dtos.login.AuthDTOMapper;
 import pl.polsl.s15.library.dtos.login.AuthRequestDTO;
 import pl.polsl.s15.library.dtos.login.AuthResponseDTO;
 import pl.polsl.s15.library.service.UserService;
-import pl.polsl.s15.library.utility.jwt.JwtUtility;
+import pl.polsl.s15.library.commons.utils.JwtUtility;
 
 
 import javax.validation.Valid;

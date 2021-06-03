@@ -16,6 +16,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "app_users")
 public class User implements UserDetails {
 
     @Id

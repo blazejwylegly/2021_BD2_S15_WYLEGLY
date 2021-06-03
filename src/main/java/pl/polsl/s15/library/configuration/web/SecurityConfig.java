@@ -57,7 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        log.warn("USING AUTH BUILDER");
         auth.userDetailsService(userDetailsService);
     }
 
