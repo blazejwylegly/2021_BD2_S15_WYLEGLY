@@ -6,17 +6,21 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.polsl.s15.library.controller.login.dto.AuthDTOMapper;
-import pl.polsl.s15.library.controller.login.dto.AuthRequestDTO;
-import pl.polsl.s15.library.controller.login.dto.AuthResponseDTO;
+import pl.polsl.s15.library.commons.exceptions.InvalidRequestException;
 import pl.polsl.s15.library.domain.user.User;
-import pl.polsl.s15.library.security.jwt.JwtUtility;
+import pl.polsl.s15.library.dtos.login.AuthDTOMapper;
+import pl.polsl.s15.library.dtos.login.AuthRequestDTO;
+import pl.polsl.s15.library.dtos.login.AuthResponseDTO;
 import pl.polsl.s15.library.service.UserService;
+import pl.polsl.s15.library.commons.utils.JwtUtility;
 
+
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.Optional;
 
@@ -40,29 +44,24 @@ public class LoginController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO request) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(authenticationSuccessResponse(request));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(authenticationFailedResponse(request, ex.getMessage()));
-        }
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Valid AuthRequestDTO request, BindingResult bindingResult) {
+        if(bindingResult.hasErrors())
+            throw new InvalidRequestException("Invalid authentication request body!");
+
+        AuthResponseDTO authResponseDTO = authenticate(request);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(authResponseDTO);
     }
 
-    private AuthResponseDTO authenticationSuccessResponse(AuthRequestDTO request) {
-        Authentication auth = retrieveAnyAuthenticationPrincipal(request);
+    private AuthResponseDTO authenticate(AuthRequestDTO request) {
+        Authentication auth = retrieveAuthenticationPrincipal(request);
         Date issuedAt = new Date();
         User user = (User) auth.getPrincipal();
         String accessToken = jwtUtility.generateAccessToken(user, issuedAt);
         return dtoMapper.authRequestSuccessful(user, accessToken);
     }
 
-    private AuthResponseDTO authenticationFailedResponse(AuthRequestDTO request, String errorMessage) {
-        return dtoMapper.authRequestFailed(request, errorMessage);
-    }
-
-    private Authentication retrieveAnyAuthenticationPrincipal(AuthRequestDTO request) {
+    private Authentication retrieveAuthenticationPrincipal(AuthRequestDTO request) {
         Optional<Authentication> emailAuth = retrieveEmailBasedAuthentication(request);
         if (emailAuth.isPresent()) {
             return emailAuth.get();
@@ -77,21 +76,22 @@ public class LoginController {
     }
 
     private Optional<Authentication> retrieveUsernameBasedAuthentication(AuthRequestDTO request) {
-        return request.getUsername().map(
-                username -> authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(username, request.getPassword())
-                )
-        );
+        return Optional.ofNullable(request.getUsername())
+                .map(
+                        username -> authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(username, request.getPassword())
+                        )
+                );
     }
 
     private Optional<Authentication> retrieveEmailBasedAuthentication(AuthRequestDTO request) {
-        Optional<User> optionalUser = request.getEmail()
+        Optional<User> userByEmail =  Optional.ofNullable(request.getEmail())
                 .map(userService::loadUserByEmail)
                 .orElse(Optional.empty());
 
-        return optionalUser.map(
+        return userByEmail.map(
                 user -> authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+                        new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword())
                 )
         );
     }

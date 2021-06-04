@@ -1,0 +1,827 @@
+databaseChangeLog:
+- changeSet:
+    id: 1621249002258-1
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: article_detailsPK
+            name: id
+            type: BIGINT
+        tableName: article_details
+- changeSet:
+    id: 1621249002258-2
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: authoritiesPK
+            name: id
+            type: BIGINT
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: authorities
+- changeSet:
+    id: 1621249002258-3
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: author
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: publication_date
+            type: date
+        - column:
+            name: publisher
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: book_detailsPK
+            name: id
+            type: BIGINT
+        tableName: book_details
+- changeSet:
+    id: 1621249002258-4
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: booksPK
+            name: id
+            type: BIGINT
+        - column:
+            name: details_id
+            type: BIGINT
+        tableName: books
+- changeSet:
+    id: 1621249002258-5
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: cartsPK
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: session_id
+            type: BIGINT
+        tableName: carts
+- changeSet:
+    id: 1621249002258-6
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: UserPK
+            name: id
+            type: BIGINT
+        - column:
+            name: first_name
+            type: VARCHAR(255)
+        - column:
+            name: last_name
+            type: VARCHAR(255)
+        - column:
+            name: photo_url
+            type: VARCHAR(255)
+        - column:
+            name: credentials_id
+            type: BIGINT
+        - column:
+            name: permissions_id
+            type: BIGINT
+        - column:
+            name: cart_id
+            type: BIGINT
+        tableName: clients
+- changeSet:
+    id: 1621249002258-7
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: credentialsPK
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: email_address
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: encoced_password
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: login
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: salt
+            type: VARCHAR(255)
+        tableName: credentials
+- changeSet:
+    id: 1621249002258-8
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: deliveriesPK
+            name: id
+            type: BIGINT
+        tableName: deliveries
+- changeSet:
+    id: 1621249002258-9
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: delivery_articlesPK
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: amount
+            type: INT
+        - column:
+            name: delivery_request_date
+            type: datetime
+        - column:
+            name: expected_delivery_date
+            type: datetime
+        - column:
+            name: details_id
+            type: BIGINT
+        - column:
+            name: delivery_id
+            type: BIGINT
+        tableName: delivery_articles
+- changeSet:
+    id: 1621249002258-10
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: UserPK
+            name: id
+            type: BIGINT
+        - column:
+            name: first_name
+            type: VARCHAR(255)
+        - column:
+            name: last_name
+            type: VARCHAR(255)
+        - column:
+            name: photo_url
+            type: VARCHAR(255)
+        - column:
+            name: credentials_id
+            type: BIGINT
+        - column:
+            name: permissions_id
+            type: BIGINT
+        tableName: employees
+- changeSet:
+    id: 1621249002258-11
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: item_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: photo_id
+            type: BIGINT
+        tableName: items_photos
+- changeSet:
+    id: 1621249002258-12
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: UserPK
+            name: id
+            type: BIGINT
+        - column:
+            name: first_name
+            type: VARCHAR(255)
+        - column:
+            name: last_name
+            type: VARCHAR(255)
+        - column:
+            name: photo_url
+            type: VARCHAR(255)
+        - column:
+            name: credentials_id
+            type: BIGINT
+        - column:
+            name: permissions_id
+            type: BIGINT
+        tableName: managers
+- changeSet:
+    id: 1621249002258-13
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: order_itemsPK
+            name: id
+            type: BIGINT
+        - column:
+            name: item_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: requested_end_date
+            type: datetime
+        - column:
+            constraints:
+              nullable: false
+            name: requested_start_date
+            type: datetime
+        - column:
+            name: cart_id
+            type: BIGINT
+        tableName: order_items
+- changeSet:
+    id: 1621249002258-14
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: permissionsPK
+            name: id
+            type: BIGINT
+        tableName: permissions
+- changeSet:
+    id: 1621249002258-15
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: authority_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: account_id
+            type: BIGINT
+        tableName: permissions_authorities
+- changeSet:
+    id: 1621249002258-16
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: role_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: account_id
+            type: BIGINT
+        tableName: permissions_roles
+- changeSet:
+    id: 1621249002258-17
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: photosPK
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: file
+            type: LONGBLOB
+        tableName: photos
+- changeSet:
+    id: 1621249002258-18
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: is_occupied
+            type: BIT
+        - column:
+            name: serial_number
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: rental_booksPK
+            name: id
+            type: BIGINT
+        tableName: rental_books
+- changeSet:
+    id: 1621249002258-19
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: reservationsPK
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: end_time
+            type: datetime
+        - column:
+            constraints:
+              nullable: false
+            name: start_time
+            type: datetime
+        - column:
+            name: client_id
+            type: BIGINT
+        - column:
+            name: book_id
+            type: BIGINT
+        tableName: reservations
+- changeSet:
+    id: 1621249002258-20
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: rolesPK
+            name: id
+            type: BIGINT
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: roles
+- changeSet:
+    id: 1621249002258-21
+    author: kamil (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: stock_itemPK
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(255)
+        tableName: stock_item
+- changeSet:
+    id: 1621249002258-22
+    author: kamil (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: account_id, authority_id
+        tableName: permissions_authorities
+- changeSet:
+    id: 1621249002258-23
+    author: kamil (generated)
+    changes:
+    - addPrimaryKey:
+        columnNames: account_id, role_id
+        tableName: permissions_roles
+- changeSet:
+    id: 1621249002258-24
+    author: kamil (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: session_id
+        constraintName: UC_CARTSSESSION_ID_COL
+        tableName: carts
+- changeSet:
+    id: 1621249002258-25
+    author: kamil (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: email_address
+        constraintName: UC_CREDENTIALSEMAIL_ADDRESS_COL
+        tableName: credentials
+- changeSet:
+    id: 1621249002258-26
+    author: kamil (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: encoced_password
+        constraintName: UC_CREDENTIALSENCOCED_PASSWORD_COL
+        tableName: credentials
+- changeSet:
+    id: 1621249002258-27
+    author: kamil (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: login
+        constraintName: UC_CREDENTIALSLOGIN_COL
+        tableName: credentials
+- changeSet:
+    id: 1621249002258-28
+    author: kamil (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: salt
+        constraintName: UC_CREDENTIALSSALT_COL
+        tableName: credentials
+- changeSet:
+    id: 1621249002258-29
+    author: kamil (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: serial_number
+        constraintName: UC_RENTAL_BOOKSSERIAL_NUMBER_COL
+        tableName: rental_books
+- changeSet:
+    id: 1621249002258-30
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: id
+        baseTableName: rental_books
+        constraintName: FK278n7qguosmlm4iym51bf0g19
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: books
+        validate: true
+- changeSet:
+    id: 1621249002258-31
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: photo_id
+        baseTableName: items_photos
+        constraintName: FK3ceqese1rr8gxkm1r7vxogem3
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: photos
+        validate: true
+- changeSet:
+    id: 1621249002258-32
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: delivery_id
+        baseTableName: delivery_articles
+        constraintName: FK3u35tvqsqs4lby4jekqd4s3py
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: deliveries
+        validate: true
+- changeSet:
+    id: 1621249002258-33
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: reservations
+        constraintName: FK6lekctbt4u88agg0b7cjsj6lf
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: clients
+        validate: true
+- changeSet:
+    id: 1621249002258-34
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: cart_id
+        baseTableName: order_items
+        constraintName: FK70b27f68i6yyjxkdx68ssflth
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: carts
+        validate: true
+- changeSet:
+    id: 1621249002258-35
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: item_id
+        baseTableName: items_photos
+        constraintName: FK9bpjhvw7flh91spjvoa7mw443
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: stock_item
+        validate: true
+- changeSet:
+    id: 1621249002258-36
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: role_id
+        baseTableName: permissions_roles
+        constraintName: FK9j7vx1vojmoa6rs21eggd46xn
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: roles
+        validate: true
+- changeSet:
+    id: 1621249002258-37
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: id
+        baseTableName: book_details
+        constraintName: FK9pyyck5l2pkl3w3vpqg6kxlr9
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: article_details
+        validate: true
+- changeSet:
+    id: 1621249002258-38
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: credentials_id
+        baseTableName: clients
+        constraintName: FK_47xlpw6hbqr9jacc59x6wsilb
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: credentials
+        validate: true
+- changeSet:
+    id: 1621249002258-39
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: permissions_id
+        baseTableName: employees
+        constraintName: FK_7j8vr5uf6sc8fhbq7p2iwx98a
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: permissions
+        validate: true
+- changeSet:
+    id: 1621249002258-40
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: credentials_id
+        baseTableName: employees
+        constraintName: FK_gotsve1syjsw46icfrs3jloh6
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: credentials
+        validate: true
+- changeSet:
+    id: 1621249002258-41
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: credentials_id
+        baseTableName: managers
+        constraintName: FK_iprji51k4v9sh8ebo987jin7h
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: credentials
+        validate: true
+- changeSet:
+    id: 1621249002258-42
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: permissions_id
+        baseTableName: clients
+        constraintName: FK_kfkepm7xl80bjgr4cci7016j3
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: permissions
+        validate: true
+- changeSet:
+    id: 1621249002258-43
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: permissions_id
+        baseTableName: managers
+        constraintName: FK_r6119r74d9tpbwjyiycaxi8xl
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: permissions
+        validate: true
+- changeSet:
+    id: 1621249002258-44
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: details_id
+        baseTableName: delivery_articles
+        constraintName: FKa5mgme7gq2q3apohn74vvys9
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: article_details
+        validate: true
+- changeSet:
+    id: 1621249002258-45
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: id
+        baseTableName: books
+        constraintName: FKd9qj5nuidq6mayka54njysxbl
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: stock_item
+        validate: true
+- changeSet:
+    id: 1621249002258-46
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: account_id
+        baseTableName: permissions_roles
+        constraintName: FKdsvptlf9pqs6eyr1r8mo2ql23
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: permissions
+        validate: true
+- changeSet:
+    id: 1621249002258-47
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: details_id
+        baseTableName: books
+        constraintName: FKduf30pnu1vqju9wfbc346m92
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: book_details
+        validate: true
+- changeSet:
+    id: 1621249002258-48
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: cart_id
+        baseTableName: clients
+        constraintName: FKf6u6267ugv1y03prbphkc7vs3
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: carts
+        validate: true
+- changeSet:
+    id: 1621249002258-49
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: account_id
+        baseTableName: permissions_authorities
+        constraintName: FKgjlphqexf444doqlgk37oekxf
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: permissions
+        validate: true
+- changeSet:
+    id: 1621249002258-50
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: book_id
+        baseTableName: reservations
+        constraintName: FKk1dmcg9pslkq4ochi9wjse6ar
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: rental_books
+        validate: true
+- changeSet:
+    id: 1621249002258-51
+    author: kamil (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: authority_id
+        baseTableName: permissions_authorities
+        constraintName: FKplrsarepjel6pj5yqfam2jre9
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: authorities
+        validate: true
+
