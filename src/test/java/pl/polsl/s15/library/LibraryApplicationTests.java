@@ -1,7 +1,9 @@
 package pl.polsl.s15.library;
 
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 @SpringBootTest
 class LibraryApplicationTests {

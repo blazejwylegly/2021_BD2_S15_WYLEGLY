@@ -3,7 +3,7 @@ package pl.polsl.s15.library.domain.stock.books;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.polsl.s15.library.controller.StockController;
+
 import pl.polsl.s15.library.domain.stock.StockItem;
 
 import javax.persistence.*;

@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "stock_item")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class StockItem {
 

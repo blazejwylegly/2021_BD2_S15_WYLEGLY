@@ -1,13 +1,23 @@
 package pl.polsl.s15.library.domain.user;
 
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import pl.polsl.s15.library.domain.user.account.AccountCredentials;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class User {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "app_users")
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,15 +33,49 @@ public abstract class User {
     private String photoUrl;
 
     @OneToOne(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private AccountCredentials credentials;
 
     @OneToOne(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private AccountPermissions permissions;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.credentials.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.credentials.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
