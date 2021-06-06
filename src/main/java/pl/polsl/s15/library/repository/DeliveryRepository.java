@@ -6,4 +6,5 @@ import pl.polsl.s15.library.domain.deliveries.Delivery;
 
 @Repository
 public interface DeliveryRepository extends JpaRepository<Delivery,Long> {
+
 }
