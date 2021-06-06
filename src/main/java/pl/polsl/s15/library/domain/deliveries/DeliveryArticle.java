@@ -18,12 +18,6 @@ public class DeliveryArticle {
 
     private int amount;
 
-    @Column(name = "delivery_request_date")
-    private LocalDateTime deliveryRequestDate;
-
-    @Column(name = "expected_delivery_date")
-    private LocalDateTime expectedDeliveryDate;
-
     @ManyToOne
     @JoinColumn(name = "details_id")
     private ArticleDetails articleDetails;

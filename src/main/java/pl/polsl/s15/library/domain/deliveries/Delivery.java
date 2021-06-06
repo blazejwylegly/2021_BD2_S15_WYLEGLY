@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,4 +18,13 @@ public class Delivery  {
 
     @OneToMany(mappedBy = "delivery")
     private List<DeliveryArticle> orderedItems;
+
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus;
+
+    @Column(name = "delivery_request_date")
+    private LocalDateTime deliveryRequestDate;
+
+    @Column(name = "expected_delivery_date")
+    private LocalDateTime expectedDeliveryDate;
 }
