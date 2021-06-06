@@ -10,8 +10,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.polsl.s15.library.dtos.books.BookBasicDTO;
-import pl.polsl.s15.library.dtos.books.BookFullDTO;
+import pl.polsl.s15.library.dtos.stock.books.BookBasicDTO;
+import pl.polsl.s15.library.dtos.stock.books.BookFullDTO;
 import pl.polsl.s15.library.service.BookService;
 
 @AllArgsConstructor

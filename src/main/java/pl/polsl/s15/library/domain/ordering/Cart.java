@@ -16,9 +16,6 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true, nullable = false, name = "session_id")
-    private Long sessionId;
-
     @OneToMany(mappedBy = "cart")
     private List<OrderItem> orderItems;
 

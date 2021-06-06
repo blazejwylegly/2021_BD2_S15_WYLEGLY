@@ -18,40 +18,53 @@ import java.util.Optional;
 @Slf4j
 public class UserService implements UserDetailsService {
 
-    private UserRepository repository;
+    private UserRepository userRepository;
+    private ClientRepository clientRepository;
 
     @Autowired
-    public UserService(UserRepository repository) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository, ClientRepository clientRepository) {
+        this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByCredentials_Username(username)
+        return userRepository.findByCredentials_Username(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format("User %s does not exist", username)
                 ));
     }
 
     public Optional<User> loadUserByEmail(String email) {
-        return repository.findByCredentials_EmailAddress(email);
+        return userRepository.findByCredentials_EmailAddress(email);
     }
 
-    public void createUser(User user) throws UserAlreadyRegisteredException {
-        log.info("Attempting to create user {}", user.getUsername());
-        throwIfUserExists(user);
-        repository.save(user);
-        log.info("User {} creation successful", user.getUsername());
+    public void createUser(UserDTO userDTO) throws UserAlreadyRegisteredException {
+        validateIfUserExists(userDTO);
+        userRepository.save(User.of(userDTO));
     }
 
-    private void throwIfUserExists(User user) throws UserAlreadyRegisteredException {
-        if(repository.existsByCredentials_Username(user.getUsername()))
+    public void createClient(ClientDTO clientDTO) throws UserAlreadyRegisteredException {
+        validateIfUserExists(clientDTO);
+        updateClientWithNewCart(clientDTO);
+        clientRepository.save(Client.of(clientDTO));
+    }
+
+    private void updateClientWithNewCart(ClientDTO clientDTO) {
+        CartDTO cartDTO = CartDTO.b
+    }
+
+    private void validateIfUserExists(UserDTO userDTO) throws UserAlreadyRegisteredException {
+        String username = userDTO.getAccountCredentialsDTO().getUsername();
+        if(userRepository.existsByCredentials_Username(username))
             throw new UserAlreadyRegisteredException(
-                    String.format("User with given username [%s] already exists!", user.getUsername())
+                    String.format("User with given username [%s] already exists!",username)
             );
-        if(repository.existsByCredentials_EmailAddress(user.getCredentials().getEmailAddress()))
+
+        String emailAddress = userDTO.getAccountCredentialsDTO().getEmailAddress();
+        if(userRepository.existsByCredentials_EmailAddress(emailAddress))
             throw new UserAlreadyRegisteredException(
-                    String.format("User with given email address [%s] already exists!", user.getCredentials().getEmailAddress())
+                    String.format("User with given email address [%s] already exists!", emailAddress)
             );
     }
 

@@ -1,9 +1,12 @@
 package pl.polsl.s15.library.domain.user.account.roles;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
+import pl.polsl.s15.library.dtos.users.permissions.RoleDTO;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -11,7 +14,9 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "roles")
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,5 +36,12 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return name.getValue();
+    }
+
+    public static Role ofDTO(RoleDTO roleDTO) {
+        return Role.builder()
+                .id(roleDTO.getId())
+                .name(roleDTO.getRoleType())
+                .build();
     }
 }

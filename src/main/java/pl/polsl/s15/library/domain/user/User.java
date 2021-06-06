@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.polsl.s15.library.domain.user.account.AccountCredentials;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
+import pl.polsl.s15.library.dtos.users.UserDTO;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -43,6 +44,19 @@ public class User implements UserDetails {
             cascade = CascadeType.ALL
     )
     private AccountPermissions permissions;
+
+    public static User of(UserDTO userDTO) {
+        AccountCredentials credentials = AccountCredentials.of(userDTO.getAccountCredentialsDTO());
+        AccountPermissions permissions = AccountPermissions.of(userDTO.getAccountPermissionsDTO());
+        return User.builder()
+                .id(userDTO.getId())
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .photoUrl(userDTO.getPhotoUrl())
+                .credentials(credentials)
+                .permissions(permissions)
+                .build();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

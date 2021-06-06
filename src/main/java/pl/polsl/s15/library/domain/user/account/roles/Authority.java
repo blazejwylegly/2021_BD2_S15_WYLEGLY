@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
+import pl.polsl.s15.library.dtos.users.permissions.AuthorityDTO;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "authorities")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Authority implements GrantedAuthority {
@@ -33,4 +35,10 @@ public class Authority implements GrantedAuthority {
     )
     private Set<AccountPermissions> permissions;
 
+    public static Authority ofDTO(AuthorityDTO authorityDTO) {
+        return Authority.builder()
+                .id(authorityDTO.getId())
+                .authority(authorityDTO.getAuthority())
+                .build();
+    }
 }
