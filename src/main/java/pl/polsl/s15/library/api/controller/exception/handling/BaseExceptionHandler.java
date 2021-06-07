@@ -1,7 +1,7 @@
-package pl.polsl.s15.library.controller.exception.handling;
+package pl.polsl.s15.library.api.controller.exception.handling;
 
 import org.springframework.http.ResponseEntity;
-import pl.polsl.s15.library.dtos.common.api.ErrorResponseDTO;
+import pl.polsl.s15.library.api.response.ErrorResponseDTO;
 
 public class BaseExceptionHandler {
 

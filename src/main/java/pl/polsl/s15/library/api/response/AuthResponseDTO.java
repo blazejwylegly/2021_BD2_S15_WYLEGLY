@@ -1,13 +1,12 @@
-package pl.polsl.s15.library.dtos.login;
+package pl.polsl.s15.library.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import pl.polsl.s15.library.dtos.common.api.ResponseDTO;
+import pl.polsl.s15.library.api.response.ResponseDTO;
 
 import java.util.Date;
-
 
 @AllArgsConstructor
 @Getter

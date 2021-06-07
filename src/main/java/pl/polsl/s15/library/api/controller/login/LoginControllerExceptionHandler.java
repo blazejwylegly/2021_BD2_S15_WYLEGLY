@@ -1,12 +1,12 @@
-package pl.polsl.s15.library.controller.login;
+package pl.polsl.s15.library.api.controller.login;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pl.polsl.s15.library.controller.exception.handling.BaseExceptionHandler;
-import pl.polsl.s15.library.dtos.common.api.ErrorResponseDTO;
+import pl.polsl.s15.library.api.controller.exception.handling.BaseExceptionHandler;
+import pl.polsl.s15.library.api.response.ErrorResponseDTO;
 
 import java.util.Date;
 

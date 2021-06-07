@@ -1,8 +1,9 @@
-package pl.polsl.s15.library.dtos.login;
+package pl.polsl.s15.library.api.controller.login;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import pl.polsl.s15.library.domain.user.User;
+import pl.polsl.s15.library.api.response.AuthResponseDTO;
 
 import java.util.Date;
 
@@ -14,12 +15,6 @@ public class AuthDTOMapper {
                 .message("Authentication successful!")
                 .accessToken(accessToken)
                 .timestamp(new Date())
-                .build();
-    }
-
-    public AuthResponseDTO authRequestFailed(AuthRequestDTO request, String errorMessage) {
-        return AuthResponseDTO.authResponseBuilder()
-                .message(errorMessage)
                 .build();
     }
 }

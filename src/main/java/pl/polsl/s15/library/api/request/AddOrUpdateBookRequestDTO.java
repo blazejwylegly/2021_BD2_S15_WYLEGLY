@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.dtos.books;
+package pl.polsl.s15.library.api.request;
 
 import lombok.Setter;
 import pl.polsl.s15.library.domain.stock.books.Book;

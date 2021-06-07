@@ -2,6 +2,8 @@ package pl.polsl.s15.library.dtos.users;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import pl.polsl.s15.library.dtos.ordering.CartDTO;
 import pl.polsl.s15.library.dtos.reservations.ReservationDTO;
 import pl.polsl.s15.library.dtos.users.credentials.AccountCredentialsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
@@ -11,7 +13,9 @@ import java.util.List;
 
 @Getter
 public class ClientDTO extends UserDTO {
-    private Long cartId;
+
+    @Setter
+    private CartDTO cartDTO;
     private List<ReservationDTO> reservations = new ArrayList<>();
 
     @Builder(builderMethodName = "clientDTOBuilder")
@@ -20,11 +24,11 @@ public class ClientDTO extends UserDTO {
                      String lastName,
                      String photoUrl,
                      AccountCredentialsDTO accountCredentialsDTO,
-                     AccountPermissionsDTO acoAccountPermissionsDTO,
-                     Long cartId,
+                     AccountPermissionsDTO accountPermissionsDTO,
+                     CartDTO cartDTO,
                      List<ReservationDTO> reservations) {
-        super(id, firstName, lastName, photoUrl, accountCredentialsDTO, acoAccountPermissionsDTO);
-        this.cartId = cartId;
+        super(id, firstName, lastName, photoUrl, accountCredentialsDTO, accountPermissionsDTO);
+        this.cartDTO = cartDTO;
         this.reservations = reservations;
     }
 

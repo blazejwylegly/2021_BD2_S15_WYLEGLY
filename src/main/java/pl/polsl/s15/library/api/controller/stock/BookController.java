@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.controller.stock;
+package pl.polsl.s15.library.api.controller.stock;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;

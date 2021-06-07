@@ -1,14 +1,18 @@
-package pl.polsl.s15.library.dtos.registration;
+package pl.polsl.s15.library.api.controller.registration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
-import pl.polsl.s15.library.domain.user.User;
-import pl.polsl.s15.library.domain.user.account.AccountCredentials;
-import pl.polsl.s15.library.dtos.common.api.ErrorResponseDTO;
-import pl.polsl.s15.library.dtos.common.api.ResponseDTO;
+import pl.polsl.s15.library.api.request.ClientRegistrationRequestDTO;
+import pl.polsl.s15.library.api.request.RegistrationRequestDTO;
+import pl.polsl.s15.library.api.response.ResponseDTO;
+import pl.polsl.s15.library.dtos.users.ClientDTO;
+import pl.polsl.s15.library.dtos.users.UserDTO;
+import pl.polsl.s15.library.dtos.users.credentials.AccountCredentialsDTO;
+import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
+import pl.polsl.s15.library.dtos.users.permissions.AuthorityDTO;
+import pl.polsl.s15.library.dtos.users.permissions.RoleDTO;
 
 import java.util.Arrays;
 import java.util.Date;

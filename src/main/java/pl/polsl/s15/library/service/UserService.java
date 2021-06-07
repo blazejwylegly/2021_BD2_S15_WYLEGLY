@@ -7,7 +7,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
+import pl.polsl.s15.library.domain.user.Client;
 import pl.polsl.s15.library.domain.user.User;
+import pl.polsl.s15.library.dtos.ordering.CartDTO;
+import pl.polsl.s15.library.dtos.users.ClientDTO;
+import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
+import pl.polsl.s15.library.dtos.users.UserDTO;
+import pl.polsl.s15.library.repository.ClientRepository;
 import pl.polsl.s15.library.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -22,7 +28,8 @@ public class UserService implements UserDetailsService {
     private ClientRepository clientRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, ClientRepository clientRepository) {
+    public UserService(UserRepository userRepository,
+                       ClientRepository clientRepository) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
     }
@@ -33,6 +40,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format("User %s does not exist", username)
                 ));
+    }
+
+    public Optional<AccountPermissionsDTO> getPermissionsForUser(Long userId) {
+        return userRepository.findById(userId)
+                .map(User::getPermissions)
+                .map(AccountPermissionsDTO::from);
     }
 
     public Optional<User> loadUserByEmail(String email) {
@@ -51,7 +64,8 @@ public class UserService implements UserDetailsService {
     }
 
     private void updateClientWithNewCart(ClientDTO clientDTO) {
-        CartDTO cartDTO = CartDTO.b
+        CartDTO cartDTO = new CartDTO();
+        clientDTO.setCartDTO(cartDTO);
     }
 
     private void validateIfUserExists(UserDTO userDTO) throws UserAlreadyRegisteredException {

@@ -1,9 +1,6 @@
 package pl.polsl.s15.library.domain.user.account.roles;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 import pl.polsl.s15.library.dtos.users.permissions.AuthorityDTO;

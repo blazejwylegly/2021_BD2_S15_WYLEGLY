@@ -45,7 +45,7 @@ public class Client extends User {
     public static Client of(ClientDTO clientDTO) {
         AccountPermissions permissions = AccountPermissions.of(clientDTO.getAccountPermissionsDTO());
         AccountCredentials credentials = AccountCredentials.of(clientDTO.getAccountCredentialsDTO());
-
+        Cart cart = Cart.ofDTO(clientDTO.getCartDTO());
         return Client.clientBuilder()
                 .firstName(clientDTO.getFirstName())
                 .lastName(clientDTO.getLastName())

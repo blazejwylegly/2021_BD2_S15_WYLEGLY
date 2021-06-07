@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.dtos.common.api;
+package pl.polsl.s15.library.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
