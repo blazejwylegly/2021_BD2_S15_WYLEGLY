@@ -108,7 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private void configureEndpointPermissions(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests().antMatchers("/api/public/**").permitAll()
-                .anyRequest().authenticated().and();
+                .and();
     }
 
     @Bean
