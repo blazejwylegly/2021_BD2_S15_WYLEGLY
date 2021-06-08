@@ -25,9 +25,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] AUTH_WHITELIST = {
-            "/swagger-resources/**",
-            "/swagger-ui.html",
-            "/v2/api-docs",
+            "**/swagger-resources/**",
+            "**/swagger-ui.html",
+            "**/v2/api-docs",
             "/webjars/**",
             "/h2-console/**"
     };
