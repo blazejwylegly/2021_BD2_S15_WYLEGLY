@@ -1,19 +1,14 @@
 package pl.polsl.s15.library.domain.stock.books;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.polsl.s15.library.domain.stock.ArticleDetails;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -29,26 +24,23 @@ public class BookDetails extends ArticleDetails {
     @Column(name = "publication_date")
     private LocalDate publicationDate;
 
-    @OneToMany(mappedBy = "details", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Book> books;
-    public BookDetails(String name, String author, String publisher, LocalDate publicationDate)
-    {
+    public BookDetails(String name, String author, String publisher, LocalDate publicationDate) {
         this.name = name;
         this.author = author;
-        if(publisher!=null)
+        if (publisher != null)
             this.publisher = publisher;
-        if(publicationDate!=null)
+        if (publicationDate != null)
             this.publicationDate = publicationDate;
     }
-    public BookDetails(BookDetails details)
-    {
+
+    public BookDetails(BookDetails details) {
         this.name = details.name;
         this.author = details.author;
         this.publicationDate = details.publicationDate;
         this.publisher = details.publisher;
     }
-    public Long getId()
-    {
+
+    public Long getId() {
         return super.getId();
     }
 }

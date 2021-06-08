@@ -4,13 +4,9 @@ import lombok.*;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.domain.user.account.roles.Authority;
 import pl.polsl.s15.library.domain.user.account.roles.Role;
-import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
-import pl.polsl.s15.library.dtos.users.permissions.AuthorityDTO;
-import pl.polsl.s15.library.dtos.users.permissions.RoleDTO;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -42,27 +38,4 @@ public class AccountPermissions {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Set<Role> roles;
-
-    public static AccountPermissions of(AccountPermissionsDTO accountPermissionsDTO) {
-        Set<Authority> authorities  = mapDTOSToAuthorities(accountPermissionsDTO.getAuthorities());
-        Set<Role> roles = mapDTOSToRoles(accountPermissionsDTO.getRoles());
-
-        return AccountPermissions.builder()
-                .id(accountPermissionsDTO.getId())
-                .authorities(authorities)
-                .roles(roles)
-                .build();
-    }
-
-    public static Set<Role> mapDTOSToRoles(Set<RoleDTO> roles) {
-        return roles.stream()
-                .map(Role::ofDTO)
-                .collect(Collectors.toSet());
-    }
-
-    public static Set<Authority> mapDTOSToAuthorities(Set<AuthorityDTO> authorities) {
-        return authorities.stream()
-                .map(Authority::ofDTO)
-                .collect(Collectors.toSet());
-    }
 }

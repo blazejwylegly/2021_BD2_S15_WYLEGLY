@@ -1,9 +1,6 @@
 package pl.polsl.s15.library.dtos.ordering;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
 import pl.polsl.s15.library.dtos.users.ClientDTO;
@@ -11,6 +8,7 @@ import pl.polsl.s15.library.dtos.users.ClientDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Setter
 @Getter
 @Builder
 @NoArgsConstructor

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter
@@ -16,6 +15,6 @@ public class BookBasicDTO {
     private String author;
     private List<String> urls;
     private Boolean isOccupied;
-    private Integer numberOfBooks;
-    private Optional<Long> numberOfOccupiedBooks;
+    private Long numberOfBooks;
+    private Long numberOfOccupiedBooks;
 }

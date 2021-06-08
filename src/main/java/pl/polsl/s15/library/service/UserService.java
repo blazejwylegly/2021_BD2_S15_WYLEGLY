@@ -7,12 +7,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
-import pl.polsl.s15.library.domain.user.Client;
 import pl.polsl.s15.library.domain.user.User;
-import pl.polsl.s15.library.dtos.ordering.CartDTO;
-import pl.polsl.s15.library.dtos.users.ClientDTO;
-import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
 import pl.polsl.s15.library.dtos.users.UserDTO;
+import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
+import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
 import pl.polsl.s15.library.repository.ClientRepository;
 import pl.polsl.s15.library.repository.UserRepository;
 
@@ -54,18 +52,7 @@ public class UserService implements UserDetailsService {
 
     public void createUser(UserDTO userDTO) throws UserAlreadyRegisteredException {
         validateIfUserExists(userDTO);
-        userRepository.save(User.of(userDTO));
-    }
-
-    public void createClient(ClientDTO clientDTO) throws UserAlreadyRegisteredException {
-        validateIfUserExists(clientDTO);
-        updateClientWithNewCart(clientDTO);
-        clientRepository.save(Client.of(clientDTO));
-    }
-
-    private void updateClientWithNewCart(ClientDTO clientDTO) {
-        CartDTO cartDTO = new CartDTO();
-        clientDTO.setCartDTO(cartDTO);
+        userRepository.save(UsersDTOMapper.userDTOtoEntity(userDTO));
     }
 
     private void validateIfUserExists(UserDTO userDTO) throws UserAlreadyRegisteredException {

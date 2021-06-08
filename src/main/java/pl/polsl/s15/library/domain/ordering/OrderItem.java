@@ -2,7 +2,6 @@ package pl.polsl.s15.library.domain.ordering;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.polsl.s15.library.dtos.ordering.OrderItemDTO;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,9 +24,4 @@ public class OrderItem {
 
     @Column(nullable = false, name = "requested_end_date")
     private LocalDateTime requestedEndDate;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
-
 }

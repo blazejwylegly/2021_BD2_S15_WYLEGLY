@@ -2,11 +2,8 @@ package pl.polsl.s15.library.domain.user.account.roles;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import pl.polsl.s15.library.domain.user.account.AccountPermissions;
-import pl.polsl.s15.library.dtos.users.permissions.AuthorityDTO;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -23,19 +20,4 @@ public class Authority implements GrantedAuthority {
 
     @Column(name = "authority")
     private String authority;
-
-    @ManyToMany
-    @JoinTable(
-            name = "permissions_authorities",
-            joinColumns = @JoinColumn(name ="authority_id"),
-            inverseJoinColumns = @JoinColumn(name = "account_id")
-    )
-    private Set<AccountPermissions> permissions;
-
-    public static Authority ofDTO(AuthorityDTO authorityDTO) {
-        return Authority.builder()
-                .id(authorityDTO.getId())
-                .authority(authorityDTO.getAuthority())
-                .build();
-    }
 }

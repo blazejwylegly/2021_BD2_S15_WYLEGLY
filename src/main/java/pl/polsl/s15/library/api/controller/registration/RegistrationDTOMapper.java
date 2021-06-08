@@ -4,17 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.polsl.s15.library.api.request.ClientRegistrationRequestDTO;
 import pl.polsl.s15.library.api.request.RegistrationRequestDTO;
 import pl.polsl.s15.library.api.response.ResponseDTO;
-import pl.polsl.s15.library.dtos.users.ClientDTO;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.credentials.AccountCredentialsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.AuthorityDTO;
 import pl.polsl.s15.library.dtos.users.permissions.RoleDTO;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,7 +36,7 @@ public class RegistrationDTOMapper {
                 .build();
     }
 
-    public UserDTO mapRequestToUser(RegistrationRequestDTO request){
+    public UserDTO mapRequestToUser(RegistrationRequestDTO request) {
         AccountCredentialsDTO accountCredentialsDTO = accountCredentials(request);
         AccountPermissionsDTO accountPermissionsDTO = accountPermissions(request);
         return UserDTO.builder()
@@ -78,13 +75,7 @@ public class RegistrationDTOMapper {
         return AccountCredentialsDTO.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .emailAddress(request.getEmailAddress())
+                .emailAddress(request.getEmail())
                 .build();
-    }
-
-    public ClientDTO mapRequestToClient(ClientRegistrationRequestDTO requestDTO) {
-        UserDTO userDTO = mapRequestToUser(requestDTO);
-        ClientDTO clientDTO = new ClientDTO(userDTO);
-        return clientDTO;
     }
 }

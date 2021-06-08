@@ -11,7 +11,7 @@ import java.util.Set;
 public class RegistrationRequestDTO {
     private String username;
     private String password;
-    private String emailAddress;
+    private String email;
 
     private String firstName;
     private String lastName;

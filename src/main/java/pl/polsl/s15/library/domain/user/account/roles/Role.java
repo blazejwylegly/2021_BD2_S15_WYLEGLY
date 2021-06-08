@@ -5,11 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import pl.polsl.s15.library.domain.user.account.AccountPermissions;
-import pl.polsl.s15.library.dtos.users.permissions.RoleDTO;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Entity
@@ -25,23 +22,9 @@ public class Role implements GrantedAuthority {
     @Enumerated(EnumType.STRING)
     private RoleType name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "permissions_roles",
-            joinColumns = @JoinColumn(name ="role_id"),
-            inverseJoinColumns = @JoinColumn(name = "account_id")
-    )
-    private Set<AccountPermissions> accounts;
-
     @Override
     public String getAuthority() {
         return name.getValue();
     }
 
-    public static Role ofDTO(RoleDTO roleDTO) {
-        return Role.builder()
-                .id(roleDTO.getId())
-                .name(roleDTO.getRoleType())
-                .build();
-    }
 }

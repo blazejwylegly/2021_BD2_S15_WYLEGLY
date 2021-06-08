@@ -1,8 +1,6 @@
 package pl.polsl.s15.library.domain.user.account;
 
 import lombok.*;
-import pl.polsl.s15.library.domain.user.User;
-import pl.polsl.s15.library.dtos.users.credentials.AccountCredentialsDTO;
 
 import javax.persistence.*;
 
@@ -27,16 +25,4 @@ public class AccountCredentials {
 
     @Column(unique = true)
     private String emailAddress;
-
-    @OneToOne(mappedBy = "credentials")
-    private User user;
-
-    public static AccountCredentials of(AccountCredentialsDTO accountCredentialsDTO) {
-        return AccountCredentials.builder()
-                .id(accountCredentialsDTO.getId())
-                .username(accountCredentialsDTO.getUsername())
-                .password(accountCredentialsDTO.getPassword())
-                .emailAddress(accountCredentialsDTO.getEmailAddress())
-                .build();
-    }
 }
