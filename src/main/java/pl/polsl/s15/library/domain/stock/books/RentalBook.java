@@ -1,14 +1,13 @@
 package pl.polsl.s15.library.domain.stock.books;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Getter;
-import pl.polsl.s15.library.domain.reservations.Reservation;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Getter
 @Setter
@@ -24,14 +23,13 @@ public class RentalBook extends Book {
     @Column(name = "is_occupied")
     private Boolean isOccupied;
 
-    @OneToMany(mappedBy = "rentalBook", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reservation> reservations = new ArrayList<>();
     public RentalBook(BookDetails details, String desc, long serialNumber)
     {
         super(details,desc);
         this.serialNumber = serialNumber;
         this.isOccupied = false;
     }
+
     public void SetDetailsIfChanged(BookDetails details)
     {
         if(!getDetails().equals(details))

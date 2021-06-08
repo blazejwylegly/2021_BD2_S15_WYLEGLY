@@ -24,8 +24,4 @@ public class OrderItem {
 
     @Column(nullable = false, name = "requested_end_date")
     private LocalDateTime requestedEndDate;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
 }

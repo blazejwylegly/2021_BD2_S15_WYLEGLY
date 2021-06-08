@@ -10,11 +10,12 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "deliveries")
-public class Delivery  {
+public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "delivery")
+    @OneToMany
+    @JoinColumn(name = "delivery_id")
     private List<DeliveryArticle> orderedItems;
 }
