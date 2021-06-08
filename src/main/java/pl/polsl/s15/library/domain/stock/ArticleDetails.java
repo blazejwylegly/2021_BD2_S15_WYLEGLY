@@ -12,8 +12,8 @@ import java.util.List;
 public abstract class ArticleDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    protected Long id;
 
     @OneToMany(mappedBy = "articleDetails", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeliveryArticle> articles;
+    protected List<DeliveryArticle> articles;
 }

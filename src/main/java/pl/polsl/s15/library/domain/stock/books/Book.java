@@ -3,7 +3,6 @@ package pl.polsl.s15.library.domain.stock.books;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import pl.polsl.s15.library.domain.stock.StockItem;
 
 import javax.persistence.*;
@@ -17,9 +16,9 @@ public class Book extends StockItem {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "details_id")
-    private BookDetails details;
-    public Book(BookDetails details, String desc)
-    {
+    protected BookDetails details;
+
+    public Book(BookDetails details, String desc) {
         super(desc);
         this.details = details;
     }

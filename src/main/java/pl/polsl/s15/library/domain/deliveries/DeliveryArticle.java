@@ -27,8 +27,4 @@ public class DeliveryArticle {
     @ManyToOne
     @JoinColumn(name = "details_id")
     private ArticleDetails articleDetails;
-
-    @ManyToOne
-    @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
 }
