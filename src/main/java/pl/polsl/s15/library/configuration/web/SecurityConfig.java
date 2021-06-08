@@ -24,6 +24,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**",
+            "/h2-console/**"
+    };
+
     private UserDetailsService userDetailsService;
     private WebMvcConfigurer globalCorsConfigurer;
     private JwtRequestFilter tokenFilter;
@@ -62,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/h2-console/**");
+        web.ignoring().antMatchers(AUTH_WHITELIST);
     }
 
     @Override
@@ -99,10 +107,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void configureEndpointPermissions(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers(("/swagger-ui/**")).permitAll()
-                .and()
-                .authorizeRequests().antMatchers("/console/**").permitAll()
-                .and()
                 .authorizeRequests().antMatchers("/api/public/**").permitAll()
                 .anyRequest().authenticated().and();
     }
