@@ -99,6 +99,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void configureEndpointPermissions(HttpSecurity http) throws Exception {
         http
+                .authorizeRequests().antMatchers(("/swagger-ui/**")).permitAll()
+                .and()
                 .authorizeRequests().antMatchers("/console/**").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/api/public/**").permitAll()

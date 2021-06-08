@@ -8,7 +8,7 @@ import pl.polsl.s15.library.api.request.AddOrUpdateBookRequestDTO;
 import pl.polsl.s15.library.service.BookService;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api/secured/books")
 public class StockController {
     private BookService bookService;
 

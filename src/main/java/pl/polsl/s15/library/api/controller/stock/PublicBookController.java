@@ -16,9 +16,9 @@ import pl.polsl.s15.library.service.BookService;
 
 @AllArgsConstructor
 @Validated
-@RequestMapping("/api/books")
+@RequestMapping("/api/public/books")
 @RestController
-public class BookController {
+public class PublicBookController {
 
     private BookService bookService;
 
@@ -64,5 +64,4 @@ public class BookController {
     public BookFullDTO findFullById(@PathVariable Long id) {
         return bookService.findFullById(id);
     }
-
 }
