@@ -6,31 +6,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.polsl.s15.library.api.response.PermissionsResponseDTO;
+import pl.polsl.s15.library.api.response.permissions.PermissionsResponseDTO;
 import pl.polsl.s15.library.commons.exceptions.user.UserNotFoundException;
-import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
 import pl.polsl.s15.library.service.UserService;
 
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/api/permissions")
+@RequestMapping("/api")
 public class PermissionController {
 
     private UserService userService;
-    private PermissionDTOMapper dtoMapper;
 
     @Autowired
-    public PermissionController(UserService userService, PermissionDTOMapper dtoMapper) {
+    public PermissionController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<PermissionsResponseDTO> getUserAuthorities(@PathVariable("userId") long userId) {
-        Optional<AccountPermissionsDTO> permissions = userService.getPermissionsForUser(userId);
-        PermissionsResponseDTO response = permissions
-                .map(dtoMapper::permissionsResponse)
+    @GetMapping("/permissions/{userId}")
+    public ResponseEntity<PermissionsResponseDTO> getUserPermissions(@PathVariable("userId") long userId) {
+        PermissionsResponseDTO response = userService.getPermissionsForUser(userId)
+                .map(PermissionDTOMapper::permissionsResponse)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found!"));
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/roles/{userId}")
+    public ResponseEntity<PermissionsResponseDTO> getUserRoles(@PathVariable("userId") long userId) {
+        userServices.get
     }
 }

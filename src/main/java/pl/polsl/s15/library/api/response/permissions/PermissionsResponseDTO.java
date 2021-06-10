@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.response;
+package pl.polsl.s15.library.api.response.permissions;
 
 import lombok.Builder;
 import org.springframework.http.HttpStatus;

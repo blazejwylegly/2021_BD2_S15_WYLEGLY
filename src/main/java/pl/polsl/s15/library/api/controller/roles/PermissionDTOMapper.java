@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import pl.polsl.s15.library.domain.user.account.roles.RoleType;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
-import pl.polsl.s15.library.api.response.PermissionsResponseDTO;
+import pl.polsl.s15.library.api.response.permissions.PermissionsResponseDTO;
 import pl.polsl.s15.library.dtos.users.permissions.AuthorityDTO;
 import pl.polsl.s15.library.dtos.users.permissions.RoleDTO;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Component
 public class PermissionDTOMapper {
 
-    public PermissionsResponseDTO permissionsResponse(AccountPermissionsDTO permissions) {
+    public static PermissionsResponseDTO permissionsResponse(AccountPermissionsDTO permissions) {
         Set<String> plainAuthorities = getPlainAuthorities(permissions.getAuthorities());
         Set<String> plainRoles = getPlainRoles(permissions.getRoles());
 
@@ -28,13 +28,13 @@ public class PermissionDTOMapper {
                 .build();
     }
 
-    public Set<String> getPlainAuthorities(Set<AuthorityDTO> authorityDTOS) {
+    public static Set<String> getPlainAuthorities(Set<AuthorityDTO> authorityDTOS) {
         return authorityDTOS.stream()
                 .map(AuthorityDTO::getAuthority)
                 .collect(Collectors.toSet());
     }
 
-    public Set<String> getPlainRoles(Set<RoleDTO> roleDTOS) {
+    public static Set<String> getPlainRoles(Set<RoleDTO> roleDTOS) {
         return roleDTOS.stream()
                 .map(RoleDTO::getRoleType)
                 .map(RoleType::getValue)
