@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import pl.polsl.s15.library.api.request.ClientRegistrationRequestDTO;
 import pl.polsl.s15.library.api.request.RegistrationRequestDTO;
 import pl.polsl.s15.library.api.response.ResponseDTO;
+import pl.polsl.s15.library.dtos.users.ClientDTO;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.credentials.AccountCredentialsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class RegistrationDTOMapper {
 
-    private static final String REGISTRATION_SUCCESS_MSG = "User registration successful";
+    private static final String REGISTRATION_SUCCESS_MSG = "Registration successful";
 
     private PasswordEncoder passwordEncoder;
 
@@ -77,5 +79,10 @@ public class RegistrationDTOMapper {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .emailAddress(request.getEmail())
                 .build();
+    }
+
+    public ClientDTO mapRequestToClient(ClientRegistrationRequestDTO request) {
+        UserDTO userDTO = mapRequestToUser(request);
+        return new ClientDTO(userDTO);
     }
 }

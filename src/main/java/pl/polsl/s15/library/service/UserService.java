@@ -11,7 +11,6 @@ import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
-import pl.polsl.s15.library.repository.ClientRepository;
 import pl.polsl.s15.library.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -23,13 +22,10 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
-    private ClientRepository clientRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository,
-                       ClientRepository clientRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.clientRepository = clientRepository;
     }
 
     @Override
@@ -55,7 +51,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(UsersDTOMapper.userDTOtoEntity(userDTO));
     }
 
-    private void validateIfUserExists(UserDTO userDTO) throws UserAlreadyRegisteredException {
+    protected void validateIfUserExists(UserDTO userDTO) throws UserAlreadyRegisteredException {
         String username = userDTO.getAccountCredentialsDTO().getUsername();
         if(userRepository.existsByCredentials_Username(username))
             throw new UserAlreadyRegisteredException(
@@ -68,5 +64,4 @@ public class UserService implements UserDetailsService {
                     String.format("User with given email address [%s] already exists!", emailAddress)
             );
     }
-
 }
