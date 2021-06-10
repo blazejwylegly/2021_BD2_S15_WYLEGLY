@@ -18,10 +18,10 @@ public abstract class StockItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @Column(nullable = false)
-    private String description;
+    protected String description;
 
     @ManyToMany
     @JoinTable(
@@ -29,15 +29,10 @@ public abstract class StockItem {
             joinColumns = @JoinColumn(name = "item_id"),
             inverseJoinColumns = @JoinColumn(name = "photo_id")
     )
-    private List<ItemPhoto> photos;
+    protected List<ItemPhoto> photos;
+
     public StockItem(String desc)
     {
         this.description = desc;
-    }
-    public StockItem(StockItem item)
-    {
-        this.id = item.id;
-        this.description = item.description;
-        this.photos = item.photos;
     }
 }

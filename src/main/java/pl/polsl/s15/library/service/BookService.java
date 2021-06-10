@@ -2,19 +2,19 @@ package pl.polsl.s15.library.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import pl.polsl.s15.library.domain.stock.books.BookDetails;
-import pl.polsl.s15.library.domain.stock.books.RentalBook;
-import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyFreeException;
-import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyOccupiedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyFreeException;
+import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyOccupiedException;
+import pl.polsl.s15.library.commons.exceptions.books.NoSuchBookException;
 import pl.polsl.s15.library.domain.stock.ItemPhoto;
 import pl.polsl.s15.library.domain.stock.books.Book;
-import pl.polsl.s15.library.dtos.books.BookBasicDTO;
-import pl.polsl.s15.library.dtos.books.BookFullDTO;
-import pl.polsl.s15.library.commons.exceptions.books.NoSuchBookException;
+import pl.polsl.s15.library.domain.stock.books.BookDetails;
+import pl.polsl.s15.library.domain.stock.books.RentalBook;
+import pl.polsl.s15.library.dtos.stock.books.BookBasicDTO;
+import pl.polsl.s15.library.dtos.stock.books.BookFullDTO;
 import pl.polsl.s15.library.repository.BookRepository;
 import pl.polsl.s15.library.repository.RentalBookRepository;
 
@@ -27,55 +27,58 @@ import java.util.stream.Collectors;
 public class BookService {
 
     @Autowired
-    public BookService(RentalBookRepository rentalBookRepository,BookRepository bookRepository) {
+    public BookService(RentalBookRepository rentalBookRepository, BookRepository bookRepository) {
         this.rentalBookRepository = rentalBookRepository;
         this.bookRepository = bookRepository;
     }
+
     private final BookRepository bookRepository;
 
     private final RentalBookRepository rentalBookRepository;
 
     private Long calculateNumberOfOccupiedRentalBook(Book book) {
-        Long number = 0L;
-        for (Book b : book.getDetails().getBooks()) {
-            if (b instanceof RentalBook) {
-                RentalBook tmp = (RentalBook) b;
-                if (tmp.getIsOccupied()) number++;
-            }
-        }
-        return number;
+        long desiredBookDetailsId = book.getDetails().getId();
+        return rentalBookRepository.countOccupiedBooksForGivenBookDetails(desiredBookDetailsId)
+                .spliterator()
+                .getExactSizeIfKnown();
+    }
+
+    private Long calculateNumberOfBooksForGivenDetailsId(Long bookDetailsId) {
+        return rentalBookRepository.countRentalBookByDetails_Id(bookDetailsId);
     }
 
     private BookFullDTO assignToBookDTO(Book book) {
         if (book instanceof RentalBook) {
             RentalBook rentalBook = (RentalBook) book;
-            return new BookFullDTO(
-                    book.getId(),
-                    Optional.ofNullable(rentalBook.getSerialNumber()),
-                    book.getDetails().getName(),
-                    book.getDetails().getAuthor(),
-                    Optional.of(book.getDetails().getPublisher()),
-//                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
-                    book.getDescription(),
-                    Optional.ofNullable(book.getDetails().getPublicationDate()),
-                    rentalBook.getIsOccupied(),
-                    rentalBook.getDetails().getBooks().size(),
-                    Optional.of(calculateNumberOfOccupiedRentalBook(book))
-            );
+            Long totalNumberOfBooks = calculateNumberOfBooksForGivenDetailsId(book.getDetails().getId());
+            Long numberOfOccupiedBooks = calculateNumberOfOccupiedRentalBook(book);
+
+            return BookFullDTO.builder()
+                    .bookId(book.getId())
+                    .serialNumber(rentalBook.getSerialNumber())
+                    .name(book.getDetails().getName())
+                    .author(book.getDetails().getAuthor())
+                    .publisher(book.getDetails().getName())
+                    .description(book.getDescription())
+                    .publicationDate(book.getDetails().getPublicationDate())
+                    .isOccupied(rentalBook.getIsOccupied())
+                    .numberOfBooks(totalNumberOfBooks)
+                    .numberOfOccupiedBooks(numberOfOccupiedBooks)
+                    .build();
         } else {
-            return new BookFullDTO(
-                    book.getId(),
-                    null,
-                    book.getDetails().getName(),
-                    book.getDetails().getAuthor(),
-                    Optional.of(book.getDetails().getPublisher()),
-//                    book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
-                    book.getDescription(),
-                    Optional.ofNullable(book.getDetails().getPublicationDate()),
-                    null,
-                    book.getDetails().getBooks().size(),
-                    null
-            );
+            Long totalNumberOfBooks = calculateNumberOfBooksForGivenDetailsId(book.getDetails().getId());
+            return BookFullDTO.builder()
+                    .bookId(book.getId())
+                    .serialNumber(null)
+                    .name(book.getDetails().getName())
+                    .author(book.getDetails().getAuthor())
+                    .publisher(book.getDetails().getName())
+                    .description(book.getDescription())
+                    .publicationDate(book.getDetails().getPublicationDate())
+                    .isOccupied(null)
+                    .numberOfBooks(totalNumberOfBooks)
+                    .numberOfOccupiedBooks(null)
+                    .build();
         }
 
     }
@@ -83,33 +86,37 @@ public class BookService {
     private BookBasicDTO assignToBookBasicDTO(Book book) {
         if (book instanceof RentalBook) {
             RentalBook rentalBook = (RentalBook) book;
+            Long totalNumberOfBooks = calculateNumberOfBooksForGivenDetailsId(book.getDetails().getId());
+            Long numberOfOccupiedBooks = calculateNumberOfOccupiedRentalBook(book);
+
             return new BookBasicDTO(
                     book.getId(),
                     book.getDetails().getName(),
                     book.getDetails().getAuthor(),
                     book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
                     rentalBook.getIsOccupied(),
-                    rentalBook.getDetails().getBooks().size(),
-                    Optional.of(calculateNumberOfOccupiedRentalBook(book))
+                    totalNumberOfBooks,
+                    numberOfOccupiedBooks
             );
         } else {
+            Long totalNumberOfBooks = calculateNumberOfBooksForGivenDetailsId(book.getDetails().getId());
             return new BookBasicDTO(
                     book.getId(),
                     book.getDetails().getName(),
                     book.getDetails().getAuthor(),
                     book.getPhotos().stream().map(ItemPhoto::getUrl).collect(Collectors.toList()),
                     null,
-                    book.getDetails().getBooks().size(),
+                    totalNumberOfBooks,
                     null
             );
         }
     }
 
-    private Page<Book> findAll(Pageable pageable){
+    private Page<Book> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
 
-    private Book findById(Long id){
+    private Book findById(Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new NoSuchBookException(id));
     }
 
@@ -132,59 +139,52 @@ public class BookService {
         return assignToBookDTO(findById(id));
     }
 
-    public void addBook(RentalBook rentalBook)
-    {
+    public void addBook(RentalBook rentalBook) {
         rentalBookRepository.save(rentalBook);
     }
-    public void removeBook(long serialNumber)
-    {
+
+    public void removeBook(long serialNumber) {
         rentalBookRepository.deleteBySerialNumber(serialNumber);
     }
+
     @Transactional
-    public void updateBook(long serialNumber, BookDetails details, String description)
-    {
+    public void updateBook(long serialNumber, BookDetails details, String description) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
-        if(optRentalBook.isPresent())
-        {
+        if (optRentalBook.isPresent()) {
             RentalBook rentalBook = optRentalBook.get();
             rentalBook.SetDetailsIfChanged(details);
-            if(description!=null)
+            if (description != null)
                 rentalBook.setDescription(description);
             rentalBookRepository.save(rentalBook);
-        }
-        else
+        } else
             throw new NoSuchBookException(serialNumber);
     }
+
     @Transactional
-    public void occupyBook(long serialNumber)
-    {
+    public void occupyBook(long serialNumber) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
-        if(optRentalBook.isPresent())
-        {
+        if (optRentalBook.isPresent()) {
             RentalBook rentalBook = optRentalBook.get();
             boolean result = rentalBook.Occupy();
-            if(result)
+            if (result)
                 rentalBookRepository.save(rentalBook);
             else
                 throw new BookAlreadyOccupiedException(serialNumber);
-        }
-        else
+        } else
             throw new NoSuchBookException(serialNumber);
     }
+
     @Transactional
-    public void freeBook(long serialNumber)
-    {
+    public void freeBook(long serialNumber) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
-        if(optRentalBook.isPresent())
-        {
+        if (optRentalBook.isPresent()) {
             RentalBook rentalBook = optRentalBook.get();
             boolean result = rentalBook.Free();
-            if(result)
+            if (result)
                 rentalBookRepository.save(rentalBook);
             else
                 throw new BookAlreadyFreeException(serialNumber);
-        }
-        else
+        } else
             throw new NoSuchBookException(serialNumber);
     }
 
