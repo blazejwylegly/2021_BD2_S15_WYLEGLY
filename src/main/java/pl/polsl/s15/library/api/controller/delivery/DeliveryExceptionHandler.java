@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.controller.delivery;
+package pl.polsl.s15.library.api.controller.delivery;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
