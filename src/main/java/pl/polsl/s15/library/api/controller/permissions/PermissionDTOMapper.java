@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.controller.roles;
+package pl.polsl.s15.library.api.controller.permissions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
