@@ -18,8 +18,8 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, name = "start_time")
-    private LocalDateTime startTime;
+    //@Column(nullable = false, name = "start_time")
+    //private LocalDateTime startTime;
 
     @Column(nullable = false, name = "end_time")
     private LocalDateTime endTime;
@@ -31,4 +31,11 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "book_id")
     private RentalBook rentalBook;
+
+    public Reservation(RentalBook rentalBook,Client client,LocalDateTime end_time)
+    {
+        this.rentalBook = rentalBook;
+        this.client = client;
+        this.endTime = end_time;
+    }
 }

@@ -16,13 +16,30 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true, nullable = false, name = "session_id")
-    private Long sessionId;
-
     @OneToMany(mappedBy = "cart")
     private List<OrderItem> orderItems;
 
     @OneToOne(mappedBy = "cart")
     private Client client;
+
+    public Cart(Client client)
+    {
+        this.client = client;
+    }
+    public void addOrderItem(OrderItem item)
+    {
+        orderItems.add(item);
+    }
+    public void removeOrderItem(OrderItem item) {
+        orderItems.remove(item);
+    }
+    public void updateOrderItem(OrderItem item){
+        orderItems.stream().
+                filter(p -> p.getId().equals(item.getId())).
+                forEach(p -> p.setRequestedEndDate(item.getRequestedEndDate()));
+    }
+    public void clearItems() {
+        orderItems.clear();
+    }
 }
 
