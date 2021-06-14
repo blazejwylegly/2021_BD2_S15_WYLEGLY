@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pl.polsl.s15.library.api.controller.exception.handling.BaseExceptionHandler;
-import pl.polsl.s15.library.api.response.ErrorResponseDTO;
+import pl.polsl.s15.library.api.controller.base.handling.BaseExceptionHandler;
+import pl.polsl.s15.library.api.controller.base.response.ErrorResponseDTO;
 
 import java.util.Date;
 

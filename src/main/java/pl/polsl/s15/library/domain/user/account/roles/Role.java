@@ -20,11 +20,11 @@ public class Role implements GrantedAuthority {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private RoleType name;
+    private RoleType roleType;
 
     @Override
     public String getAuthority() {
-        return name.getValue();
+        return roleType.getValue();
     }
 
 }

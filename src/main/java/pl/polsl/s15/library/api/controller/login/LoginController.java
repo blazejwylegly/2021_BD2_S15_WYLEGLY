@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.s15.library.commons.exceptions.InvalidRequestException;
 import pl.polsl.s15.library.domain.user.User;
-import pl.polsl.s15.library.api.request.AuthRequestDTO;
-import pl.polsl.s15.library.api.response.AuthResponseDTO;
+import pl.polsl.s15.library.api.controller.login.request.LoginRequestDTO;
+import pl.polsl.s15.library.api.controller.login.response.LoginResponseDTO;
 import pl.polsl.s15.library.service.UserService;
 import pl.polsl.s15.library.commons.utils.JwtUtility;
 
@@ -29,12 +29,12 @@ public class LoginController {
 
     private final JwtUtility jwtUtility;
     private final AuthenticationManager authenticationManager;
-    private final AuthDTOMapper dtoMapper;
+    private final LoginReqRepMapper dtoMapper;
     private final UserService userService;
 
     public LoginController(JwtUtility jwtUtility,
                            AuthenticationManager authenticationManager,
-                           AuthDTOMapper dtoMapper,
+                           LoginReqRepMapper dtoMapper,
                            UserService userService) {
         this.jwtUtility = jwtUtility;
         this.authenticationManager = authenticationManager;
@@ -43,16 +43,16 @@ public class LoginController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Valid AuthRequestDTO request, BindingResult bindingResult) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO request, BindingResult bindingResult) {
         if(bindingResult.hasErrors())
             throw new InvalidRequestException("Invalid authentication request body!");
 
-        AuthResponseDTO authResponseDTO = authenticate(request);
+        LoginResponseDTO loginResponseDTO = authenticate(request);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(authResponseDTO);
+                .body(loginResponseDTO);
     }
 
-    private AuthResponseDTO authenticate(AuthRequestDTO request) {
+    private LoginResponseDTO authenticate(LoginRequestDTO request) {
         Authentication auth = retrieveAuthenticationPrincipal(request);
         Date issuedAt = new Date();
         User user = (User) auth.getPrincipal();
@@ -60,7 +60,7 @@ public class LoginController {
         return dtoMapper.authRequestSuccessful(user, accessToken);
     }
 
-    private Authentication retrieveAuthenticationPrincipal(AuthRequestDTO request) {
+    private Authentication retrieveAuthenticationPrincipal(LoginRequestDTO request) {
         Optional<Authentication> emailAuth = retrieveEmailBasedAuthentication(request);
         if (emailAuth.isPresent()) {
             return emailAuth.get();
@@ -74,7 +74,7 @@ public class LoginController {
         throw new BadCredentialsException("Invalid username and email address provided!");
     }
 
-    private Optional<Authentication> retrieveUsernameBasedAuthentication(AuthRequestDTO request) {
+    private Optional<Authentication> retrieveUsernameBasedAuthentication(LoginRequestDTO request) {
         return Optional.ofNullable(request.getUsername())
                 .map(
                         username -> authenticationManager.authenticate(
@@ -83,7 +83,7 @@ public class LoginController {
                 );
     }
 
-    private Optional<Authentication> retrieveEmailBasedAuthentication(AuthRequestDTO request) {
+    private Optional<Authentication> retrieveEmailBasedAuthentication(LoginRequestDTO request) {
         Optional<User> userByEmail =  Optional.ofNullable(request.getEmail())
                 .map(userService::loadUserByEmail)
                 .orElse(Optional.empty());

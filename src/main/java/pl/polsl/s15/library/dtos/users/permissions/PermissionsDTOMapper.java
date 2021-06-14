@@ -3,14 +3,17 @@ package pl.polsl.s15.library.dtos.users.permissions;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 import pl.polsl.s15.library.domain.user.account.roles.Authority;
 import pl.polsl.s15.library.domain.user.account.roles.Role;
+import pl.polsl.s15.library.dtos.users.permissions.authorities.AuthorityDTO;
+import pl.polsl.s15.library.dtos.users.permissions.authorities.AuthorityDTOMapper;
+import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTO;
+import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTOMapper;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class PermissionsDTOMapper {
-    public static AccountPermissions permissionsDTOtoEntity(AccountPermissionsDTO permissionsDTO) {
-        Set<Authority> authorities = authoritiesDTOtoEntities(permissionsDTO.getAuthorities());
-        Set<Role> roles = rolesDTOtoEntities(permissionsDTO.getRoles());
+    public static AccountPermissions toEntity(AccountPermissionsDTO permissionsDTO) {
+        Set<Authority> authorities = AuthorityDTOMapper.toEntity(permissionsDTO.getAuthorities());
+        Set<Role> roles = RoleDTOMapper.toEntity(permissionsDTO.getRoles());
 
         return AccountPermissions.builder()
                 .id(permissionsDTO.getId())
@@ -19,29 +22,16 @@ public class PermissionsDTOMapper {
                 .build();
     }
 
-    private static Set<Role> rolesDTOtoEntities(Set<RoleDTO> roles) {
-        return roles.stream()
-                .map(PermissionsDTOMapper::roleDTOtoEntity)
-                .collect(Collectors.toSet());
-    }
+    public static AccountPermissionsDTO toDTO(AccountPermissions accountPermissions) {
+        Set<AuthorityDTO> authorityDTOS =
+                AuthorityDTOMapper.toDTO(accountPermissions.getAuthorities());
+        Set<RoleDTO> rolesDTO =
+                RoleDTOMapper.toDTO(accountPermissions.getRoles());
 
-    private static Role roleDTOtoEntity(RoleDTO roleDTO) {
-        return Role.builder()
-                .id(roleDTO.getId())
-                .name(roleDTO.getRoleType())
-                .build();
-    }
-
-    public static Set<Authority> authoritiesDTOtoEntities(Set<AuthorityDTO> authorities) {
-        return authorities.stream()
-                .map(PermissionsDTOMapper::authorityDTOtoEntity)
-                .collect(Collectors.toSet());
-    }
-
-    public static Authority authorityDTOtoEntity(AuthorityDTO authorityDTO) {
-        return Authority.builder()
-                .id(authorityDTO.getId())
-                .authority(authorityDTO.getAuthority())
+        return AccountPermissionsDTO.builder()
+                .id(accountPermissions.getId())
+                .authorities(authorityDTOS)
+                .roles(rolesDTO)
                 .build();
     }
 }
