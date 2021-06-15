@@ -1,7 +1,6 @@
 package pl.polsl.s15.library.domain.user.account;
 
 import lombok.*;
-import pl.polsl.s15.library.domain.user.User;
 
 import javax.persistence.*;
 
@@ -26,7 +25,4 @@ public class AccountCredentials {
 
     @Column(unique = true)
     private String emailAddress;
-
-    @OneToOne(mappedBy = "credentials")
-    private User user;
 }

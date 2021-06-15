@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,12 +18,4 @@ public class ItemPhoto {
 
     @Column(nullable = false)
     private String url;
-
-    @ManyToMany
-    @JoinTable(
-            name = "items_photos",
-            joinColumns = @JoinColumn(name = "photo_id"),
-            inverseJoinColumns = @JoinColumn(name = "item_id")
-    )
-    private List<StockItem> items;
 }
