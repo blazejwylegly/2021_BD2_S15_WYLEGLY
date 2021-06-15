@@ -11,7 +11,8 @@ import pl.polsl.s15.library.domain.reservations.Reservation;
 import pl.polsl.s15.library.domain.stock.books.Book;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
-import pl.polsl.s15.library.dtos.reservations.OrderItemDTO;
+import pl.polsl.s15.library.dtos.ordering.CartDTOMapper;
+import pl.polsl.s15.library.dtos.ordering.OrderItemDTO;
 import pl.polsl.s15.library.repository.*;
 
 import java.time.LocalDate;
@@ -55,35 +56,21 @@ public class CartService {
     }
 
     @Transactional
-    public void addItem(Client client, OrderItemDTO itemRequest) {
-//        Cart cart = getCartById(client.getId());
-//        if (cart == null) {
-//            cart = new Cart();
-//            client.setCart(cart);
-//        }
-//        cart.addOrderItem(itemRequest.getOrderItem(cart));
-//        clientRepository.save(client);
-        //saveCart(cart);
+    public void addItem(Cart cart, OrderItemDTO itemRequest) {
+        cart.addOrderItem(CartDTOMapper.toEntity(itemRequest));
+        saveCart(cart);
     }
 
     @Transactional
-    public void removeItem(Client client, OrderItemDTO itemRequest) {
-//        Cart cart = getCartById(client.getId());
-//        if (cart == null) {
-//            throw new NoCartException(client.getId());
-//        }
-//        cart.removeOrderItem(itemRequest.getOrderItem(cart));
-//        saveCart(cart);
+    public void removeItem(Cart cart, OrderItemDTO itemRequest) {
+        cart.removeOrderItem(CartDTOMapper.toEntity(itemRequest));
+        saveCart(cart);
     }
 
     @Transactional
-    public void updateItem(Client client, OrderItemDTO itemRequest) {
-//        Cart cart = getCartById(client.getId());
-//        if (cart == null) {
-//            throw new NoCartException(client.getId());
-//        }
-//        cart.updateOrderItem(itemRequest.getOrderItem(cart));
-//        saveCart(cart);
+    public void updateItem(Cart cart, OrderItemDTO itemRequest) {
+        cart.updateOrderItem(CartDTOMapper.toEntity(itemRequest));
+        saveCart(cart);
     }
 
     private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time) {

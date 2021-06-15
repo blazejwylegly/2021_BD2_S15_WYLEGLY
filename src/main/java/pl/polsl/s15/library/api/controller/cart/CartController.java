@@ -11,7 +11,7 @@ import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
-import pl.polsl.s15.library.dtos.reservations.OrderItemDTO;
+import pl.polsl.s15.library.dtos.ordering.OrderItemDTO;
 import pl.polsl.s15.library.dtos.reservations.OrderItemResponseDTO;
 import pl.polsl.s15.library.dtos.reservations.meta.CartMetaData;
 import pl.polsl.s15.library.service.CartService;
@@ -48,7 +48,7 @@ public class CartController extends BaseController {
         return new CartMetaData(cartId, numItems);
     }
 
-    @GetMapping("/get/{cartId}")
+    @GetMapping("/get")
     List<OrderItemResponseDTO> getFullCart(@RequestParam(name = "cartId") long cartId) {
         Cart cart = getCartById(cartId);
         List<OrderItemResponseDTO> response = new ArrayList<>();
@@ -62,37 +62,30 @@ public class CartController extends BaseController {
     }
 
     private Cart getCartById(long cartId) {
-        Cart cart = cartService.getCartById(cartId);
-        if (cart != null)
-            return cart;
-        else
-            throw new NoCartException(cartId);
+        return cartService.getCartById(cartId);
     }
 
-    @PostMapping("/add/{cartId}")
-    void addItem(@RequestParam(name = "cartId") long clientID,
+    @PostMapping("/add")
+    void addItem(@RequestParam(name = "cartId") long cartID,
                  @RequestBody OrderItemDTO orderItemRequest) {
-        Client client = cartService.getClient(clientID);
-        cartService.addItem(client, orderItemRequest);
+        cartService.addItem(cartService.getCartById(cartID), orderItemRequest);
     }
 
-    @DeleteMapping("/delete/{cartId}")
-    void deleteItem(@RequestParam(name = "cartId") long clientID,
+    @DeleteMapping("/delete")
+    void deleteItem(@RequestParam(name = "cartId") long cartID,
                     @RequestBody OrderItemDTO orderItemRequest) {
-        Client client = cartService.getClient(clientID);
-        cartService.removeItem(client, orderItemRequest);
+        cartService.removeItem(cartService.getCartById(cartID), orderItemRequest);
     }
 
-    @PatchMapping("/update/{cartId}")
-    void updateItem(@RequestParam(name = "clientID") long clientID,
+    @PatchMapping("/update")
+    void updateItem(@RequestParam(name = "cartID") long cartID,
                     @RequestBody OrderItemDTO orderItemRequest) {
-        Client client = cartService.getClient(clientID);
-        cartService.updateItem(client, orderItemRequest);
+        cartService.updateItem(cartService.getCartById(cartID), orderItemRequest);
     }
 
     @PutMapping("/submit")
-    void submitCart(@RequestParam(name = "clientID") long clientID) {
-        cartService.submitCart(getCartById(clientID));
+    void submitCart(@RequestParam(name = "cartID") long cartID) {
+        cartService.submitCart(getCartById(cartID));
     }
 
 

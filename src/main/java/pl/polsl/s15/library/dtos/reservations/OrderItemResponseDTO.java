@@ -10,11 +10,11 @@ public class OrderItemResponseDTO {
     private String title;
     private String author;
     private String photoUrl;
-    private LocalDate end_date;
-    public OrderItemResponseDTO(Long itemID,LocalDate end_date)
+    private LocalDate endDate;
+    public OrderItemResponseDTO(Long itemID,LocalDate endDate)
     {
         this.itemId = itemID;
-        this.end_date = end_date;
+        this.endDate = endDate;
     }
     public void Fill(RentalBook rentalBook)
     {
