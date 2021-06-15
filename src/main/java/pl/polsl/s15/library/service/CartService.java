@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableException;
 import pl.polsl.s15.library.commons.exceptions.reservations.NoCartException;
+import pl.polsl.s15.library.commons.exceptions.reservations.NoSuchUserException;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
 import pl.polsl.s15.library.domain.reservations.Reservation;
@@ -41,9 +42,9 @@ public class CartService {
     {
         return clientRepository.findById(clientID);
     }
-    public Optional<Cart> getCart(long clientID)
+    public Cart getCart(long clientID)
     {
-        return cartRepository.findByClientId(clientID);
+        return clientRepository.findById(clientID).orElseThrow(()->new NoSuchUserException(clientID)).getCart();
     }
     public Optional<RentalBook> getRentalBook(long bookID){return rentalBookRepository.findById(bookID);}
     @Transactional
@@ -54,15 +55,10 @@ public class CartService {
     @Transactional
     public void addItem(Client client, OrderItemDTO itemRequest)
     {
-        Optional<Cart> optCart = getCart(client.getId());
-        Cart cart;
-        if(optCart.isPresent())
+        Cart cart = getCart(client.getId());
+        if(cart == null)
         {
-            cart = optCart.get();
-        }
-        else
-        {
-            cart = new Cart(client);
+            cart = new Cart();
         }
         cart.addOrderItem(itemRequest.getOrderItem(cart));
         saveCart(cart);
@@ -70,13 +66,8 @@ public class CartService {
     @Transactional
     public void removeItem(Client client, OrderItemDTO itemRequest)
     {
-        Optional<Cart> optCart = getCart(client.getId());
-        Cart cart;
-        if(optCart.isPresent())
-        {
-            cart = optCart.get();
-        }
-        else
+        Cart cart = getCart(client.getId());
+        if(cart == null)
         {
             throw new NoCartException(client.getId());
         }
@@ -86,13 +77,8 @@ public class CartService {
     @Transactional
     public void updateItem(Client client, OrderItemDTO itemRequest)
     {
-        Optional<Cart> optCart = getCart(client.getId());
-        Cart cart;
-        if(optCart.isPresent())
-        {
-            cart = optCart.get();
-        }
-        else
+        Cart cart = getCart(client.getId());
+        if(cart == null)
         {
             throw new NoCartException(client.getId());
         }
@@ -105,31 +91,27 @@ public class CartService {
             return 0L;
         Book rentalBook = optRentalBook.get();
         Long number = 0L;
-        for (Book b : rentalBook.getDetails().getBooks()) {
-            if (b instanceof RentalBook) {
-                RentalBook tmp = (RentalBook) b;
-                if (!tmp.getIsOccupied()) {
-                    number = tmp.getId();
-                    RentalBook bookToOccupy = rentalBookRepository.findById(number).get();
-                    bookToOccupy.Occupy();
-                    rentalBookRepository.save(bookToOccupy);
-                    Reservation reservation = new Reservation(bookToOccupy,client,end_time);
+        for (RentalBook rb : rentalBookRepository.findAllFreeByDetailsId(rentalBook.getDetails().getId())) {
+                if (!rb.getIsOccupied()) {
+                    number = rb.getId();
+                    rb.Occupy();
+                    rentalBookRepository.save(rb);
+                    Reservation reservation = new Reservation(rb,client,end_time);
                     reservationRepository.save(reservation);
                     break;
                 }
             }
-        }
         return number;
     }
     @Transactional
     public void submitCart(Cart cart)
     {
-        List<Long> noFreeBooks = new ArrayList();
+        List<Long> noFreeBooks = new ArrayList<>();
         boolean error = false;
         Iterator<OrderItem> i = cart.getOrderItems().iterator();
         while (i.hasNext()) {
             OrderItem item = i.next();
-            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(),cart.getClient(),item.getRequestedEndDate());
+            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(),clientRepository.findClientByCartId(cart.getId()).orElseThrow(() -> new NoSuchUserException(cart.getId())),item.getRequestedEndDate());
             if(freeBookID==0) {
                 error = true;
                 noFreeBooks.add(item.getItemId());

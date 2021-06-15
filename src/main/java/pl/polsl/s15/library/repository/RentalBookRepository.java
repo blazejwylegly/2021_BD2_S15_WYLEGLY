@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -25,6 +26,11 @@ public interface RentalBookRepository extends JpaRepository<RentalBook, Long> {
             "AND r.isOccupied = true " +
             "GROUP BY r.isOccupied")
     Iterable<RentalBook> countOccupiedBooksForGivenBookDetails(@Param("details_id") long details_id);
+
+    @Query("SELECT r FROM RentalBook r "+
+            "WHERE r.details.id = :details_id "+
+            "AND r.isOccupied = false ")
+    List<RentalBook> findAllFreeByDetailsId(Long details_id);
 
     Long countRentalBookByDetails_Id(long details_id);
 }

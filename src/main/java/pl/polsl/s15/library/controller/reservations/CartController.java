@@ -42,9 +42,9 @@ public class CartController {
     }
     private Cart getCart(long clientID)
     {
-        Optional<Cart> cart = cartService.getCart(clientID);
-        if(cart.isPresent())
-            return cart.get();
+        Cart cart = cartService.getCart(clientID);
+        if(cart != null)
+            return cart;
         else
             throw new NoCartException(clientID);
     }

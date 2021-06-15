@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Builder
 @Table(name = "carts")
 public class Cart {
     @Id
@@ -21,6 +21,10 @@ public class Cart {
     @JoinColumn(name = "cart_id")
     private List<OrderItem> orderItems;
 
+    public Cart()
+    {
+        this.orderItems = new ArrayList<>();
+    }
     public void addOrderItem(OrderItem item)
     {
         orderItems.add(item);

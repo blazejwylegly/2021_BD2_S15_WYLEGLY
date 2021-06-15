@@ -18,7 +18,7 @@ public class OrderItemDTO {
         return OrderItemDTO.builder()
                 .id(orderItem.getId())
                 .itemId(orderItem.getItemId())
-                .requestedStartDate(orderItem.getRequestedStartDate())
+                .requestedStartDate(LocalDateTime.now())
                 .requestedEndDate(orderItem.getRequestedEndDate())
                 .build();
     }

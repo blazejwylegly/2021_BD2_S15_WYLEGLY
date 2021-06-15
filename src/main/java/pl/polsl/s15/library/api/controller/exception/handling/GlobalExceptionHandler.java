@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.polsl.s15.library.commons.exceptions.authentication.InvalidJwtException;
 import pl.polsl.s15.library.commons.exceptions.InvalidRequestException;
 import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableException;
-import pl.polsl.s15.library.dtos.common.api.ErrorResponseDTO;
 import pl.polsl.s15.library.api.response.ErrorResponseDTO;
 
 import java.util.Date;
