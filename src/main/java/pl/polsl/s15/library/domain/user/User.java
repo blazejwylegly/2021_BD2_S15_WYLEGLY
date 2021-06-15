@@ -78,4 +78,14 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public User(User user)
+    {
+        this.credentials = user.credentials;
+        this.id = user.id;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.permissions = user.permissions;
+        this.photoUrl = user.photoUrl;
+    }
 }

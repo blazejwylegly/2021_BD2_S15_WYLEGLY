@@ -17,7 +17,7 @@ public class StockController {
         this.bookService = bookService;
     }
 
-    @PostMapping("/add")
+    @PutMapping("/add")
     void addBook(@RequestBody AddOrUpdateBookRequestDTO request) {
         if (request.invalidAdd())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -25,12 +25,12 @@ public class StockController {
             bookService.addBook(request.getRentalBook());
     }
 
-    @PostMapping("/remove")
+    @DeleteMapping("/remove")
     void removeBook(@RequestParam(name = "serialNumber") long serialNumber) {
         bookService.removeBook(serialNumber);
     }
 
-    @PostMapping("/update")
+    @PatchMapping("/update")
     void updateBook(@RequestBody AddOrUpdateBookRequestDTO request) {
         if (request.invalidUpdate())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -38,12 +38,12 @@ public class StockController {
             bookService.updateBook(request.getSerialNumber(), request.getBookDetails(), request.getDescription());
     }
 
-    @PostMapping("/occupy")
+    @PatchMapping("/occupy")
     void occupyBook(@RequestParam(name = "serialNumber") long serialNumber) {
         bookService.occupyBook(serialNumber);
     }
 
-    @PostMapping("/free")
+    @PatchMapping("/free")
     void freeBook(@RequestParam(name = "serialNumber") long serialNumber) {
         bookService.freeBook(serialNumber);
     }

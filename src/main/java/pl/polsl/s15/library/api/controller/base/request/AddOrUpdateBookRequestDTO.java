@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Setter
 public class AddOrUpdateBookRequestDTO {
-    Long id;
+    Long serial_number;
     String[] photos;
     String author;
     String title;
@@ -19,11 +19,11 @@ public class AddOrUpdateBookRequestDTO {
 
     public RentalBook getRentalBook() {
         BookDetails details = new BookDetails(title, author, publisher, publicationDate);
-        return new RentalBook(details, description, id);
+        return new RentalBook(details, description, serial_number);
     }
 
     public long getSerialNumber() {
-        return id;
+        return serial_number;
     }
 
     public String getDescription() {
@@ -35,10 +35,10 @@ public class AddOrUpdateBookRequestDTO {
     }
 
     public boolean invalidAdd() {
-        return title == null || author == null || description == null || id == null;
+        return title == null || author == null || description == null || serial_number == null;
     }
 
     public boolean invalidUpdate() {
-        return id == null;
+        return serial_number == null;
     }
 }

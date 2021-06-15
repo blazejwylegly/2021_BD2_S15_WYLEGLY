@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,14 +12,14 @@ import java.time.LocalDateTime;
 public class OrderItemDTO {
     private Long id;
     private Long itemId;
-    private LocalDateTime requestedStartDate;
-    private LocalDateTime requestedEndDate;
+    private LocalDate requestedStartDate;
+    private LocalDate requestedEndDate;
 
     public static OrderItemDTO of(OrderItem orderItem) {
         return OrderItemDTO.builder()
                 .id(orderItem.getId())
                 .itemId(orderItem.getItemId())
-                .requestedStartDate(orderItem.getRequestedStartDate())
+                .requestedStartDate(LocalDate.now())
                 .requestedEndDate(orderItem.getRequestedEndDate())
                 .build();
     }

@@ -10,6 +10,7 @@ import pl.polsl.s15.library.domain.user.account.AccountCredentials;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,8 +19,7 @@ import java.util.List;
 @Table(name = "clients")
 @NoArgsConstructor
 public class Client extends User {
-
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
@@ -42,12 +42,7 @@ public class Client extends User {
     }
 
     public Client(User user) {
-        super(user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPhotoUrl(),
-                user.getCredentials(),
-                user.getPermissions()
-        );
+        super(user);
+        reservations = new ArrayList<>();
     }
 }
