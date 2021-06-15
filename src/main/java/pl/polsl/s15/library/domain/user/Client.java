@@ -24,7 +24,7 @@ public class Client extends User {
     private Cart cart;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
     private List<Reservation> reservations;
 
     @Builder(builderMethodName = "clientBuilder")

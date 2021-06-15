@@ -1,12 +1,13 @@
-package pl.polsl.s15.library.api.controller.exception.handling;
+package pl.polsl.s15.library.api.controller.base.handling;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pl.polsl.s15.library.commons.exceptions.authentication.InvalidJwtException;
+import pl.polsl.s15.library.api.controller.base.response.ErrorResponseDTO;
 import pl.polsl.s15.library.commons.exceptions.InvalidRequestException;
-import pl.polsl.s15.library.api.response.ErrorResponseDTO;
+import pl.polsl.s15.library.commons.exceptions.authentication.InvalidJwtException;
+import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableException;
 
 import java.util.Date;
 

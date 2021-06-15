@@ -12,12 +12,10 @@ import pl.polsl.s15.library.domain.reservations.Reservation;
 import pl.polsl.s15.library.domain.stock.books.Book;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
-import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.dtos.reservations.OrderItemDTO;
 import pl.polsl.s15.library.repository.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,30 +30,33 @@ public class CartService {
         this.clientRepository = clientRepository;
         this.reservationRepository = reservationRepository;
     }
+
     private final CartRepository cartRepository;
     private final RentalBookRepository rentalBookRepository;
     private final ClientRepository clientRepository;
     private final ReservationRepository reservationRepository;
 
-    public Client getClient(long clientID)
-    {
+    public Client getClient(long clientID) {
         return clientRepository.findById(clientID).orElseThrow(() -> new NoSuchUserException(clientID));
     }
+
     public Cart getCart(long clientID) {
-        return clientRepository.findById(clientID).orElseThrow(()->new NoSuchUserException(clientID)).getCart();
+        return clientRepository.findById(clientID).orElseThrow(() -> new NoSuchUserException(clientID)).getCart();
     }
-    public Optional<RentalBook> getRentalBook(long bookID){return rentalBookRepository.findById(bookID);}
+
+    public Optional<RentalBook> getRentalBook(long bookID) {
+        return rentalBookRepository.findById(bookID);
+    }
+
     @Transactional
-    public void saveCart(Cart cart)
-    {
+    public void saveCart(Cart cart) {
         cartRepository.save(cart);
     }
+
     @Transactional
-    public void addItem(Client client, OrderItemDTO itemRequest)
-    {
+    public void addItem(Client client, OrderItemDTO itemRequest) {
         Cart cart = getCart(client.getId());
-        if(cart == null)
-        {
+        if (cart == null) {
             cart = new Cart();
             client.setCart(cart);
         }
@@ -63,62 +64,61 @@ public class CartService {
         clientRepository.save(client);
         //saveCart(cart);
     }
+
     @Transactional
-    public void removeItem(Client client, OrderItemDTO itemRequest)
-    {
+    public void removeItem(Client client, OrderItemDTO itemRequest) {
         Cart cart = getCart(client.getId());
-        if(cart == null)
-        {
+        if (cart == null) {
             throw new NoCartException(client.getId());
         }
         cart.removeOrderItem(itemRequest.getOrderItem(cart));
         saveCart(cart);
     }
+
     @Transactional
-    public void updateItem(Client client, OrderItemDTO itemRequest)
-    {
+    public void updateItem(Client client, OrderItemDTO itemRequest) {
         Cart cart = getCart(client.getId());
-        if(cart == null)
-        {
+        if (cart == null) {
             throw new NoCartException(client.getId());
         }
         cart.updateOrderItem(itemRequest.getOrderItem(cart));
         saveCart(cart);
     }
-    private Long FindAndOccupyFreeRentalBook(long bookID, Client client, LocalDate end_time) {
+
+    private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findById(bookID);
-        if(optRentalBook.isEmpty())
+        if (optRentalBook.isEmpty())
             return 0L;
         Book rentalBook = optRentalBook.get();
         Long number = 0L;
         for (RentalBook rb : rentalBookRepository.findAllFreeByDetailsId(rentalBook.getDetails().getId())) {
-                if (!rb.getIsOccupied()) {
-                    number = rb.getId();
-                    rb.Occupy();
-                    rentalBookRepository.save(rb);
-                    Reservation reservation = new Reservation(rb,client,end_time);
-                    reservationRepository.save(reservation);
-                    break;
-                }
+            if (!rb.getIsOccupied()) {
+                number = rb.getId();
+                rb.Occupy();
+                rentalBookRepository.save(rb);
+                Reservation reservation = new Reservation(rb, end_time);
+                reservationRepository.save(reservation);
+                break;
             }
+        }
         return number;
     }
+
     @Transactional
-    public void submitCart(Cart cart)
-    {
+    public void submitCart(Cart cart) {
         List<Long> noFreeBooks = new ArrayList<>();
         boolean error = false;
         Iterator<OrderItem> i = cart.getOrderItems().iterator();
         while (i.hasNext()) {
             OrderItem item = i.next();
-            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(),clientRepository.findClientByCartId(cart.getId()).orElseThrow(() -> new NoSuchUserException(cart.getId())),item.getRequestedEndDate());
-            if(freeBookID==0) {
+            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(), item.getRequestedEndDate());
+            if (freeBookID == 0) {
                 error = true;
                 noFreeBooks.add(item.getItemId());
                 i.remove();
             }
         }
-        if(error) {
+        if (error) {
             StringBuilder unavailableBuilder = new StringBuilder();
             for (Long id : noFreeBooks) {
                 unavailableBuilder.append(id.toString());
@@ -131,8 +131,8 @@ public class CartService {
         cart.clearItems();
         saveCart(cart);
     }
-    public List<Reservation> getReservations(long clientID)
-    {
+
+    public List<Reservation> getReservations(long clientID) {
         Client client = getClient(clientID);
         return reservationRepository.findAllByClientId(clientID);
     }

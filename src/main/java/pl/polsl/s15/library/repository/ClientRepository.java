@@ -12,4 +12,5 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c "+
             "WHERE c.cart.id = :cart_id ")
     Optional<Client> findClientByCartId(Long cart_id);
+
 }
