@@ -38,4 +38,14 @@ public class Client extends User {
         this.cart = cart;
         this.reservations = reservations;
     }
+
+    public Client(User user) {
+        super(user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhotoUrl(),
+                user.getCredentials(),
+                user.getPermissions()
+        );
+    }
 }

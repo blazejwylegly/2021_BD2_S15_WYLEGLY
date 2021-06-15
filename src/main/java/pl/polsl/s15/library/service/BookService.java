@@ -38,9 +38,7 @@ public class BookService {
 
     private Long calculateNumberOfOccupiedRentalBook(Book book) {
         long desiredBookDetailsId = book.getDetails().getId();
-        return rentalBookRepository.countOccupiedBooksForGivenBookDetails(desiredBookDetailsId)
-                .spliterator()
-                .getExactSizeIfKnown();
+        return rentalBookRepository.countOccupiedBooksForGivenBookDetails(desiredBookDetailsId);
     }
 
     private Long calculateNumberOfBooksForGivenDetailsId(Long bookDetailsId) {

@@ -24,7 +24,7 @@ public interface RentalBookRepository extends JpaRepository<RentalBook, Long> {
             "WHERE r.details.id = :details_id " +
             "AND r.isOccupied = true " +
             "GROUP BY r.isOccupied")
-    Iterable<RentalBook> countOccupiedBooksForGivenBookDetails(@Param("details_id") long details_id);
+    Long countOccupiedBooksForGivenBookDetails(@Param("details_id") long details_id);
 
     Long countRentalBookByDetails_Id(long details_id);
 }

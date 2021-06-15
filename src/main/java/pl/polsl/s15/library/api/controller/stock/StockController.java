@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import pl.polsl.s15.library.api.request.AddOrUpdateBookRequestDTO;
+import pl.polsl.s15.library.api.controller.base.request.AddOrUpdateBookRequestDTO;
 import pl.polsl.s15.library.service.BookService;
 
 @RestController

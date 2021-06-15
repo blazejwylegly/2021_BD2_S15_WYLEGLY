@@ -10,7 +10,7 @@ public class UsersDTOMapper {
     public static User userDTOtoEntity(UserDTO userDTO) {
 
         AccountPermissions permissions =
-                PermissionsDTOMapper.permissionsDTOtoEntity(userDTO.getAccountPermissionsDTO());
+                PermissionsDTOMapper.toEntity(userDTO.getAccountPermissionsDTO());
         AccountCredentials credentials =
                 CredentialsDTOMapper.credentialsDTOtoEntity(userDTO.getAccountCredentialsDTO());
 
