@@ -25,10 +25,6 @@ public class Reservation {
     private LocalDateTime endTime;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
-
-    @ManyToOne
     @JoinColumn(name = "book_id")
     private RentalBook rentalBook;
 }

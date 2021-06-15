@@ -64,13 +64,13 @@ public class DeliveryService {
         return new DeliveryFullDTO(delivery.getId(), delivery.getDeliveryRequestDate(), delivery.getExpectedDeliveryDate(), deliveryArticleInfoDTOS);
     }
 
-    @Transactional
-    public void update(DeliveryArticleDTO articleDTO, Long deliveryId) {
-        Delivery delivery = findDeliveryById(deliveryId);
-        if (!deliveryArticleService.update(articleDTO.getArticleDetailId(), articleDTO.getAmount(), delivery.getId())) {
-            DeliveryArticle deliveryArticle = deliveryArticleService.createDeliveryArticle(articleDTO, delivery);
-            delivery.getOrderedItems().add(deliveryArticle);
-            deliveryArticleService.save(deliveryArticle);
-        }
-    }
+//    @Transactional
+//    public void update(DeliveryArticleDTO articleDTO, Long deliveryId) {
+//        Delivery delivery = findDeliveryById(deliveryId);
+//        if (!deliveryArticleService.update(articleDTO.getArticleDetailId(), articleDTO.getAmount(), delivery.getId())) {
+//            DeliveryArticle deliveryArticle = deliveryArticleService.createDeliveryArticle(articleDTO, delivery);
+//            delivery.getOrderedItems().add(deliveryArticle);
+//            deliveryArticleService.save(deliveryArticle);
+//        }
+//    }
 }

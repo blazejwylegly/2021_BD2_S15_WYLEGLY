@@ -18,11 +18,13 @@ import java.util.List;
 @Table(name = "clients")
 @NoArgsConstructor
 public class Client extends User {
+
     @OneToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
     private List<Reservation> reservations;
 
     @Builder(builderMethodName = "clientBuilder")
