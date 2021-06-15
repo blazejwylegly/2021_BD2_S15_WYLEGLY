@@ -3,6 +3,7 @@ package pl.polsl.s15.library.api.controller.roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.polsl.s15.library.api.controller.base.BaseController;
 import pl.polsl.s15.library.api.controller.base.response.ResponseDTO;
 import pl.polsl.s15.library.api.controller.roles.response.GetRolesResponseDTO;
 import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTO;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/roles")
-public class RolesController {
+public class RolesController extends BaseController {
 
     private RoleService roleService;
 

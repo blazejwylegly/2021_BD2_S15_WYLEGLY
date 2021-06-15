@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableException;
-import pl.polsl.s15.library.commons.exceptions.reservations.NoCartException;
-import pl.polsl.s15.library.commons.exceptions.reservations.NoSuchUserException;
+import pl.polsl.s15.library.commons.exceptions.reservations.NoSuchCartException;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
 import pl.polsl.s15.library.domain.reservations.Reservation;
@@ -37,11 +36,13 @@ public class CartService {
     private final ReservationRepository reservationRepository;
 
     public Client getClient(long clientID) {
-        return clientRepository.findById(clientID).orElseThrow(() -> new NoSuchUserException(clientID));
+        return clientRepository.findById(clientID).orElseThrow(() -> new NoSuchCartException(clientID));
     }
 
-    public Cart getCart(long clientID) {
-        return clientRepository.findById(clientID).orElseThrow(() -> new NoSuchUserException(clientID)).getCart();
+    public Cart getCartById(long cartId) {
+        return cartRepository
+                .findById(cartId)
+                .orElseThrow(() -> new NoSuchCartException(cartId));
     }
 
     public Optional<RentalBook> getRentalBook(long bookID) {
@@ -55,34 +56,34 @@ public class CartService {
 
     @Transactional
     public void addItem(Client client, OrderItemDTO itemRequest) {
-        Cart cart = getCart(client.getId());
-        if (cart == null) {
-            cart = new Cart();
-            client.setCart(cart);
-        }
-        cart.addOrderItem(itemRequest.getOrderItem(cart));
-        clientRepository.save(client);
+//        Cart cart = getCartById(client.getId());
+//        if (cart == null) {
+//            cart = new Cart();
+//            client.setCart(cart);
+//        }
+//        cart.addOrderItem(itemRequest.getOrderItem(cart));
+//        clientRepository.save(client);
         //saveCart(cart);
     }
 
     @Transactional
     public void removeItem(Client client, OrderItemDTO itemRequest) {
-        Cart cart = getCart(client.getId());
-        if (cart == null) {
-            throw new NoCartException(client.getId());
-        }
-        cart.removeOrderItem(itemRequest.getOrderItem(cart));
-        saveCart(cart);
+//        Cart cart = getCartById(client.getId());
+//        if (cart == null) {
+//            throw new NoCartException(client.getId());
+//        }
+//        cart.removeOrderItem(itemRequest.getOrderItem(cart));
+//        saveCart(cart);
     }
 
     @Transactional
     public void updateItem(Client client, OrderItemDTO itemRequest) {
-        Cart cart = getCart(client.getId());
-        if (cart == null) {
-            throw new NoCartException(client.getId());
-        }
-        cart.updateOrderItem(itemRequest.getOrderItem(cart));
-        saveCart(cart);
+//        Cart cart = getCartById(client.getId());
+//        if (cart == null) {
+//            throw new NoCartException(client.getId());
+//        }
+//        cart.updateOrderItem(itemRequest.getOrderItem(cart));
+//        saveCart(cart);
     }
 
     private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time) {

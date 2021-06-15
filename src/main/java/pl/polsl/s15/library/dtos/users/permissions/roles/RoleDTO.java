@@ -10,13 +10,13 @@ import pl.polsl.s15.library.domain.user.account.roles.RoleType;
 @AllArgsConstructor
 public class RoleDTO {
     private Long id;
-    private RoleType roleType;
+    private RoleType roleName;
 
-    private RoleDTO(RoleType roleType) {
-        this.roleType = roleType;
+    private RoleDTO(RoleType roleName) {
+        this.roleName = roleName;
     }
 
-    public static RoleDTO of(String roleType) {
-        return new RoleDTO(RoleType.valueOf(roleType));
+    public static RoleDTO of(String roleName) {
+        return new RoleDTO(RoleType.valueOf(roleName));
     }
 }

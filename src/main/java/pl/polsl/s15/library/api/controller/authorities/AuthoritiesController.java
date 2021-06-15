@@ -1,13 +1,11 @@
 package pl.polsl.s15.library.api.controller.authorities;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.s15.library.api.controller.authorities.request.AuthorityCreationRequestDTO;
 import pl.polsl.s15.library.api.controller.authorities.response.GetAuthoritiesResponseDTO;
 import pl.polsl.s15.library.api.controller.base.response.ResponseDTO;
-import pl.polsl.s15.library.domain.user.account.roles.Authority;
 import pl.polsl.s15.library.dtos.users.permissions.authorities.AuthorityDTO;
 import pl.polsl.s15.library.service.AuthorityService;
 

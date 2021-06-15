@@ -7,11 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
-import pl.polsl.s15.library.domain.user.Client;
 import pl.polsl.s15.library.domain.user.User;
-import pl.polsl.s15.library.domain.user.account.AccountPermissions;
-import pl.polsl.s15.library.domain.user.account.roles.Authority;
-import pl.polsl.s15.library.domain.user.account.roles.Role;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
@@ -19,10 +15,9 @@ import pl.polsl.s15.library.dtos.users.permissions.PermissionsDTOMapper;
 import pl.polsl.s15.library.repository.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -44,6 +39,13 @@ public class UserService implements UserDetailsService {
                 ));
     }
 
+    public List<UserDTO> getAll() {
+        List<User> users = (List<User>) userRepository.findAll();
+        return users.stream()
+                .map(UsersDTOMapper::userToDTO)
+                .collect(Collectors.toList());
+    }
+
     public Optional<AccountPermissionsDTO> getPermissionsForUser(Long userId) {
         return userRepository.findById(userId)
                 .map(User::getPermissions)
@@ -56,7 +58,7 @@ public class UserService implements UserDetailsService {
 
     public void createUser(UserDTO userDTO) throws UserAlreadyRegisteredException {
         validateIfUserExists(userDTO);
-        userRepository.save(UsersDTOMapper.userDTOtoEntity(userDTO));
+        userRepository.save(UsersDTOMapper.userToEntity(userDTO));
     }
 
     protected void validateIfUserExists(UserDTO userDTO) throws UserAlreadyRegisteredException {

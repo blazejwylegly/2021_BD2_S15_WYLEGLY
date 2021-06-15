@@ -5,11 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.polsl.s15.library.api.controller.registration.request.ClientRegistrationRequestDTO;
+import pl.polsl.s15.library.api.controller.registration.request.EmployeeRegistrationRequestDTO;
 import pl.polsl.s15.library.api.controller.registration.request.RegistrationRequestDTO;
 import pl.polsl.s15.library.api.controller.base.response.ResponseDTO;
 import pl.polsl.s15.library.api.controller.roles.RoleReqRepMapper;
+import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.domain.user.account.roles.RoleType;
 import pl.polsl.s15.library.dtos.users.ClientDTO;
+import pl.polsl.s15.library.dtos.users.EmployeeDTO;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.credentials.AccountCredentialsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
@@ -87,5 +90,10 @@ public class RegistrationReqRepMapper {
     public ClientDTO mapRequestToClient(ClientRegistrationRequestDTO request) {
         UserDTO userDTO = mapRequestToUser(request);
         return new ClientDTO(userDTO);
+    }
+
+    public EmployeeDTO mapRequestToEmployee(EmployeeRegistrationRequestDTO request) {
+        UserDTO userDTO = mapRequestToUser(request);
+        return new EmployeeDTO(userDTO);
     }
 }

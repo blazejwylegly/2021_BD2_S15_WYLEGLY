@@ -12,8 +12,4 @@ import java.time.LocalDate;
 public class OrderItemDTO {
     private long bookID;
     private LocalDate end_date;
-    public OrderItem getOrderItem(Cart cart)
-    {
-        return new OrderItem(bookID,end_date,cart);
-    }
 }

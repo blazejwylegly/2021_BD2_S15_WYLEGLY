@@ -1,6 +1,7 @@
 package pl.polsl.s15.library.api.controller.roles.response;
 
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import pl.polsl.s15.library.api.controller.base.response.ResponseDTO;
 import pl.polsl.s15.library.domain.user.account.roles.RoleType;
@@ -8,6 +9,7 @@ import pl.polsl.s15.library.domain.user.account.roles.RoleType;
 import java.util.Date;
 import java.util.Set;
 
+@Getter
 public class GetRolesResponseDTO extends ResponseDTO {
 
     Set<RoleType> roles;

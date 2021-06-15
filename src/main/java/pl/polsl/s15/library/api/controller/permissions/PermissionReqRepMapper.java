@@ -36,7 +36,7 @@ public class PermissionReqRepMapper {
 
     public static Set<String> getPlainRoles(Set<RoleDTO> roleDTOS) {
         return roleDTOS.stream()
-                .map(RoleDTO::getRoleType)
+                .map(RoleDTO::getRoleName)
                 .map(RoleType::getValue)
                 .collect(Collectors.toSet());
     }

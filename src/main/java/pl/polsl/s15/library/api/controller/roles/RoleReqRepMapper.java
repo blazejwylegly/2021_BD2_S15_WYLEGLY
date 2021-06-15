@@ -3,6 +3,7 @@ package pl.polsl.s15.library.api.controller.roles;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import pl.polsl.s15.library.api.controller.base.response.ResponseDTO;
+import pl.polsl.s15.library.api.controller.roles.request.RoleCreationRequestDTO;
 import pl.polsl.s15.library.api.controller.roles.response.GetRolesResponseDTO;
 import pl.polsl.s15.library.domain.user.account.roles.RoleType;
 import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTO;
@@ -24,7 +25,7 @@ public class RoleReqRepMapper {
 
     private static Set<RoleType> mapRolesToPlainText(Set<RoleDTO> userRoles) {
         return userRoles.stream()
-                .map(RoleDTO::getRoleType)
+                .map(RoleDTO::getRoleName)
                 .collect(Collectors.toSet());
     }
 
@@ -43,4 +44,10 @@ public class RoleReqRepMapper {
     public static ResponseDTO roleByNameDeleted(String roleName) {
         return roleDeleted(String.format("Role %s deleted successfully", roleName));
     }
+
+//    public static RoleDTO mapCreateRequestToRole(RoleCreationRequestDTO requestDTO) {
+//        return RoleDTO.builder()
+//                .role(requestDTO.getRoleName())
+//                .build()
+//    }
 }

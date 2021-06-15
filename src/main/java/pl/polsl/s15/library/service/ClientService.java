@@ -1,6 +1,7 @@
 package pl.polsl.s15.library.service;
 
 import org.springframework.stereotype.Service;
+import pl.polsl.s15.library.dtos.ordering.CartDTO;
 import pl.polsl.s15.library.dtos.users.ClientDTO;
 import pl.polsl.s15.library.dtos.users.ClientsDTOMapper;
 import pl.polsl.s15.library.repository.ClientRepository;
@@ -19,6 +20,12 @@ public class ClientService extends UserService {
 
     public void createClient(ClientDTO clientDTO) {
         validateIfUserExists(clientDTO);
-        clientRepository.save(ClientsDTOMapper.clientDTOtoEntity(clientDTO));
+        createCartForNewUser(clientDTO);
+        clientRepository.save(ClientsDTOMapper.clientToEntity(clientDTO));
+    }
+
+    private void createCartForNewUser(ClientDTO clientDTO) {
+        CartDTO cartDTO = new CartDTO();
+        clientDTO.setCartDTO(cartDTO);
     }
 }

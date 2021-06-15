@@ -15,7 +15,7 @@ public class RoleDTOMapper {
     public static Role toEntity(RoleDTO roleDTO) {
         return Role.builder()
                 .id(roleDTO.getId())
-                .roleType(roleDTO.getRoleType())
+                .roleType(roleDTO.getRoleName())
                 .build();
     }
 
@@ -28,7 +28,7 @@ public class RoleDTOMapper {
     public static RoleDTO toDTO(Role role) {
         return RoleDTO.builder()
                 .id(role.getId())
-                .roleType(role.getRoleType())
+                .roleName(role.getRoleType())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package pl.polsl.s15.library.domain.ordering;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "carts")
 public class Cart {
     @Id

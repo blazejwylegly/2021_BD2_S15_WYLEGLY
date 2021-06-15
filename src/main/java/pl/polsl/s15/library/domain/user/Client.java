@@ -45,4 +45,12 @@ public class Client extends User {
         super(user);
         reservations = new ArrayList<>();
     }
+
+    public int getNumItemsInCart() {
+        return this.cart.getOrderItems().size();
+    }
+
+    public long getCartId() {
+        return this.cart.getId();
+    }
 }
