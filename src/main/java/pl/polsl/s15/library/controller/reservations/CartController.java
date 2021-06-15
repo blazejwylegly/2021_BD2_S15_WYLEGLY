@@ -6,10 +6,13 @@ import pl.polsl.s15.library.commons.exceptions.reservations.NoCartException;
 import pl.polsl.s15.library.commons.exceptions.reservations.NoSuchUserException;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
+import pl.polsl.s15.library.domain.reservations.Reservation;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
+import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.dtos.reservations.OrderItemDTO;
 import pl.polsl.s15.library.dtos.reservations.OrderItemResponseDTO;
+import pl.polsl.s15.library.dtos.reservations.ReservationDTO;
 import pl.polsl.s15.library.service.CartService;
 
 import java.util.ArrayList;
@@ -34,8 +37,7 @@ public class CartController {
         {
             OrderItemResponseDTO orderItem = new OrderItemResponseDTO(item.getItemId(),item.getRequestedEndDate());
             Optional<RentalBook> optRentalBook = cartService.getRentalBook(item.getItemId());
-            if(optRentalBook.isPresent())
-                orderItem.Fill(optRentalBook.get());
+            optRentalBook.ifPresent(orderItem::Fill);
             response.add(orderItem);
         }
         return response;
@@ -52,36 +54,38 @@ public class CartController {
     void addItem(@RequestParam(name = "clientID") long clientID,
                  @RequestBody OrderItemDTO orderItemRequest)
     {
-        Optional<Client> optClient = cartService.getClient(clientID);
-        if(optClient.isPresent())
-            cartService.addItem(optClient.get(), orderItemRequest);
-        else
-            throw new NoSuchUserException(clientID);
+        Client client = cartService.getClient(clientID);
+        cartService.addItem(client, orderItemRequest);
     }
     @DeleteMapping("/delete")
     void deleteItem(@RequestParam(name = "clientID") long clientID,
                  @RequestBody OrderItemDTO orderItemRequest)
     {
-        Optional<Client> optClient = cartService.getClient(clientID);
-        if(optClient.isPresent())
-            cartService.removeItem(optClient.get(), orderItemRequest);
-        else
-            throw new NoSuchUserException(clientID);
+        Client client = cartService.getClient(clientID);
+        cartService.removeItem(client, orderItemRequest);
     }
     @PatchMapping("/update")
     void updateItem(@RequestParam(name = "clientID") long clientID,
                     @RequestBody OrderItemDTO orderItemRequest)
     {
-        Optional<Client> optClient = cartService.getClient(clientID);
-        if(optClient.isPresent())
-            cartService.updateItem(optClient.get(), orderItemRequest);
-        else
-            throw new NoSuchUserException(clientID);
+        Client client = cartService.getClient(clientID);
+        cartService.updateItem(client, orderItemRequest);
     }
     @PutMapping("/submit")
     void submitCart(@RequestParam(name = "clientID") long clientID)
     {
         cartService.submitCart(getCart(clientID));
+    }
+    @GetMapping("/get")
+    List<ReservationDTO> getReservations(@RequestParam(name = "clientID") long clientID)
+    {
+        List<Reservation> reservations = cartService.getReservations(clientID);
+        List<ReservationDTO> response = new ArrayList<>();
+        for(Reservation item:reservations)
+        {
+            response.add(new ReservationDTO(item.getId(),item.getEndTime(),item.getRentalBook(),item.getReturned()));
+        }
+        return response;
     }
 
 }

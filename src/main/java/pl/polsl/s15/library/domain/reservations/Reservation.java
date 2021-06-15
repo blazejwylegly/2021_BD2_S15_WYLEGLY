@@ -6,6 +6,7 @@ import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -22,7 +23,7 @@ public class Reservation {
     //private LocalDateTime startTime;
 
     @Column(nullable = false, name = "end_time")
-    private LocalDateTime endTime;
+    private LocalDate endTime;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
@@ -32,7 +33,10 @@ public class Reservation {
     @JoinColumn(name = "book_id")
     private RentalBook rentalBook;
 
-    public Reservation(RentalBook rentalBook,Client client,LocalDateTime end_time)
+    @Column
+    private Boolean returned = true;
+
+    public Reservation(RentalBook rentalBook, Client client, LocalDate end_time)
     {
         this.rentalBook = rentalBook;
         this.client = client;

@@ -12,12 +12,11 @@ import pl.polsl.s15.library.domain.reservations.Reservation;
 import pl.polsl.s15.library.domain.stock.books.Book;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
+import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.dtos.reservations.OrderItemDTO;
-import pl.polsl.s15.library.repository.CartRepository;
-import pl.polsl.s15.library.repository.ClientRepository;
-import pl.polsl.s15.library.repository.RentalBookRepository;
-import pl.polsl.s15.library.repository.ReservationRepository;
+import pl.polsl.s15.library.repository.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +26,7 @@ import java.util.Optional;
 @Service
 public class CartService {
     @Autowired
-    public CartService(CartRepository cartRepository, RentalBookRepository rentalBookRepository, ClientRepository clientRepository, ReservationRepository reservationRepository) {
+    public CartService(CartRepository cartRepository, RentalBookRepository rentalBookRepository, ClientRepository clientRepository, ReservationRepository reservationRepository, UserRepository userRepository) {
         this.cartRepository = cartRepository;
         this.rentalBookRepository = rentalBookRepository;
         this.clientRepository = clientRepository;
@@ -38,12 +37,11 @@ public class CartService {
     private final ClientRepository clientRepository;
     private final ReservationRepository reservationRepository;
 
-    public Optional<Client> getClient(long clientID)
+    public Client getClient(long clientID)
     {
-        return clientRepository.findById(clientID);
+        return clientRepository.findById(clientID).orElseThrow(() -> new NoSuchUserException(clientID));
     }
-    public Cart getCart(long clientID)
-    {
+    public Cart getCart(long clientID) {
         return clientRepository.findById(clientID).orElseThrow(()->new NoSuchUserException(clientID)).getCart();
     }
     public Optional<RentalBook> getRentalBook(long bookID){return rentalBookRepository.findById(bookID);}
@@ -59,9 +57,11 @@ public class CartService {
         if(cart == null)
         {
             cart = new Cart();
+            client.setCart(cart);
         }
         cart.addOrderItem(itemRequest.getOrderItem(cart));
-        saveCart(cart);
+        clientRepository.save(client);
+        //saveCart(cart);
     }
     @Transactional
     public void removeItem(Client client, OrderItemDTO itemRequest)
@@ -85,7 +85,7 @@ public class CartService {
         cart.updateOrderItem(itemRequest.getOrderItem(cart));
         saveCart(cart);
     }
-    private Long FindAndOccupyFreeRentalBook(long bookID, Client client, LocalDateTime end_time) {
+    private Long FindAndOccupyFreeRentalBook(long bookID, Client client, LocalDate end_time) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findById(bookID);
         if(optRentalBook.isEmpty())
             return 0L;
@@ -119,14 +119,21 @@ public class CartService {
             }
         }
         if(error) {
-            String unavailable = "";
+            StringBuilder unavailableBuilder = new StringBuilder();
             for (Long id : noFreeBooks) {
-                unavailable += id.toString() + " , ";
+                unavailableBuilder.append(id.toString());
+                unavailableBuilder.append(" , ");
             }
+            String unavailable = unavailableBuilder.toString();
             cartRepository.saveAndFlush(cart);
             throw new BooksUnavailableException(unavailable);
         }
         cart.clearItems();
         saveCart(cart);
+    }
+    public List<Reservation> getReservations(long clientID)
+    {
+        Client client = getClient(clientID);
+        return reservationRepository.findAllByClientId(clientID);
     }
 }
