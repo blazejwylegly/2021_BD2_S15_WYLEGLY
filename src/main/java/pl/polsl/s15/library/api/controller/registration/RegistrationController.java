@@ -43,6 +43,5 @@ public class RegistrationController {
         clientService.createClient(clientDTO);
         return ResponseEntity.ok()
                 .body(dtoMapper.userRegistrationSuccessful());
-
     }
 }

@@ -65,10 +65,11 @@ public class AuthoritiesController {
                 .body(AuthorityReqRepMapper.authoritySuccessfullyCreated(requestDTO));
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<ResponseDTO> updateExistingAuthority(
-            @RequestBody AuthorityUpdateRequestDTO requestDTO
-    ) {
-        
-    }
+    // TODO: Implement update
+//    @PatchMapping("/update")
+//    public ResponseEntity<ResponseDTO> updateExistingAuthority(
+//            @RequestBody AuthorityUpdateRequestDTO requestDTO
+//    ) {
+//
+//    }
 }
