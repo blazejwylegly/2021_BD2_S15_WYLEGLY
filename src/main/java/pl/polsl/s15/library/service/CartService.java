@@ -24,17 +24,19 @@ import java.util.Optional;
 @Service
 public class CartService {
     @Autowired
-    public CartService(CartRepository cartRepository, RentalBookRepository rentalBookRepository, ClientRepository clientRepository, ReservationRepository reservationRepository, UserRepository userRepository) {
+    public CartService(CartRepository cartRepository, RentalBookRepository rentalBookRepository, ClientRepository clientRepository, ReservationRepository reservationRepository, OrderItemRepository orderItemRepository) {
         this.cartRepository = cartRepository;
         this.rentalBookRepository = rentalBookRepository;
         this.clientRepository = clientRepository;
         this.reservationRepository = reservationRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
     private final CartRepository cartRepository;
     private final RentalBookRepository rentalBookRepository;
     private final ClientRepository clientRepository;
     private final ReservationRepository reservationRepository;
+    private final OrderItemRepository orderItemRepository;
 
     public Client getClient(long clientID) {
         return clientRepository.findById(clientID).orElseThrow(() -> new NoSuchCartException(clientID));
@@ -62,8 +64,9 @@ public class CartService {
     }
 
     @Transactional
-    public void removeItem(Cart cart, OrderItemDTO itemRequest) {
-        cart.removeOrderItem(CartDTOMapper.toEntity(itemRequest));
+    public void removeItem(Cart cart, Long itemId) {
+        orderItemRepository.deleteByCartAndItemIds(cart.getId(),itemId);
+        cart.removeOrderItem(itemId);
         saveCart(cart);
     }
 
@@ -96,15 +99,16 @@ public class CartService {
     public void submitCart(Cart cart) {
         List<Long> noFreeBooks = new ArrayList<>();
         boolean error = false;
-        Iterator<OrderItem> i = cart.getOrderItems().iterator();
-        while (i.hasNext()) {
-            OrderItem item = i.next();
+        int i = cart.getOrderItems().size();
+        while (i>0) {
+            OrderItem item = cart.getOrderItems().get(i-1);
             Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(), item.getRequestedEndDate());
-            if (freeBookID == 0) {
+            if (freeBookID.equals(0L)) {
                 error = true;
                 noFreeBooks.add(item.getItemId());
-                i.remove();
+                removeItem(cart, item.getItemId());
             }
+            i--;
         }
         if (error) {
             StringBuilder unavailableBuilder = new StringBuilder();
@@ -121,7 +125,6 @@ public class CartService {
     }
 
     public List<Reservation> getReservations(long clientID) {
-        Client client = getClient(clientID);
         return reservationRepository.findAllByClientId(clientID);
     }
 }

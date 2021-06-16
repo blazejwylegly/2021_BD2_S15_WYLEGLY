@@ -32,8 +32,8 @@ public class Cart {
     {
         orderItems.add(item);
     }
-    public void removeOrderItem(OrderItem item) {
-        orderItems.remove(item);
+    public void removeOrderItem(Long itemId) {
+        orderItems.removeIf(i->i.getItemId().equals(itemId) );
     }
     public void updateOrderItem(OrderItem item){
         orderItems.stream().

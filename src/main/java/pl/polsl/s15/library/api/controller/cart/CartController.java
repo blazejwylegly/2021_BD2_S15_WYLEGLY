@@ -74,17 +74,17 @@ public class CartController extends BaseController {
     @DeleteMapping("/delete")
     void deleteItem(@RequestParam(name = "cartId") long cartID,
                     @RequestBody OrderItemDTO orderItemRequest) {
-        cartService.removeItem(cartService.getCartById(cartID), orderItemRequest);
+        cartService.removeItem(cartService.getCartById(cartID), orderItemRequest.getItemId());
     }
 
     @PatchMapping("/update")
-    void updateItem(@RequestParam(name = "cartID") long cartID,
+    void updateItem(@RequestParam(name = "cartId") long cartID,
                     @RequestBody OrderItemDTO orderItemRequest) {
         cartService.updateItem(cartService.getCartById(cartID), orderItemRequest);
     }
 
     @PutMapping("/submit")
-    void submitCart(@RequestParam(name = "cartID") long cartID) {
+    void submitCart(@RequestParam(name = "cartId") long cartID) {
         cartService.submitCart(getCartById(cartID));
     }
 
