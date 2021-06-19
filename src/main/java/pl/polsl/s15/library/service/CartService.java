@@ -3,8 +3,9 @@ package pl.polsl.s15.library.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableException;
-import pl.polsl.s15.library.commons.exceptions.reservations.NoSuchCartException;
+import pl.polsl.s15.library.commons.enums.ReservationStatus;
+import pl.polsl.s15.library.commons.exceptions.books.NoSuchBookException;
+import pl.polsl.s15.library.commons.exceptions.reservations.*;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
 import pl.polsl.s15.library.domain.reservations.Reservation;
@@ -76,7 +77,7 @@ public class CartService {
         saveCart(cart);
     }
 
-    private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time) {
+    private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time,Client client) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findById(bookID);
         if (optRentalBook.isEmpty())
             return 0L;
@@ -88,6 +89,7 @@ public class CartService {
                 rb.Occupy();
                 rentalBookRepository.save(rb);
                 Reservation reservation = new Reservation(rb, end_time);
+                client.getReservations().add(reservation);
                 reservationRepository.save(reservation);
                 break;
             }
@@ -100,13 +102,14 @@ public class CartService {
         List<Long> noFreeBooks = new ArrayList<>();
         boolean error = false;
         int i = cart.getOrderItems().size();
+        Client client = clientRepository.findClientByCartId(cart.getId()).orElseThrow(()->new UnassignedCartException(cart.getId()));
         while (i>0) {
             OrderItem item = cart.getOrderItems().get(i-1);
-            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(), item.getRequestedEndDate());
+            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(), item.getRequestedEndDate(),client);
             if (freeBookID.equals(0L)) {
                 error = true;
                 noFreeBooks.add(item.getItemId());
-                removeItem(cart, item.getItemId());
+                //removeItem(cart, item.getItemId());
             }
             i--;
         }
@@ -117,14 +120,42 @@ public class CartService {
                 unavailableBuilder.append(" , ");
             }
             String unavailable = unavailableBuilder.toString();
-            cartRepository.saveAndFlush(cart);
-            throw new BooksUnavailableException(unavailable);
+            throw new BooksUnavailableHelperException(unavailable,noFreeBooks);
         }
+        clientRepository.save(client);
+        orderItemRepository.deleteAllByCartId(cart.getId());
         cart.clearItems();
         saveCart(cart);
     }
 
     public List<Reservation> getReservations(long clientID) {
         return reservationRepository.findAllByClientId(clientID);
+    }
+    public List<Reservation> getAllPendingReservations()
+    {
+        return reservationRepository.findAllByStatus(ReservationStatus.PENDING);
+    }
+    @Transactional
+    public void changeReservationStatus(long reservationID,ReservationStatus requiredStatus, ReservationStatus newStatus)
+    {
+        Optional<Reservation> optReservation = reservationRepository.findById(reservationID);
+        Reservation reservation = optReservation.orElseThrow(()->new NoReservationException(reservationID));
+        if(reservation.getStatus()!=requiredStatus)
+            throw new ReservationAlreadyHandledException(reservationID);
+        reservation.setStatus(newStatus);
+        if(newStatus.equals(ReservationStatus.RETURNED))
+            reservation.setReturned(true);
+        reservationRepository.save(reservation);
+    }
+    public Reservation findReservationBySerialNumber(long serialNumber)
+    {
+        return reservationRepository.findByBookSerial(serialNumber).orElseThrow(()-> new NoReservedBookException(serialNumber));
+    }
+    @Transactional
+    public void unlockReservationBook(long reservationID)
+    {
+        RentalBook rentalBook = reservationRepository.findById(reservationID).orElseThrow(()->new NoReservationException(reservationID)).getRentalBook();
+        rentalBook.Free();
+        rentalBookRepository.save(rentalBook);
     }
 }

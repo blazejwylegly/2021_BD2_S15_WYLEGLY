@@ -1,10 +1,8 @@
 package pl.polsl.s15.library.api.controller.reservations;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.polsl.s15.library.commons.enums.ReservationStatus;
 import pl.polsl.s15.library.domain.reservations.Reservation;
 import pl.polsl.s15.library.dtos.reservations.ReservationDTO;
 import pl.polsl.s15.library.service.CartService;
@@ -30,8 +28,43 @@ public class ReservationController {
         List<ReservationDTO> response = new ArrayList<>();
         for(Reservation item:reservations)
         {
-            response.add(new ReservationDTO(item.getId(),item.getEndTime(),item.getRentalBook(),item.getReturned()));
+            response.add(new ReservationDTO(item.getId(),item.getEndTime(),item.getRentalBook(),item.getReturned(),item.getStatus()));
         }
         return response;
+    }
+    @GetMapping("/pending")
+    List<ReservationDTO> getPendingReservations() {
+        List<Reservation> reservations = cartService.getAllPendingReservations();
+        List<ReservationDTO> response = new ArrayList<>();
+        for (Reservation item : reservations) {
+            if (item.getStatus().equals(ReservationStatus.PENDING))
+                response.add(new ReservationDTO(item.getId(), item.getEndTime(), item.getRentalBook(), item.getReturned(), item.getStatus()));
+        }
+        return response;
+    }
+    @PostMapping("/accept")
+    void acceptReservation(@RequestParam(name = "reservationID") long reservationID)
+    {
+        cartService.changeReservationStatus(reservationID,ReservationStatus.PENDING,ReservationStatus.ACCEPTED);
+    }
+    @PostMapping("/reject")
+    void rejectReservation(@RequestParam(name = "reservationID") long reservationID)
+    {
+        cartService.changeReservationStatus(reservationID,ReservationStatus.PENDING,ReservationStatus.REJECTED);
+        cartService.unlockReservationBook(reservationID);
+    }
+    @PostMapping("/lend")
+    void lendReservedBook(@RequestParam(name = "serialNumber") long serialNumber)
+    {
+        long reservationID = cartService.findReservationBySerialNumber(serialNumber).getId();
+        cartService.changeReservationStatus(reservationID,ReservationStatus.ACCEPTED,ReservationStatus.TAKEN);
+    }
+    @PostMapping("/return")
+    void returnReservedBook(@RequestParam(name = "serialNumber") long serialNumber)
+    {
+        Reservation reservation = cartService.findReservationBySerialNumber(serialNumber);
+        long reservationID = reservation.getId();
+        cartService.changeReservationStatus(reservationID,ReservationStatus.TAKEN,ReservationStatus.RETURNED);
+        cartService.unlockReservationBook(reservationID);
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.s15.library.api.controller.base.BaseController;
 import pl.polsl.s15.library.api.controller.cart.response.GetCartMetaDataResponse;
+import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableException;
+import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableHelperException;
 import pl.polsl.s15.library.commons.exceptions.reservations.NoCartException;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
@@ -85,7 +87,17 @@ public class CartController extends BaseController {
 
     @PutMapping("/submit")
     void submitCart(@RequestParam(name = "cartId") long cartID) {
-        cartService.submitCart(getCartById(cartID));
+        try {
+            cartService.submitCart(getCartById(cartID));
+        }
+        catch(BooksUnavailableHelperException e)
+        {
+            Cart cart = cartService.getCartById(cartID);
+            for(int i = e.getIds().size();i>0;i--)
+                cartService.removeItem(cart,e.getIds().get(i-1));
+            cartService.saveCart(cart);
+            throw new BooksUnavailableException(e.getMessage());
+        }
     }
 
 

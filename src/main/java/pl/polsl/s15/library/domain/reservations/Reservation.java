@@ -3,6 +3,7 @@ package pl.polsl.s15.library.domain.reservations;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.polsl.s15.library.commons.enums.ReservationStatus;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
 
@@ -29,10 +30,13 @@ public class Reservation {
     private RentalBook rentalBook;
 
     @Column
-    private Boolean returned = true;
+    private Boolean returned = false;
+
+    private ReservationStatus status;
 
     public Reservation(RentalBook rentalBook, LocalDate end_time) {
         this.rentalBook = rentalBook;
         this.endTime = end_time;
+        this.status = ReservationStatus.PENDING;
     }
 }
