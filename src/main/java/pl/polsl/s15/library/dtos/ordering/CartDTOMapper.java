@@ -27,7 +27,6 @@ public class CartDTOMapper {
 
     public static OrderItemDTO toDTO(OrderItem orderItem) {
         return OrderItemDTO.builder()
-                .id(orderItem.getId())
                 .itemId(orderItem.getItemId())
                 .requestedEndDate(orderItem.getRequestedEndDate())
                 .build();
@@ -35,7 +34,6 @@ public class CartDTOMapper {
 
     public static OrderItem toEntity(OrderItemDTO orderItemDTO) {
         return OrderItem.builder()
-                .id(orderItemDTO.getId())
                 .itemId(orderItemDTO.getItemId())
                 .requestedEndDate(orderItemDTO.getRequestedEndDate())
                 .build();

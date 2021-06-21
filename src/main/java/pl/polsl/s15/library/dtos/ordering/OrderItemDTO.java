@@ -12,13 +12,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class OrderItemDTO {
-    private Long id;
     private Long itemId;
     private LocalDate requestedEndDate;
 
     public static OrderItemDTO of(OrderItem orderItem) {
         return OrderItemDTO.builder()
-                .id(orderItem.getId())
                 .itemId(orderItem.getItemId())
                 .requestedEndDate(orderItem.getRequestedEndDate())
                 .build();
