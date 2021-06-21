@@ -68,31 +68,31 @@ public class CartController extends BaseController {
     }
 
     @PostMapping("/add")
-    void addItem(@RequestParam(name = "cartId") long cartID,
+    void addItem(@RequestParam(name = "cartId") long cartId,
                  @RequestBody OrderItemDTO orderItemRequest) {
-        cartService.addItem(cartService.getCartById(cartID), orderItemRequest);
+        cartService.addItem(cartService.getCartById(cartId), orderItemRequest);
     }
 
     @DeleteMapping("/delete")
-    void deleteItem(@RequestParam(name = "cartId") long cartID,
+    void deleteItem(@RequestParam(name = "cartId") long cartId,
                     @RequestBody OrderItemDTO orderItemRequest) {
-        cartService.removeItem(cartService.getCartById(cartID), orderItemRequest.getItemId());
+        cartService.removeItem(cartService.getCartById(cartId), orderItemRequest.getItemId());
     }
 
     @PatchMapping("/update")
-    void updateItem(@RequestParam(name = "cartId") long cartID,
+    void updateItem(@RequestParam(name = "cartId") long cartId,
                     @RequestBody OrderItemDTO orderItemRequest) {
-        cartService.updateItem(cartService.getCartById(cartID), orderItemRequest);
+        cartService.updateItem(cartService.getCartById(cartId), orderItemRequest);
     }
 
     @PutMapping("/submit")
-    void submitCart(@RequestParam(name = "cartId") long cartID) {
+    void submitCart(@RequestParam(name = "cartId") long cartId) {
         try {
-            cartService.submitCart(getCartById(cartID));
+            cartService.submitCart(getCartById(cartId));
         }
         catch(BooksUnavailableHelperException e)
         {
-            Cart cart = cartService.getCartById(cartID);
+            Cart cart = cartService.getCartById(cartId);
             for(int i = e.getIds().size();i>0;i--)
                 cartService.removeItem(cart,e.getIds().get(i-1));
             cartService.saveCart(cart);

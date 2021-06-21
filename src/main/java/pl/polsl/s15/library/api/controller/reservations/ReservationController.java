@@ -22,9 +22,9 @@ public class ReservationController {
     }
 
     @GetMapping("/get")
-    List<ReservationDTO> getReservations(@RequestParam(name = "clientID") long clientID)
+    List<ReservationDTO> getReservations(@RequestParam(name = "clientId") long clientId)
     {
-        List<Reservation> reservations = cartService.getReservations(clientID);
+        List<Reservation> reservations = cartService.getReservations(clientId);
         List<ReservationDTO> response = new ArrayList<>();
         for(Reservation item:reservations)
         {
@@ -43,28 +43,28 @@ public class ReservationController {
         return response;
     }
     @PostMapping("/accept")
-    void acceptReservation(@RequestParam(name = "reservationID") long reservationID)
+    void acceptReservation(@RequestParam(name = "reservationId") long reservationId)
     {
-        cartService.changeReservationStatus(reservationID,ReservationStatus.PENDING,ReservationStatus.ACCEPTED);
+        cartService.changeReservationStatus(reservationId,ReservationStatus.PENDING,ReservationStatus.ACCEPTED);
     }
     @PostMapping("/reject")
-    void rejectReservation(@RequestParam(name = "reservationID") long reservationID)
+    void rejectReservation(@RequestParam(name = "reservationId") long reservationId)
     {
-        cartService.changeReservationStatus(reservationID,ReservationStatus.PENDING,ReservationStatus.REJECTED);
-        cartService.unlockReservationBook(reservationID);
+        cartService.changeReservationStatus(reservationId,ReservationStatus.PENDING,ReservationStatus.REJECTED);
+        cartService.unlockReservationBook(reservationId);
     }
     @PostMapping("/lend")
     void lendReservedBook(@RequestParam(name = "serialNumber") long serialNumber)
     {
-        long reservationID = cartService.findReservationBySerialNumber(serialNumber).getId();
-        cartService.changeReservationStatus(reservationID,ReservationStatus.ACCEPTED,ReservationStatus.TAKEN);
+        long reservationId = cartService.findReservationBySerialNumber(serialNumber).getId();
+        cartService.changeReservationStatus(reservationId,ReservationStatus.ACCEPTED,ReservationStatus.TAKEN);
     }
     @PostMapping("/return")
     void returnReservedBook(@RequestParam(name = "serialNumber") long serialNumber)
     {
         Reservation reservation = cartService.findReservationBySerialNumber(serialNumber);
-        long reservationID = reservation.getId();
-        cartService.changeReservationStatus(reservationID,ReservationStatus.TAKEN,ReservationStatus.RETURNED);
-        cartService.unlockReservationBook(reservationID);
+        long reservationId = reservation.getId();
+        cartService.changeReservationStatus(reservationId,ReservationStatus.TAKEN,ReservationStatus.RETURNED);
+        cartService.unlockReservationBook(reservationId);
     }
 }

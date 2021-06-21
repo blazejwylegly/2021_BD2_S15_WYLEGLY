@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
+
+import java.util.Optional;
+
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Modifying
@@ -19,4 +22,9 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "(SELECT o FROM Cart c JOIN c.orderItems o " +
             "WHERE c.id = :cartId)")
     void deleteAllByCartId(Long cartId);
+    @Query("SELECT o1 FROM OrderItem o1 " +
+            "WHERE o1 IN " +
+            "(SELECT o FROM Cart c JOIN c.orderItems o " +
+            "WHERE o.itemId = :itemId AND c.id = :cartId)")
+    Optional<OrderItem> findByCartAndItemIds(Long cartId, Long itemId);
 }

@@ -73,8 +73,10 @@ public class CartService {
 
     @Transactional
     public void updateItem(Cart cart, OrderItemDTO itemRequest) {
-        cart.updateOrderItem(CartDTOMapper.toEntity(itemRequest));
-        saveCart(cart);
+        OrderItem orderItem = orderItemRepository.findByCartAndItemIds(cart.getId(),itemRequest.getItemId()).orElseThrow(()->new NoSuchCartException(cart.getId()));
+        orderItem = orderItemRepository.findById(orderItem.getId()).orElseThrow(()->new NoSuchCartException(cart.getId()));
+        orderItem.setRequestedEndDate(itemRequest.getRequestedEndDate());
+        orderItemRepository.save(orderItem);
     }
 
     private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time,Client client) {
