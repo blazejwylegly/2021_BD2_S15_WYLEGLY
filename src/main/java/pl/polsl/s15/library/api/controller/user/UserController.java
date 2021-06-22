@@ -68,6 +68,13 @@ public class UserController extends BaseController {
                 .body(reqRepMapper.userUpdateSuccessfulResponse());
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDTO> deleteUser(@RequestParam("id") long clientIdToBeDeleted) {
+        userService.deleteUserById(clientIdToBeDeleted);
+        return ResponseEntity.ok()
+                .body(reqRepMapper.userDeleteSuccessfullyResponse());
+    }
+
     @PatchMapping("/role/add")
     public ResponseEntity<ResponseDTO> addNewRoleForUser(@RequestBody AddUserRoleRequest userRoleRequest) {
         userService.addUserRole(userRoleRequest.getUserId(),

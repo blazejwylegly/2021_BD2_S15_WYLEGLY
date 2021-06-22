@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.polsl.s15.library.api.controller.user.request.ClientCreateOrUpdateRequestDTO;
 import pl.polsl.s15.library.commons.exceptions.InvalidUpdateRequestException;
 import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
 import pl.polsl.s15.library.domain.user.User;
@@ -15,7 +14,6 @@ import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.PermissionsDTOMapper;
-import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTO;
 import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTOMapper;
 import pl.polsl.s15.library.repository.UserRepository;
 
@@ -65,7 +63,12 @@ public class UserService implements UserDetailsService {
 
     public void createUser(UserDTO userDTO) throws UserAlreadyRegisteredException {
         validateIfUserExistsByCredentials(userDTO);
+        updateRoles(userDTO);
         userRepository.save(UsersDTOMapper.userToEntity(userDTO));
+    }
+
+    private void updateRoles(UserDTO userDTO) {
+        userDTO.addNewRole("USER");
     }
 
     protected void validateIfUserExistsByCredentials(UserDTO userDTO) throws UserAlreadyRegisteredException {
@@ -137,5 +140,9 @@ public class UserService implements UserDetailsService {
             user.get().deleteRole(roleToBeDeleted.get());
             userRepository.save(user.get());
         }
+    }
+
+    public void deleteUserById(long clientIdToBeDeleted) {
+        userRepository.deleteById(clientIdToBeDeleted);
     }
 }

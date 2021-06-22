@@ -24,7 +24,7 @@ public class AccountPermissions {
     @OneToOne(mappedBy = "permissions")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "permissions_authorities",
             joinColumns = @JoinColumn(name = "account_id"),
@@ -32,7 +32,7 @@ public class AccountPermissions {
     )
     private Set<Authority> authorities;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "permissions_roles",
             joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"),

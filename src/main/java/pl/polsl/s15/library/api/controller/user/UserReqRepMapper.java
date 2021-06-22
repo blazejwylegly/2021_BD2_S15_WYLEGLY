@@ -131,4 +131,12 @@ public class UserReqRepMapper {
                 .timestamp(new Date())
                 .build();
     }
+
+    public ResponseDTO userDeleteSuccessfullyResponse() {
+        return ResponseDTO.builder()
+                .status(HttpStatus.NO_CONTENT)
+                .message("User has been removed!")
+                .timestamp(new Date())
+                .build();
+    }
 }

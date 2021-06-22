@@ -21,8 +21,13 @@ public class ClientService extends UserService {
 
     public void createClient(ClientDTO clientDTO) {
         validateIfUserExistsByCredentials(clientDTO);
+        updateRoles(clientDTO);
         createCartForNewUser(clientDTO);
         clientRepository.save(ClientsDTOMapper.clientToEntity(clientDTO));
+    }
+
+    private void updateRoles(ClientDTO clientDTO) {
+        clientDTO.addNewRole("CLIENT");
     }
 
     private void createCartForNewUser(ClientDTO clientDTO) {
