@@ -1,12 +1,15 @@
 package pl.polsl.s15.library.api.controller.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.polsl.s15.library.api.controller.base.BaseController;
+import pl.polsl.s15.library.api.controller.base.response.ResponseDTO;
+import pl.polsl.s15.library.api.controller.user.request.AddUserRoleRequest;
+import pl.polsl.s15.library.api.controller.user.request.DeleteUserRoleRequest;
+import pl.polsl.s15.library.api.controller.user.request.UserCreateOrUpdateRequestDTO;
 import pl.polsl.s15.library.api.controller.user.response.GetAccountMetaDataResponse;
 import pl.polsl.s15.library.api.controller.user.response.GetAllUsersResponse;
 import pl.polsl.s15.library.domain.user.User;
@@ -22,11 +25,14 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController extends BaseController {
 
-    public UserService userService;
+    private UserService userService;
+    private UserReqRepMapper reqRepMapper;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          @Qualifier("userReqRepMapper") UserReqRepMapper reqRepMapper) {
         this.userService = userService;
+        this.reqRepMapper = reqRepMapper;
     }
 
     @GetMapping("/meta")
@@ -34,7 +40,7 @@ public class UserController extends BaseController {
         Authentication user = getCurrentUser();
         AccountMetaData accountMetaData = prepareAccountMetaData((String) user.getPrincipal());
         return ResponseEntity.ok()
-                .body(UserReqRepMapper.getAccountMetaDataResponse(accountMetaData));
+                .body(reqRepMapper.getAccountMetaDataResponse(accountMetaData));
     }
 
     private AccountMetaData prepareAccountMetaData(String principal) {
@@ -51,6 +57,38 @@ public class UserController extends BaseController {
     public ResponseEntity<GetAllUsersResponse> getAllUsers() {
         List<UserDTO> users = userService.getAll();
         return ResponseEntity.ok()
-                .body(UserReqRepMapper.getAllUsersResponse(users));
+                .body(reqRepMapper.getAllUsersResponse(users));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDTO> updateUser(@RequestBody UserCreateOrUpdateRequestDTO updateRequestDTO) {
+        UserDTO userDTO = reqRepMapper.mapRequestToUser(updateRequestDTO);
+        userService.updateUser(userDTO);
+        return ResponseEntity.ok()
+                .body(reqRepMapper.userUpdateSuccessfulResponse());
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDTO> deleteUser(@RequestParam("id") long clientIdToBeDeleted) {
+        userService.deleteUserById(clientIdToBeDeleted);
+        return ResponseEntity.ok()
+                .body(reqRepMapper.userDeleteSuccessfullyResponse());
+    }
+
+    @PatchMapping("/role/add")
+    public ResponseEntity<ResponseDTO> addNewRoleForUser(@RequestBody AddUserRoleRequest userRoleRequest) {
+        userService.addUserRole(userRoleRequest.getUserId(),
+                userRoleRequest.getRoleName());
+        return ResponseEntity.ok()
+                .body(reqRepMapper.userRoleAddedSuccessfullyResponse());
+    }
+
+    @DeleteMapping("/role/delete")
+    public ResponseEntity<ResponseDTO> deleteRoleForUser(@RequestBody DeleteUserRoleRequest deleteUserRoleRequest) {
+        userService.deleteUserRole(deleteUserRoleRequest.getUserId(),
+                deleteUserRoleRequest.getRoleName());
+        return ResponseEntity.ok()
+                .body(reqRepMapper.userRoleDeletedSuccessfullyResponse());
+    }
+
 }

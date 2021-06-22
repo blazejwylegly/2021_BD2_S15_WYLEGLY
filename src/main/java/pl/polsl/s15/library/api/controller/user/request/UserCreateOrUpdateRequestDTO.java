@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.controller.registration.request;
+package pl.polsl.s15.library.api.controller.user.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class RegistrationRequestDTO {
+public class UserCreateOrUpdateRequestDTO {
+    private long id;
     private String username;
     private String password;
     private String email;

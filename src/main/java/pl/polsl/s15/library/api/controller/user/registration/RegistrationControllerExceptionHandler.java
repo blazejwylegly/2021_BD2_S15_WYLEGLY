@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.controller.registration;
+package pl.polsl.s15.library.api.controller.user.registration;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -40,5 +40,4 @@ public class UsersDTOMapper {
                 .accountPermissionsDTO(permissions)
                 .build();
     }
-
 }

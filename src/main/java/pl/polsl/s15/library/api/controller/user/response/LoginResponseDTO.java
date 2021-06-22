@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.controller.login.response;
+package pl.polsl.s15.library.api.controller.user.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -17,4 +17,14 @@ public class AccountPermissionsDTO {
     private Set<AuthorityDTO> authorities;
     private Set<RoleDTO> roles;
 
+    public void addNewRoleIfNotPresent(RoleDTO roleDTO) {
+        if(!roleExists(roleDTO)) {
+            this.roles.add(roleDTO);
+        }
+    }
+
+    private boolean roleExists(RoleDTO roleDTo) {
+        return roles.stream()
+                .anyMatch(existingRole -> existingRole.getRoleName().equals(roleDTo.getRoleName()));
+    }
 }

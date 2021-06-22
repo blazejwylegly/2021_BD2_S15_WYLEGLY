@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.polsl.s15.library.commons.annotations.AuthRequest;
-import pl.polsl.s15.library.api.controller.login.request.LoginRequestDTO;
+import pl.polsl.s15.library.api.controller.user.request.LoginRequestDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
