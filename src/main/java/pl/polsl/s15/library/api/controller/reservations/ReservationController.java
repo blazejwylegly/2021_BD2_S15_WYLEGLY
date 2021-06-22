@@ -74,7 +74,7 @@ public class ReservationController {
         cartService.changeReservationStatus(reservationId,ReservationStatus.TAKEN,ReservationStatus.RETURNED);
         cartService.unlockReservationBook(reservationId);
     }
-    @RequestMapping("/report")
+    @RequestMapping(value = "/report",method = RequestMethod.GET)
     void getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                              @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                              HttpServletResponse response)
