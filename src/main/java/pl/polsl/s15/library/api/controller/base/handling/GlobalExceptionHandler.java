@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.polsl.s15.library.api.controller.base.response.ErrorResponseDTO;
 import pl.polsl.s15.library.commons.exceptions.InvalidRequestException;
@@ -14,6 +15,17 @@ import java.util.Date;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends BaseExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDTO> handleAnyException(Exception exception) {
+        ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.errorResponseBuilder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message("Internal server error!")
+                .timestamp(new Date())
+                .errorCause(exception.getMessage())
+                .build();
+        return prepareErrorResponse(errorResponseDTO);
+    }
 
     @ExceptionHandler(InvalidJwtException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidJwtException(InvalidJwtException ex) {

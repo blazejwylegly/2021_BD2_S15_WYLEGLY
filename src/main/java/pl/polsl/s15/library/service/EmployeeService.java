@@ -1,6 +1,5 @@
 package pl.polsl.s15.library.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.s15.library.dtos.users.EmployeeDTO;
 import pl.polsl.s15.library.repository.EmployeeRepository;
@@ -11,15 +10,15 @@ public class EmployeeService extends UserService {
 
     private EmployeeRepository employeeRepository;
 
-    @Autowired
     public EmployeeService(UserRepository userRepository,
+                           RoleService roleService,
                            EmployeeRepository employeeRepository) {
-        super(userRepository);
+        super(userRepository, roleService);
         this.employeeRepository = employeeRepository;
     }
 
     public void createEmployee(EmployeeDTO employeeDTO) {
-        validateIfUserExists(employeeDTO);
+        validateIfUserExistsByCredentials(employeeDTO);
 
     }
 }

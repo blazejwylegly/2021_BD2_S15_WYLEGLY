@@ -6,12 +6,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.polsl.s15.library.api.controller.user.request.ClientCreateOrUpdateRequestDTO;
+import pl.polsl.s15.library.commons.exceptions.InvalidUpdateRequestException;
 import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
 import pl.polsl.s15.library.domain.user.User;
+import pl.polsl.s15.library.domain.user.account.roles.Role;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.PermissionsDTOMapper;
+import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTO;
+import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTOMapper;
 import pl.polsl.s15.library.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -25,10 +30,12 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
+    private RoleService roleService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleService roleService) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     @Override
@@ -57,21 +64,78 @@ public class UserService implements UserDetailsService {
     }
 
     public void createUser(UserDTO userDTO) throws UserAlreadyRegisteredException {
-        validateIfUserExists(userDTO);
+        validateIfUserExistsByCredentials(userDTO);
         userRepository.save(UsersDTOMapper.userToEntity(userDTO));
     }
 
-    protected void validateIfUserExists(UserDTO userDTO) throws UserAlreadyRegisteredException {
-        String username = userDTO.getAccountCredentialsDTO().getUsername();
+    protected void validateIfUserExistsByCredentials(UserDTO userDTO) throws UserAlreadyRegisteredException {
+        validateIfUserExistsByUsername(
+                userDTO.getAccountCredentialsDTO().getUsername()
+        );
+        validateIfUserExistsByEmailAddress(
+                userDTO.getAccountCredentialsDTO().getEmailAddress()
+        );
+    }
+
+    protected void validateIfUserExistsByUsername(String username) {
         if (userRepository.existsByCredentials_Username(username))
             throw new UserAlreadyRegisteredException(
                     String.format("User with given username [%s] already exists!", username)
             );
+    }
 
-        String emailAddress = userDTO.getAccountCredentialsDTO().getEmailAddress();
+    protected void validateIfUserExistsByEmailAddress(String emailAddress) {
         if (userRepository.existsByCredentials_EmailAddress(emailAddress))
             throw new UserAlreadyRegisteredException(
                     String.format("User with given email address [%s] already exists!", emailAddress)
             );
+    }
+
+    public void updateUser(UserDTO userDTO)
+            throws InvalidUpdateRequestException {
+        validateIfUpdateIsPossible(userDTO);
+        User user = UsersDTOMapper.userToEntity(userDTO);
+        userRepository.save(user);
+    }
+
+    private void validateIfUpdateIsPossible(UserDTO userDTO) throws InvalidUpdateRequestException {
+        validateIfCredentialsAreOccupied(userDTO);
+        validateIfUserExistsById(userDTO);
+    }
+
+    private void validateIfCredentialsAreOccupied(UserDTO userDTO) throws InvalidUpdateRequestException {
+        try {
+            validateIfUserExistsByCredentials(userDTO);
+        } catch (UserAlreadyRegisteredException exception) {
+            throw new InvalidUpdateRequestException(exception.getMessage());
+        }
+    }
+
+    private void validateIfUserExistsById(UserDTO userDTO) throws InvalidUpdateRequestException {
+        if(userRepository.findById(userDTO.getId()).isEmpty()) {
+            throw new InvalidUpdateRequestException(
+                    "User with id " + userDTO.getId() + "does not exist!"
+            );
+        }
+    }
+
+    public void addUserRole(long userId, String roleName) {
+        Optional<Role> roleToBeAdded = roleService.getRoleByName(roleName)
+                .map(RoleDTOMapper::toEntity);
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent() && roleToBeAdded.isPresent()) {
+            user.get().addNewRole(roleToBeAdded.get());
+            userRepository.save(user.get());
+        }
+    }
+
+    public void deleteUserRole(long userId, String roleName) {
+        Optional<Role> roleToBeDeleted = roleService.getRoleByName(roleName)
+                .map(RoleDTOMapper::toEntity);
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent() && roleToBeDeleted.isPresent()) {
+            user.get().deleteRole(roleToBeDeleted.get());
+            userRepository.save(user.get());
+        }
     }
 }

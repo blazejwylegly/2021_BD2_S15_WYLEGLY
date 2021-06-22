@@ -13,13 +13,14 @@ public class ClientService extends UserService {
     private ClientRepository clientRepository;
 
     public ClientService(UserRepository userRepository,
+                         RoleService roleService,
                          ClientRepository clientRepository) {
-        super(userRepository);
+        super(userRepository, roleService);
         this.clientRepository = clientRepository;
     }
 
     public void createClient(ClientDTO clientDTO) {
-        validateIfUserExists(clientDTO);
+        validateIfUserExistsByCredentials(clientDTO);
         createCartForNewUser(clientDTO);
         clientRepository.save(ClientsDTOMapper.clientToEntity(clientDTO));
     }

@@ -10,6 +10,7 @@ import pl.polsl.s15.library.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,5 +47,10 @@ public class RoleService {
                 .stream()
                 .map(RoleDTOMapper::toDTO)
                 .collect(Collectors.toSet());
+    }
+
+    public Optional<RoleDTO> getRoleByName(String roleName) {
+        return roleRepository.findRoleByRoleType(RoleType.valueOf(roleName))
+                .map(RoleDTOMapper::toDTO);
     }
 }

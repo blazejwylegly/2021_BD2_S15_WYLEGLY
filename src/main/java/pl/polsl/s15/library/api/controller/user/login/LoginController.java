@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.controller.login;
+package pl.polsl.s15.library.api.controller.user.login;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.s15.library.commons.exceptions.InvalidRequestException;
 import pl.polsl.s15.library.domain.user.User;
-import pl.polsl.s15.library.api.controller.login.request.LoginRequestDTO;
-import pl.polsl.s15.library.api.controller.login.response.LoginResponseDTO;
+import pl.polsl.s15.library.api.controller.user.request.LoginRequestDTO;
+import pl.polsl.s15.library.api.controller.user.response.LoginResponseDTO;
 import pl.polsl.s15.library.service.UserService;
 import pl.polsl.s15.library.commons.utils.JwtUtility;
 
