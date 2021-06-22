@@ -39,6 +39,17 @@ public class ReservationController {
         }
         return response;
     }
+    @GetMapping("/all")
+    List<ReservationDTO> getAllReservations()
+    {
+        List<Reservation> reservations = cartService.getAllReservations();
+        List<ReservationDTO> response = new ArrayList<>();
+        for(Reservation item:reservations)
+        {
+            response.add(new ReservationDTO(item.getId(),item.getEndTime(),item.getRentalBook(),item.getReturned(),item.getStatus()));
+        }
+        return response;
+    }
     @GetMapping("/pending")
     List<ReservationDTO> getPendingReservations() {
         List<Reservation> reservations = cartService.getAllPendingReservations();

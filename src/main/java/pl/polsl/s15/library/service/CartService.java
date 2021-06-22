@@ -142,6 +142,10 @@ public class CartService {
     {
         return reservationRepository.findAllByStatus(ReservationStatus.PENDING);
     }
+    public List<Reservation> getAllReservations()
+    {
+        return reservationRepository.findAll();
+    }
     @Transactional
     public void changeReservationStatus(long reservationID,ReservationStatus requiredStatus, ReservationStatus newStatus)
     {

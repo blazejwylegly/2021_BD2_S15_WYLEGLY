@@ -18,6 +18,8 @@ public interface ReservationRepository extends CrudRepository<Reservation, Long>
 
     List<Reservation> findAllByStatus(ReservationStatus status);
 
+    List<Reservation> findAll();
+
     @Query("SELECT r FROM Reservation r " +
             "WHERE r.rentalBook.serialNumber = :serialNumber " +
             "AND r.status IN (1,3)")
