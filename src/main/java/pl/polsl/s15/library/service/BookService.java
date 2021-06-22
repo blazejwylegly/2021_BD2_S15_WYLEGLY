@@ -38,9 +38,7 @@ public class BookService {
 
     private Long calculateNumberOfOccupiedRentalBook(Book book) {
         long desiredBookDetailsId = book.getDetails().getId();
-        return rentalBookRepository.countOccupiedBooksForGivenBookDetails(desiredBookDetailsId)
-                .spliterator()
-                .getExactSizeIfKnown();
+        return rentalBookRepository.countOccupiedBooksForGivenBookDetails(desiredBookDetailsId);
     }
 
     private Long calculateNumberOfBooksForGivenDetailsId(Long bookDetailsId) {
@@ -139,15 +137,17 @@ public class BookService {
         return assignToBookDTO(findById(id));
     }
 
+    @Transactional(readOnly = false)
     public void addBook(RentalBook rentalBook) {
         rentalBookRepository.save(rentalBook);
     }
 
+    @Transactional(readOnly = false)
     public void removeBook(long serialNumber) {
         rentalBookRepository.deleteBySerialNumber(serialNumber);
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void updateBook(long serialNumber, BookDetails details, String description) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
         if (optRentalBook.isPresent()) {
@@ -160,7 +160,7 @@ public class BookService {
             throw new NoSuchBookException(serialNumber);
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void occupyBook(long serialNumber) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
         if (optRentalBook.isPresent()) {
@@ -174,7 +174,7 @@ public class BookService {
             throw new NoSuchBookException(serialNumber);
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void freeBook(long serialNumber) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findBySerialNumber(serialNumber);
         if (optRentalBook.isPresent()) {
@@ -187,5 +187,8 @@ public class BookService {
         } else
             throw new NoSuchBookException(serialNumber);
     }
-
+    public boolean checkIfExists(long serialNumber)
+    {
+        return rentalBookRepository.existsBySerialNumber(serialNumber);
+    }
 }

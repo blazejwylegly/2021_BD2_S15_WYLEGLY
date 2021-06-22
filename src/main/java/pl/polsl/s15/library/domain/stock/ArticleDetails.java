@@ -13,7 +13,4 @@ public abstract class ArticleDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
-
-    @OneToMany(mappedBy = "articleDetails", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<DeliveryArticle> articles;
 }

@@ -5,12 +5,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.polsl.s15.library.domain.user.account.AccountCredentials;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
+import pl.polsl.s15.library.domain.user.account.roles.Role;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -77,5 +79,27 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User(User user)
+    {
+        this.credentials = user.credentials;
+        this.id = user.id;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.permissions = user.permissions;
+        this.photoUrl = user.photoUrl;
+    }
+
+    public void overrideCurrentRoles(Set<Role> roles) {
+        this.permissions.overrideRoles(roles);
+    }
+
+    public void addNewRole(Role role) {
+        this.permissions.addNewRoleIfNotPresent(role);
+    }
+
+    public void deleteRole(Role role) {
+        this.permissions.deleteRoleIfPresent(role);
     }
 }

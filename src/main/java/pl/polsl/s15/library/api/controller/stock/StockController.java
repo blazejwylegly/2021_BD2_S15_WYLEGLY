@@ -4,11 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import pl.polsl.s15.library.api.request.AddOrUpdateBookRequestDTO;
+import pl.polsl.s15.library.api.controller.base.request.AddOrUpdateBookRequestDTO;
+import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyExistsException;
 import pl.polsl.s15.library.service.BookService;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api/secured/books")
 public class StockController {
     private BookService bookService;
 
@@ -17,20 +18,21 @@ public class StockController {
         this.bookService = bookService;
     }
 
-    @PostMapping("/add")
+    @PutMapping("/add")
     void addBook(@RequestBody AddOrUpdateBookRequestDTO request) {
         if (request.invalidAdd())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        else
-            bookService.addBook(request.getRentalBook());
+        if(bookService.checkIfExists(request.getSerialNumber()))
+            throw new BookAlreadyExistsException(request.getSerialNumber());
+        bookService.addBook(request.getRentalBook());
     }
 
-    @PostMapping("/remove")
+    @DeleteMapping("/remove")
     void removeBook(@RequestParam(name = "serialNumber") long serialNumber) {
         bookService.removeBook(serialNumber);
     }
 
-    @PostMapping("/update")
+    @PatchMapping("/update")
     void updateBook(@RequestBody AddOrUpdateBookRequestDTO request) {
         if (request.invalidUpdate())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -38,12 +40,12 @@ public class StockController {
             bookService.updateBook(request.getSerialNumber(), request.getBookDetails(), request.getDescription());
     }
 
-    @PostMapping("/occupy")
+    @PatchMapping("/occupy")
     void occupyBook(@RequestParam(name = "serialNumber") long serialNumber) {
         bookService.occupyBook(serialNumber);
     }
 
-    @PostMapping("/free")
+    @PatchMapping("/free")
     void freeBook(@RequestParam(name = "serialNumber") long serialNumber) {
         bookService.freeBook(serialNumber);
     }
