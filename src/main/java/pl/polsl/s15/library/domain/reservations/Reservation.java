@@ -22,6 +22,9 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false, name = "start_time")
+    private LocalDate startTime;
+
     @Column(nullable = false, name = "end_time")
     private LocalDate endTime;
 
@@ -35,8 +38,14 @@ public class Reservation {
     private ReservationStatus status;
 
     public Reservation(RentalBook rentalBook, LocalDate end_time) {
+        this.startTime = LocalDate.now();
         this.rentalBook = rentalBook;
         this.endTime = end_time;
         this.status = ReservationStatus.PENDING;
+    }
+
+    public String getReport()
+    {
+        return "ID: " + id.toString() + " From: " + startTime.toString() + " To: " + endTime.toString() + " Status: " + status.toString();
     }
 }

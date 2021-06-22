@@ -49,7 +49,7 @@ public class GlobalExceptionHandler extends BaseExceptionHandler {
     }
 
     @ExceptionHandler(BooksUnavailableException.class)
-    public ResponseEntity<ErrorResponseDTO> handleBooksUnavailableException(InvalidRequestException ex) {
+    public ResponseEntity<ErrorResponseDTO> handleBooksUnavailableException(BooksUnavailableException ex) {
         ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.errorResponseBuilder()
                 .status(HttpStatus.CONFLICT)
                 .message("Books unavailable")

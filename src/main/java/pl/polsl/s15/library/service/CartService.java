@@ -1,5 +1,9 @@
 package pl.polsl.s15.library.service;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +20,7 @@ import pl.polsl.s15.library.dtos.ordering.CartDTOMapper;
 import pl.polsl.s15.library.dtos.ordering.OrderItemDTO;
 import pl.polsl.s15.library.repository.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -73,8 +78,8 @@ public class CartService {
 
     @Transactional
     public void updateItem(Cart cart, OrderItemDTO itemRequest) {
-        OrderItem orderItem = orderItemRepository.findByCartAndItemIds(cart.getId(),itemRequest.getItemId()).orElseThrow(()->new NoSuchCartException(cart.getId()));
-        orderItem = orderItemRepository.findById(orderItem.getId()).orElseThrow(()->new NoSuchCartException(cart.getId()));
+        OrderItem orderItem = orderItemRepository.findByCartAndItemIds(cart.getId(),itemRequest.getItemId()).orElseThrow(()->new NoCartException(cart.getId()));
+        orderItem = orderItemRepository.findById(orderItem.getId()).orElseThrow(()->new NoCartException(cart.getId()));
         orderItem.setRequestedEndDate(itemRequest.getRequestedEndDate());
         orderItemRepository.save(orderItem);
     }
@@ -159,5 +164,31 @@ public class CartService {
         RentalBook rentalBook = reservationRepository.findById(reservationID).orElseThrow(()->new NoReservationException(reservationID)).getRentalBook();
         rentalBook.Free();
         rentalBookRepository.save(rentalBook);
+    }
+    public void getReport(LocalDate startDate, LocalDate endDate, HttpServletResponse response)
+    {
+        response.setContentType("application/pdf");
+        //Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.NORMAL, new CMYKColor(0, 0, 0, 255));
+        Document document = new Document();
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+            document.add(new Paragraph("Reservations:"));
+            com.itextpdf.text.List list = new com.itextpdf.text.List(com.itextpdf.text.List.UNORDERED);
+            List<Reservation> reservations = reservationRepository.findByStartTimeGreaterThanEqualAndStartTimeLessThanEqual(startDate,endDate);
+            for (Reservation reservation : reservations) {
+                list.add(new ListItem(reservation.getReport()
+                        +" User: "
+                        +clientRepository.findClientByReservationId(reservation.getId()).orElseThrow(()->new NoReservationException(reservation.getId())).getUsername()));
+            }
+            document.add(list);
+            document.close();
+            writer.close();
+
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error while creating file:" + e.getMessage());
+        }
     }
 }

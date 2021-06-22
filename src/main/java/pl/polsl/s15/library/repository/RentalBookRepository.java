@@ -33,4 +33,6 @@ public interface RentalBookRepository extends JpaRepository<RentalBook, Long> {
     List<RentalBook> findAllFreeByDetailsId(Long details_id);
 
     Long countRentalBookByDetails_Id(long details_id);
+
+    Boolean existsBySerialNumber(long serialNumber);
 }

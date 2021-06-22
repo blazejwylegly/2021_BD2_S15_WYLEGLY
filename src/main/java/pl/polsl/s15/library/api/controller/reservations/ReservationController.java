@@ -1,12 +1,19 @@
 package pl.polsl.s15.library.api.controller.reservations;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.CMYKColor;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.s15.library.commons.enums.ReservationStatus;
 import pl.polsl.s15.library.domain.reservations.Reservation;
 import pl.polsl.s15.library.dtos.reservations.ReservationDTO;
 import pl.polsl.s15.library.service.CartService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,5 +73,12 @@ public class ReservationController {
         long reservationId = reservation.getId();
         cartService.changeReservationStatus(reservationId,ReservationStatus.TAKEN,ReservationStatus.RETURNED);
         cartService.unlockReservationBook(reservationId);
+    }
+    @RequestMapping("/report")
+    void getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                             HttpServletResponse response)
+    {
+        cartService.getReport(startDate,endDate,response);
     }
 }

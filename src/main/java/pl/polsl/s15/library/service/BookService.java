@@ -187,5 +187,8 @@ public class BookService {
         } else
             throw new NoSuchBookException(serialNumber);
     }
-
+    public boolean checkIfExists(long serialNumber)
+    {
+        return rentalBookRepository.existsBySerialNumber(serialNumber);
+    }
 }

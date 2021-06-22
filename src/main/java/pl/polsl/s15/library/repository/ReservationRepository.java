@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import pl.polsl.s15.library.commons.enums.ReservationStatus;
 import pl.polsl.s15.library.domain.reservations.Reservation;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,6 @@ public interface ReservationRepository extends CrudRepository<Reservation, Long>
             "WHERE r.rentalBook.serialNumber = :serialNumber " +
             "AND r.status IN (1,3)")
     Optional<Reservation> findByBookSerial(long serialNumber);
+
+    List<Reservation> findByStartTimeGreaterThanEqualAndStartTimeLessThanEqual(LocalDate startDate, LocalDate endDate);
 }

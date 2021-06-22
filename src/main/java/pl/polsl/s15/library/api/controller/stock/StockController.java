@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.polsl.s15.library.api.controller.base.request.AddOrUpdateBookRequestDTO;
+import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyExistsException;
 import pl.polsl.s15.library.service.BookService;
 
 @RestController
@@ -21,8 +22,9 @@ public class StockController {
     void addBook(@RequestBody AddOrUpdateBookRequestDTO request) {
         if (request.invalidAdd())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        else
-            bookService.addBook(request.getRentalBook());
+        if(bookService.checkIfExists(request.getSerialNumber()))
+            throw new BookAlreadyExistsException(request.getSerialNumber());
+        bookService.addBook(request.getRentalBook());
     }
 
     @DeleteMapping("/remove")
