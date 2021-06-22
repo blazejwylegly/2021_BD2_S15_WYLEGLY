@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.controller.login.request;
+package pl.polsl.s15.library.api.controller.user.request;
 
 import lombok.Data;
 import pl.polsl.s15.library.commons.annotations.AuthRequest;

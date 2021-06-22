@@ -49,5 +49,4 @@ public class RolesController extends BaseController {
         return ResponseEntity.ok()
                 .body(RoleReqRepMapper.roleByNameDeleted(roleName));
     }
-
 }

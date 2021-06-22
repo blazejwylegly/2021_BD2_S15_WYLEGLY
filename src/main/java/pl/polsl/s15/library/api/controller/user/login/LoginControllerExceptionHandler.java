@@ -1,4 +1,4 @@
-package pl.polsl.s15.library.api.controller.login;
+package pl.polsl.s15.library.api.controller.user.login;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
