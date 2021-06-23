@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyFreeException;
 import pl.polsl.s15.library.commons.exceptions.books.BookAlreadyOccupiedException;
 import pl.polsl.s15.library.commons.exceptions.books.NoSuchBookException;
+import pl.polsl.s15.library.domain.reservations.Reservation;
 import pl.polsl.s15.library.domain.stock.ItemPhoto;
 import pl.polsl.s15.library.domain.stock.books.Book;
 import pl.polsl.s15.library.domain.stock.books.BookDetails;
@@ -17,7 +18,11 @@ import pl.polsl.s15.library.dtos.stock.books.BookBasicDTO;
 import pl.polsl.s15.library.dtos.stock.books.BookFullDTO;
 import pl.polsl.s15.library.repository.BookRepository;
 import pl.polsl.s15.library.repository.RentalBookRepository;
+import pl.polsl.s15.library.repository.ReservationRepository;
 
+import javax.persistence.EntityManager;
+import javax.swing.text.html.parser.Entity;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,14 +32,17 @@ import java.util.stream.Collectors;
 public class BookService {
 
     @Autowired
-    public BookService(RentalBookRepository rentalBookRepository, BookRepository bookRepository) {
+    public BookService(RentalBookRepository rentalBookRepository, BookRepository bookRepository, ReservationRepository reservationRepository) {
         this.rentalBookRepository = rentalBookRepository;
         this.bookRepository = bookRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     private final BookRepository bookRepository;
 
     private final RentalBookRepository rentalBookRepository;
+
+    private final ReservationRepository reservationRepository;
 
     private Long calculateNumberOfOccupiedRentalBook(Book book) {
         long desiredBookDetailsId = book.getDetails().getId();
@@ -144,6 +152,11 @@ public class BookService {
 
     @Transactional(readOnly = false)
     public void removeBook(long serialNumber) {
+        List<Reservation> reservations = reservationRepository.findAllByBookSerial(serialNumber);
+        for (Reservation reservation:reservations) {
+            reservation.setRentalBook(null);
+            reservationRepository.save(reservation);
+        }
         rentalBookRepository.deleteBySerialNumber(serialNumber);
     }
 

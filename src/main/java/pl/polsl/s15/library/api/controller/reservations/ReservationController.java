@@ -88,9 +88,8 @@ public class ReservationController {
     }
     @RequestMapping(value = "/report",method = RequestMethod.GET)
     @ResponseBody String getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)//,
-                             //HttpServletResponse response)
+                             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
     {
-        return Base64.getEncoder().encodeToString(cartService.getReport(startDate,endDate));//,response);
+        return Base64.getEncoder().encodeToString(cartService.getReport(startDate,endDate));
     }
 }

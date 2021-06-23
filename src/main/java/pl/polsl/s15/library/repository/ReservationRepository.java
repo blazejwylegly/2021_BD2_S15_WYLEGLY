@@ -1,7 +1,9 @@
 package pl.polsl.s15.library.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.commons.enums.ReservationStatus;
 import pl.polsl.s15.library.domain.reservations.Reservation;
 
@@ -24,6 +26,10 @@ public interface ReservationRepository extends CrudRepository<Reservation, Long>
             "WHERE r.rentalBook.serialNumber = :serialNumber " +
             "AND r.status IN (1,3)")
     Optional<Reservation> findByBookSerial(long serialNumber);
+
+    @Query("SELECT r FROM Reservation r " +
+            "WHERE r.rentalBook.serialNumber = :serialNumber")
+    List<Reservation> findAllByBookSerial(long serialNumber);
 
     List<Reservation> findByStartTimeGreaterThanEqualAndStartTimeLessThanEqual(LocalDate startDate, LocalDate endDate);
 }

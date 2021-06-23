@@ -170,9 +170,8 @@ public class CartService {
         rentalBook.Free();
         rentalBookRepository.save(rentalBook);
     }
-    public byte[] getReport(LocalDate startDate, LocalDate endDate)//, HttpServletResponse response)
+    public byte[] getReport(LocalDate startDate, LocalDate endDate)
     {
-        //response.setContentType("application/pdf");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         //Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.NORMAL, new CMYKColor(0, 0, 0, 255));
         Document document = new Document();

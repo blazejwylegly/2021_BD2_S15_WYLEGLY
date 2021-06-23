@@ -16,10 +16,7 @@ import java.util.Optional;
 public interface RentalBookRepository extends JpaRepository<RentalBook, Long> {
     Optional<RentalBook> findBySerialNumber(Long serialNumber);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM RentalBook r WHERE r.serialNumber = :serial")
-    void deleteBySerialNumber(@Param("serial") long serialNumber);
+    void deleteBySerialNumber(long serialNumber);
 
     @Query("SELECT COUNT(r) FROM RentalBook r " +
             "WHERE r.details.id = :details_id " +
