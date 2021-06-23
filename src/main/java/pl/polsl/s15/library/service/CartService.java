@@ -167,8 +167,10 @@ public class CartService {
     public void unlockReservationBook(long reservationID)
     {
         RentalBook rentalBook = reservationRepository.findById(reservationID).orElseThrow(()->new NoReservationException(reservationID)).getRentalBook();
-        rentalBook.Free();
-        rentalBookRepository.save(rentalBook);
+        if(rentalBook!=null) {
+            rentalBook.Free();
+            rentalBookRepository.save(rentalBook);
+        }
     }
     public byte[] getReport(LocalDate startDate, LocalDate endDate)
     {
