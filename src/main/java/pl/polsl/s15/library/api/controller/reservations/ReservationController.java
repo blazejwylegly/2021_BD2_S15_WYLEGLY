@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -90,6 +91,6 @@ public class ReservationController {
                              @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)//,
                              //HttpServletResponse response)
     {
-        return cartService.getReport(startDate,endDate);//,response);
+        return Base64.getEncoder().encode(cartService.getReport(startDate,endDate));//,response);
     }
 }
