@@ -87,10 +87,10 @@ public class ReservationController {
         cartService.unlockReservationBook(reservationId);
     }
     @RequestMapping(value = "/report",method = RequestMethod.GET)
-    @ResponseBody byte[] getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+    @ResponseBody String getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                              @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)//,
                              //HttpServletResponse response)
     {
-        return Base64.getEncoder().encode(cartService.getReport(startDate,endDate));//,response);
+        return Base64.getEncoder().encodeToString(cartService.getReport(startDate,endDate));//,response);
     }
 }
