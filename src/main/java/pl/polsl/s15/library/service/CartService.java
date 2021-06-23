@@ -21,6 +21,7 @@ import pl.polsl.s15.library.dtos.ordering.OrderItemDTO;
 import pl.polsl.s15.library.repository.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -169,13 +170,14 @@ public class CartService {
         rentalBook.Free();
         rentalBookRepository.save(rentalBook);
     }
-    public void getReport(LocalDate startDate, LocalDate endDate, HttpServletResponse response)
+    public byte[] getReport(LocalDate startDate, LocalDate endDate)//, HttpServletResponse response)
     {
-        response.setContentType("application/pdf");
+        //response.setContentType("application/pdf");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         //Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.NORMAL, new CMYKColor(0, 0, 0, 255));
         Document document = new Document();
         try {
-            PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
+            PdfWriter writer = PdfWriter.getInstance(document, baos);
             document.open();
             document.add(new Paragraph("Reservations:"));
             com.itextpdf.text.List list = new com.itextpdf.text.List(com.itextpdf.text.List.UNORDERED);
@@ -188,7 +190,7 @@ public class CartService {
             document.add(list);
             document.close();
             writer.close();
-
+            return baos.toByteArray();
         }
         catch (Exception e)
         {

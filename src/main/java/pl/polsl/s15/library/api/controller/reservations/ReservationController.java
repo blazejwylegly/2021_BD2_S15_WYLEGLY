@@ -86,10 +86,10 @@ public class ReservationController {
         cartService.unlockReservationBook(reservationId);
     }
     @RequestMapping(value = "/report",method = RequestMethod.GET)
-    void getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                             HttpServletResponse response)
+    byte[] getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)//,
+                             //HttpServletResponse response)
     {
-        cartService.getReport(startDate,endDate,response);
+        return cartService.getReport(startDate,endDate);//,response);
     }
 }
