@@ -3,6 +3,7 @@ package pl.polsl.s15.library.domain.reservations;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 import pl.polsl.s15.library.commons.enums.ReservationStatus;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
@@ -28,8 +29,8 @@ public class Reservation {
     @Column(nullable = false, name = "end_time")
     private LocalDate endTime;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "book_id",nullable = true)
     private RentalBook rentalBook;
 
     @Column
@@ -46,6 +47,6 @@ public class Reservation {
 
     public String getReport()
     {
-        return "ID: " + id.toString() + " From: " + startTime.toString() + " To: " + endTime.toString() + " Status: " + status.toString();
+        return "ID: " + id.toString() + " Book: "+ ((rentalBook != null) ? rentalBook.getSerialNumber().toString():"Removed") + " From: " + startTime.toString() + " To: " + endTime.toString() + " Status: " + status.toString();
     }
 }

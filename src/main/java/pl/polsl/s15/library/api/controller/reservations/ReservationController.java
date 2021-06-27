@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -32,6 +33,17 @@ public class ReservationController {
     List<ReservationDTO> getReservations(@RequestParam(name = "clientId") long clientId)
     {
         List<Reservation> reservations = cartService.getReservations(clientId);
+        List<ReservationDTO> response = new ArrayList<>();
+        for(Reservation item:reservations)
+        {
+            response.add(new ReservationDTO(item.getId(),item.getEndTime(),item.getRentalBook(),item.getReturned(),item.getStatus()));
+        }
+        return response;
+    }
+    @GetMapping("/all")
+    List<ReservationDTO> getAllReservations()
+    {
+        List<Reservation> reservations = cartService.getAllReservations();
         List<ReservationDTO> response = new ArrayList<>();
         for(Reservation item:reservations)
         {
@@ -75,10 +87,9 @@ public class ReservationController {
         cartService.unlockReservationBook(reservationId);
     }
     @RequestMapping(value = "/report",method = RequestMethod.GET)
-    void getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                             HttpServletResponse response)
+    @ResponseBody String getReport(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
     {
-        cartService.getReport(startDate,endDate,response);
+        return Base64.getEncoder().encodeToString(cartService.getReport(startDate,endDate));
     }
 }

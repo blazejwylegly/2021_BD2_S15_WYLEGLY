@@ -12,6 +12,8 @@ import pl.polsl.s15.library.api.controller.user.request.DeleteUserRoleRequest;
 import pl.polsl.s15.library.api.controller.user.request.UserCreateOrUpdateRequestDTO;
 import pl.polsl.s15.library.api.controller.user.response.GetAccountMetaDataResponse;
 import pl.polsl.s15.library.api.controller.user.response.GetAllUsersResponse;
+import pl.polsl.s15.library.api.controller.user.response.GetUserResponse;
+import pl.polsl.s15.library.commons.exceptions.user.UserNotFoundException;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.meta.AccountMetaData;
@@ -20,6 +22,7 @@ import pl.polsl.s15.library.dtos.users.permissions.PermissionsDTOMapper;
 import pl.polsl.s15.library.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -58,6 +61,17 @@ public class UserController extends BaseController {
         List<UserDTO> users = userService.getAll();
         return ResponseEntity.ok()
                 .body(reqRepMapper.getAllUsersResponse(users));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetUserResponse> getUserById(@PathVariable long userId) {
+        Optional<UserDTO> user = userService.loadUserById(userId);
+        return user
+                .map(userDTO ->
+                        ResponseEntity.ok()
+                        .body(reqRepMapper.getSingleUserResponse(userDTO))
+                )
+                .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found"));
     }
 
     @PutMapping("/update")

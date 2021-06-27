@@ -9,13 +9,14 @@ import java.util.Optional;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
-    @Query("SELECT c FROM Client c "+
+    @Query("SELECT c FROM Client c " +
             "WHERE c.cart.id = :cart_id ")
     Optional<Client> findClientByCartId(Long cart_id);
 
-    @Query("SELECT c FROM Client c "+
+    @Query("SELECT c FROM Client c " +
             "JOIN c.reservations r " +
             "WHERE r.id = :reservation_id ")
     Optional<Client> findClientByReservationId(Long reservation_id);
 
+    Optional<Client> findByCredentials_Username(String username);
 }
