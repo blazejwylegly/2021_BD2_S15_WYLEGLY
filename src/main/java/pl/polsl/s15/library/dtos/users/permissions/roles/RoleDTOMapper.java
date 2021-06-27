@@ -1,22 +1,36 @@
 package pl.polsl.s15.library.dtos.users.permissions.roles;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import pl.polsl.s15.library.commons.exceptions.BadRequestException;
 import pl.polsl.s15.library.domain.user.account.roles.Role;
+import pl.polsl.s15.library.repository.RoleRepository;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class RoleDTOMapper {
-    public static Set<Role> toEntity(Set<RoleDTO> roles) {
+
+    private RoleRepository roleRepository;
+
+    @Autowired
+    public RoleDTOMapper(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
+
+    public Set<Role> toEntity(Set<RoleDTO> roles) {
         return roles.stream()
-                .map(RoleDTOMapper::toEntity)
+                .map(this::toEntity)
                 .collect(Collectors.toSet());
     }
 
-    public static Role toEntity(RoleDTO roleDTO) {
-        return Role.builder()
-                .id(roleDTO.getId())
-                .roleType(roleDTO.getRoleName())
-                .build();
+    public Role toEntity(RoleDTO roleDTO) {
+        return roleRepository
+                .findRoleByRoleType(roleDTO.getRoleName())
+                .orElseThrow(() -> new BadRequestException("Role "
+                        + roleDTO.getRoleName().getValue() +
+                        " does not exist"));
     }
 
     public static Set<RoleDTO> toDTO(Set<Role> roles) {

@@ -20,7 +20,7 @@ public class GlobalExceptionHandler extends BaseExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleAnyException(Exception exception) {
-        log.error(exception.getStackTrace().toString());
+        log.error(exception.toString());
         ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.errorResponseBuilder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .message("Internal server error!")

@@ -8,10 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.polsl.s15.library.commons.exceptions.InvalidUpdateRequestException;
 import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
-import pl.polsl.s15.library.domain.user.Employee;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.domain.user.account.roles.Role;
-import pl.polsl.s15.library.dtos.users.ClientDTO;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
@@ -20,9 +18,7 @@ import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTOMapper;
 import pl.polsl.s15.library.repository.UserRepository;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,11 +32,18 @@ public class UserService implements UserDetailsService {
 
     protected UserRepository userRepository;
     protected RoleService roleService;
+    protected UsersDTOMapper usersDTOMapper;
+    protected RoleDTOMapper roleDTOMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleService roleService) {
+    public UserService(UserRepository userRepository,
+                       RoleService roleService,
+                       UsersDTOMapper usersDTOMapper,
+                       RoleDTOMapper roleDTOMapper) {
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.usersDTOMapper = usersDTOMapper;
+        this.roleDTOMapper = roleDTOMapper;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class UserService implements UserDetailsService {
 
     public void createUser(UserDTO userDTO) throws UserAlreadyRegisteredException {
         validateIfUserExistsByCredentials(userDTO);
-        User user = UsersDTOMapper.userToEntity(userDTO);
+        User user = usersDTOMapper.userToEntity(userDTO);
         addDefaultRoles(DEFAULT_USER_ROLES, user);
         userRepository.save(user);
     }
@@ -83,7 +86,7 @@ public class UserService implements UserDetailsService {
     protected void addDefaultRoles(List<String> defaultRoles, User user) {
         defaultRoles.forEach(
                 roleName -> this.roleService.getRoleByName(roleName)
-                        .map(RoleDTOMapper::toEntity)
+                        .map(roleDTOMapper::toEntity)
                         .ifPresent(user::addNewRole)
         );
     }
@@ -114,7 +117,7 @@ public class UserService implements UserDetailsService {
     public void updateUser(UserDTO userDTO)
             throws InvalidUpdateRequestException {
         validateIfUpdateIsPossible(userDTO);
-        User user = UsersDTOMapper.userToEntity(userDTO);
+        User user = usersDTOMapper.userToEntity(userDTO);
         userRepository.save(user);
     }
 
@@ -141,7 +144,7 @@ public class UserService implements UserDetailsService {
 
     public void addUserRole(long userId, String roleName) {
         Optional<Role> roleToBeAdded = roleService.getRoleByName(roleName)
-                .map(RoleDTOMapper::toEntity);
+                .map(roleDTOMapper::toEntity);
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent() && roleToBeAdded.isPresent()) {
             user.get().addNewRole(roleToBeAdded.get());
@@ -151,7 +154,7 @@ public class UserService implements UserDetailsService {
 
     public void deleteUserRole(long userId, String roleName) {
         Optional<Role> roleToBeDeleted = roleService.getRoleByName(roleName)
-                .map(RoleDTOMapper::toEntity);
+                .map(roleDTOMapper::toEntity);
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent() && roleToBeDeleted.isPresent()) {
             user.get().deleteRole(roleToBeDeleted.get());

@@ -1,5 +1,7 @@
 package pl.polsl.s15.library.dtos.users;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.domain.user.account.AccountCredentials;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
@@ -8,10 +10,19 @@ import pl.polsl.s15.library.dtos.users.credentials.CredentialsDTOMapper;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
 import pl.polsl.s15.library.dtos.users.permissions.PermissionsDTOMapper;
 
+@Component
 public class UsersDTOMapper {
-    public static User userToEntity(UserDTO userDTO) {
+
+    private PermissionsDTOMapper permissionsDTOMapper;
+
+    @Autowired
+    public UsersDTOMapper(PermissionsDTOMapper permissionsDTOMapper) {
+        this.permissionsDTOMapper = permissionsDTOMapper;
+    }
+
+    public User userToEntity(UserDTO userDTO) {
         AccountPermissions permissions =
-                PermissionsDTOMapper.toEntity(userDTO.getAccountPermissionsDTO());
+                permissionsDTOMapper.toEntity(userDTO.getAccountPermissionsDTO());
         AccountCredentials credentials =
                 CredentialsDTOMapper.toEntity(userDTO.getAccountCredentialsDTO());
 

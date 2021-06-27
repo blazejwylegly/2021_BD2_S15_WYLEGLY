@@ -1,5 +1,7 @@
 package pl.polsl.s15.library.dtos.users.permissions;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 import pl.polsl.s15.library.domain.user.account.roles.Authority;
 import pl.polsl.s15.library.domain.user.account.roles.Role;
@@ -8,12 +10,22 @@ import pl.polsl.s15.library.dtos.users.permissions.authorities.AuthorityDTOMappe
 import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTO;
 import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTOMapper;
 
+import java.util.HashSet;
 import java.util.Set;
 
+@Component
 public class PermissionsDTOMapper {
-    public static AccountPermissions toEntity(AccountPermissionsDTO permissionsDTO) {
+
+    private RoleDTOMapper roleDTOMapper;
+
+    @Autowired
+    public PermissionsDTOMapper(RoleDTOMapper roleDTOMapper) {
+        this.roleDTOMapper = roleDTOMapper;
+    }
+
+    public AccountPermissions toEntity(AccountPermissionsDTO permissionsDTO) {
         Set<Authority> authorities = AuthorityDTOMapper.toEntity(permissionsDTO.getAuthorities());
-        Set<Role> roles = RoleDTOMapper.toEntity(permissionsDTO.getRoles());
+        Set<Role> roles = roleDTOMapper.toEntity(permissionsDTO.getRoles());
 
         return AccountPermissions.builder()
                 .id(permissionsDTO.getId())

@@ -5,6 +5,8 @@ import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.user.Client;
 import pl.polsl.s15.library.dtos.users.ClientDTO;
 import pl.polsl.s15.library.dtos.users.ClientsDTOMapper;
+import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
+import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTOMapper;
 import pl.polsl.s15.library.repository.ClientRepository;
 import pl.polsl.s15.library.repository.UserRepository;
 
@@ -17,17 +19,21 @@ public class ClientService extends UserService {
     private static final List<String> DEFAULT_CLIENT_ROLES = Arrays.asList("USER", "CLIENT");
 
     private ClientRepository clientRepository;
+    private ClientsDTOMapper clientsDTOMapper;
 
     public ClientService(UserRepository userRepository,
                          RoleService roleService,
-                         ClientRepository clientRepository) {
-        super(userRepository, roleService);
+                         RoleDTOMapper roleDTOMapper,
+                         ClientRepository clientRepository,
+                         ClientsDTOMapper clientsDTOMapper) {
+        super(userRepository, roleService, clientsDTOMapper, roleDTOMapper);
         this.clientRepository = clientRepository;
+        this.clientsDTOMapper = clientsDTOMapper;
     }
 
     public void createClient(ClientDTO clientDTO) {
         validateIfUserExistsByCredentials(clientDTO);
-        Client client = ClientsDTOMapper.clientToEntity(clientDTO);
+        Client client = clientsDTOMapper.clientToEntity(clientDTO);
         addDefaultRoles(DEFAULT_CLIENT_ROLES, client);
         createCartForNewUser(client);
         clientRepository.save(client);
