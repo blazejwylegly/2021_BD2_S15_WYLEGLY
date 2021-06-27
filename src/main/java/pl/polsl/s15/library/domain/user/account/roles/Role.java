@@ -16,15 +16,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Role implements GrantedAuthority {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private RoleType name;
+    private RoleType roleType;
 
     @Override
     public String getAuthority() {
-        return name.getValue();
+        return roleType.getValue();
     }
 
 }

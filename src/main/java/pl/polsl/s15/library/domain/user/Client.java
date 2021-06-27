@@ -10,6 +10,7 @@ import pl.polsl.s15.library.domain.user.account.AccountCredentials;
 import pl.polsl.s15.library.domain.user.account.AccountPermissions;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,11 +19,12 @@ import java.util.List;
 @Table(name = "clients")
 @NoArgsConstructor
 public class Client extends User {
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
     private List<Reservation> reservations;
 
     @Builder(builderMethodName = "clientBuilder")
@@ -37,5 +39,18 @@ public class Client extends User {
         super(id, firstName, lastName, photoUrl, credentials, permissions);
         this.cart = cart;
         this.reservations = reservations;
+    }
+
+    public Client(User user) {
+        super(user);
+        reservations = new ArrayList<>();
+    }
+
+    public int getNumItemsInCart() {
+        return this.cart.getOrderItems().size();
+    }
+
+    public long getCartId() {
+        return this.cart.getId();
     }
 }

@@ -56,18 +56,18 @@ public class DeliveryController {
         return deliveryService.findById(id);
     }
 
-    @Operation(summary = "Find delivery by id")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return delivery"),
-            @ApiResponse(code = 400, message = "Cannot return delivery")
-    })
-    @PatchMapping("/{deliveryId}/update")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public DeliveryFullDTO updateDelivery(@RequestBody DeliveryArticleDTO articleDTO, @PathVariable Long deliveryId) {
-        deliveryService.update(articleDTO, deliveryId);
-        return deliveryService.findById(deliveryId);
-    }
+//    @Operation(summary = "Find delivery by id")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Return delivery"),
+//            @ApiResponse(code = 400, message = "Cannot return delivery")
+//    })
+//    @PatchMapping("/{deliveryId}/update")
+//    @ResponseStatus(HttpStatus.OK)
+//    @ResponseBody
+//    public DeliveryFullDTO updateDelivery(@RequestBody DeliveryArticleDTO articleDTO, @PathVariable Long deliveryId) {
+//        deliveryService.update(articleDTO, deliveryId);
+//        return deliveryService.findById(deliveryId);
+//    }
 
 
 }

@@ -42,9 +42,6 @@ public class DeliveryArticleService {
         return deliveryArticleRepository.save(deliveryArticle);
     }
 
-    public void findAllDeliveryArticleByDeliveryId(Long id) {
-    }
-
     public DeliveryArticleInfoDTO getInfoAboutDeliveryArticle(DeliveryArticle deliveryArticle) {
         BookDetails bookDetails = bookDetailsRepository.findById(deliveryArticle.getArticleDetails().getId())
                 .orElseThrow(() -> new DeliveryNotFoundException(""));
@@ -52,7 +49,7 @@ public class DeliveryArticleService {
 
     }
 
-    @Transactional
+   @Transactional
     public boolean update(Long id, Integer amount, Long deliveryId) {
         Optional<DeliveryArticle> deliveryArticle = deliveryArticleRepository.findByArticleDetailsIdAndDeliveryId(id, deliveryId);
         if (deliveryArticle.isPresent()) {

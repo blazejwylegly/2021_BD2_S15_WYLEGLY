@@ -3,12 +3,10 @@ package pl.polsl.s15.library.dtos.users.permissions;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import pl.polsl.s15.library.domain.user.account.AccountPermissions;
-import pl.polsl.s15.library.domain.user.account.roles.Authority;
-import pl.polsl.s15.library.domain.user.account.roles.Role;
+import pl.polsl.s15.library.dtos.users.permissions.authorities.AuthorityDTO;
+import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTO;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Builder
 @Getter
@@ -19,25 +17,14 @@ public class AccountPermissionsDTO {
     private Set<AuthorityDTO> authorities;
     private Set<RoleDTO> roles;
 
-    public static AccountPermissionsDTO from(AccountPermissions permissions) {
-        Set<AuthorityDTO> authorityDTOS = mapAuthoritiesToDTO(permissions.getAuthorities());
-        Set<RoleDTO> roleDTOS = mapRolesToDTO(permissions.getRoles());
-
-        return AccountPermissionsDTO.builder()
-                .authorities(authorityDTOS)
-                .roles(roleDTOS)
-                .build();
+    public void addNewRoleIfNotPresent(RoleDTO roleDTO) {
+        if(!roleExists(roleDTO)) {
+            this.roles.add(roleDTO);
+        }
     }
 
-    public static Set<AuthorityDTO> mapAuthoritiesToDTO(Set<Authority> authorities) {
-        return authorities.stream()
-                .map(AuthorityDTO::of)
-                .collect(Collectors.toSet());
-    }
-
-    public static Set<RoleDTO> mapRolesToDTO(Set<Role> roles) {
+    private boolean roleExists(RoleDTO roleDTo) {
         return roles.stream()
-                .map(RoleDTO::of)
-                .collect(Collectors.toSet());
+                .anyMatch(existingRole -> existingRole.getRoleName().equals(roleDTo.getRoleName()));
     }
 }

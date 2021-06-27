@@ -16,7 +16,8 @@ public class Delivery  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "delivery",fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_id")
     private List<DeliveryArticle> orderedItems;
 
     @Enumerated(EnumType.STRING)
