@@ -8,8 +8,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.polsl.s15.library.commons.exceptions.InvalidUpdateRequestException;
 import pl.polsl.s15.library.commons.exceptions.authentication.UserAlreadyRegisteredException;
+import pl.polsl.s15.library.domain.user.Employee;
 import pl.polsl.s15.library.domain.user.User;
 import pl.polsl.s15.library.domain.user.account.roles.Role;
+import pl.polsl.s15.library.dtos.users.ClientDTO;
 import pl.polsl.s15.library.dtos.users.UserDTO;
 import pl.polsl.s15.library.dtos.users.UsersDTOMapper;
 import pl.polsl.s15.library.dtos.users.permissions.AccountPermissionsDTO;
@@ -18,6 +20,9 @@ import pl.polsl.s15.library.dtos.users.permissions.roles.RoleDTOMapper;
 import pl.polsl.s15.library.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,8 +32,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService implements UserDetailsService {
 
-    private UserRepository userRepository;
-    private RoleService roleService;
+    private static final List<String> DEFAULT_USER_ROLES = Arrays.asList("USER");
+
+    protected UserRepository userRepository;
+    protected RoleService roleService;
 
     @Autowired
     public UserService(UserRepository userRepository, RoleService roleService) {
@@ -44,6 +51,15 @@ public class UserService implements UserDetailsService {
                 ));
     }
 
+    public Optional<User> loadUserByEmail(String email) {
+        return userRepository.findByCredentials_EmailAddress(email);
+    }
+
+    public Optional<UserDTO> loadUserById(long id) {
+        return userRepository.findById(id)
+                .map(UsersDTOMapper::userToDTO);
+    }
+
     public List<UserDTO> getAll() {
         List<User> users = (List<User>) userRepository.findAll();
         return users.stream()
@@ -57,18 +73,19 @@ public class UserService implements UserDetailsService {
                 .map(PermissionsDTOMapper::toDTO);
     }
 
-    public Optional<User> loadUserByEmail(String email) {
-        return userRepository.findByCredentials_EmailAddress(email);
-    }
-
     public void createUser(UserDTO userDTO) throws UserAlreadyRegisteredException {
         validateIfUserExistsByCredentials(userDTO);
-        updateRoles(userDTO);
-        userRepository.save(UsersDTOMapper.userToEntity(userDTO));
+        User user = UsersDTOMapper.userToEntity(userDTO);
+        addDefaultRoles(DEFAULT_USER_ROLES, user);
+        userRepository.save(user);
     }
 
-    private void updateRoles(UserDTO userDTO) {
-        userDTO.addNewRole("USER");
+    protected void addDefaultRoles(List<String> defaultRoles, User user) {
+        defaultRoles.forEach(
+                roleName -> this.roleService.getRoleByName(roleName)
+                        .map(RoleDTOMapper::toEntity)
+                        .ifPresent(user::addNewRole)
+        );
     }
 
     protected void validateIfUserExistsByCredentials(UserDTO userDTO) throws UserAlreadyRegisteredException {

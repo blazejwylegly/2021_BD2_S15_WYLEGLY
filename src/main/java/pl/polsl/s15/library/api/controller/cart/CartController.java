@@ -8,16 +8,13 @@ import pl.polsl.s15.library.api.controller.base.BaseController;
 import pl.polsl.s15.library.api.controller.cart.response.GetCartMetaDataResponse;
 import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableException;
 import pl.polsl.s15.library.commons.exceptions.reservations.BooksUnavailableHelperException;
-import pl.polsl.s15.library.commons.exceptions.reservations.NoCartException;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
 import pl.polsl.s15.library.domain.stock.books.RentalBook;
-import pl.polsl.s15.library.domain.user.Client;
 import pl.polsl.s15.library.dtos.ordering.OrderItemDTO;
 import pl.polsl.s15.library.dtos.reservations.OrderItemResponseDTO;
 import pl.polsl.s15.library.dtos.reservations.meta.CartMetaData;
 import pl.polsl.s15.library.service.CartService;
-import pl.polsl.s15.library.service.ClientService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,28 +23,20 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/cart")
 public class CartController extends BaseController {
+
     private CartService cartService;
-    private ClientService clientService;
 
     @Autowired
-    public CartController(CartService cartService, ClientService clientService) {
+    public CartController(CartService cartService) {
         this.cartService = cartService;
-        this.clientService = clientService;
     }
 
     @GetMapping("/meta")
     public ResponseEntity<GetCartMetaDataResponse> getCartMetaData() {
         Authentication user = getCurrentUser();
-        CartMetaData cartMetaData = prepareCartMetaData((String) user.getPrincipal());
+        CartMetaData cartMetaData = cartService.prepareCartMetaData((String) user.getPrincipal());
         return ResponseEntity.ok()
                 .body(CartReqRepMapper.getCartMetaDataResponse(cartMetaData));
-    }
-
-    private CartMetaData prepareCartMetaData(String username) {
-        Client client = (Client) clientService.loadUserByUsername(username);
-        int numItems = client.getNumItemsInCart();
-        Long cartId = client.getCartId();
-        return new CartMetaData(cartId, numItems);
     }
 
     @GetMapping("/get")
@@ -89,12 +78,10 @@ public class CartController extends BaseController {
     void submitCart(@RequestParam(name = "cartId") long cartId) {
         try {
             cartService.submitCart(getCartById(cartId));
-        }
-        catch(BooksUnavailableHelperException e)
-        {
+        } catch (BooksUnavailableHelperException e) {
             Cart cart = cartService.getCartById(cartId);
-            for(int i = e.getIds().size();i>0;i--)
-                cartService.removeItem(cart,e.getIds().get(i-1));
+            for (int i = e.getIds().size(); i > 0; i--)
+                cartService.removeItem(cart, e.getIds().get(i - 1));
             cartService.saveCart(cart);
             throw new BooksUnavailableException(e.getMessage());
         }

@@ -9,12 +9,13 @@ import pl.polsl.s15.library.dtos.ordering.CartDTOMapper;
 public class ClientsDTOMapper extends UsersDTOMapper {
 
     public static Client clientToEntity(ClientDTO clientDTO) {
-        Cart cart = CartDTOMapper.toEntity(clientDTO.getCartDTO());
         User user = userToEntity(clientDTO);
         Client client = new Client(user);
-        client.setCart(cart);
+        if(clientDTO.getCartDTO() != null) {
+            Cart cart = CartDTOMapper.toEntity(clientDTO.getCartDTO());
+            client.setCart(cart);
+        }
         return client;
-
     }
 
     public static ClientDTO clientToDTO(Client client) {

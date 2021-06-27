@@ -10,6 +10,7 @@ import pl.polsl.s15.library.api.controller.user.request.EmployeeCreateOrUpdateRe
 import pl.polsl.s15.library.api.controller.user.request.UserCreateOrUpdateRequestDTO;
 import pl.polsl.s15.library.api.controller.user.response.GetAccountMetaDataResponse;
 import pl.polsl.s15.library.api.controller.user.response.GetAllUsersResponse;
+import pl.polsl.s15.library.api.controller.user.response.GetUserResponse;
 import pl.polsl.s15.library.dtos.users.ClientDTO;
 import pl.polsl.s15.library.dtos.users.EmployeeDTO;
 import pl.polsl.s15.library.dtos.users.UserDTO;
@@ -137,6 +138,15 @@ public class UserReqRepMapper {
                 .status(HttpStatus.NO_CONTENT)
                 .message("User has been removed!")
                 .timestamp(new Date())
+                .build();
+    }
+
+    public GetUserResponse getSingleUserResponse(UserDTO userDTO) {
+        return GetUserResponse.getUserResponseBuilder()
+                .status(HttpStatus.NO_CONTENT)
+                .message("User retrieved successfully!")
+                .timestamp(new Date())
+                .userDTO(userDTO)
                 .build();
     }
 }

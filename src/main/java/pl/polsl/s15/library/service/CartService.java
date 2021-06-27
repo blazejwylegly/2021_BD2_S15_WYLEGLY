@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.s15.library.commons.enums.ReservationStatus;
-import pl.polsl.s15.library.commons.exceptions.books.NoSuchBookException;
+import pl.polsl.s15.library.commons.exceptions.BadRequestException;
 import pl.polsl.s15.library.commons.exceptions.reservations.*;
 import pl.polsl.s15.library.domain.ordering.Cart;
 import pl.polsl.s15.library.domain.ordering.OrderItem;
@@ -18,13 +18,12 @@ import pl.polsl.s15.library.domain.stock.books.RentalBook;
 import pl.polsl.s15.library.domain.user.Client;
 import pl.polsl.s15.library.dtos.ordering.CartDTOMapper;
 import pl.polsl.s15.library.dtos.ordering.OrderItemDTO;
+import pl.polsl.s15.library.dtos.reservations.meta.CartMetaData;
 import pl.polsl.s15.library.repository.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +58,20 @@ public class CartService {
         return rentalBookRepository.findById(bookID);
     }
 
+    public CartMetaData prepareCartMetaData(String username) {
+        Optional<Client> client = clientRepository.findByCredentials_Username(username);
+        return client.map(this::prepareCartMetaData)
+                .orElseThrow(
+                        () -> new BadRequestException("Requested cart meta data for non-client account!")
+                );
+    }
+
+    private CartMetaData prepareCartMetaData(Client client) {
+        int numItems = client.getNumItemsInCart();
+        Long cartId = client.getCartId();
+        return new CartMetaData(cartId, numItems);
+    }
+
     @Transactional
     public void saveCart(Cart cart) {
         cartRepository.save(cart);
@@ -72,20 +85,20 @@ public class CartService {
 
     @Transactional
     public void removeItem(Cart cart, Long itemId) {
-        orderItemRepository.deleteByCartAndItemIds(cart.getId(),itemId);
+        orderItemRepository.deleteByCartAndItemIds(cart.getId(), itemId);
         cart.removeOrderItem(itemId);
         saveCart(cart);
     }
 
     @Transactional
     public void updateItem(Cart cart, OrderItemDTO itemRequest) {
-        OrderItem orderItem = orderItemRepository.findByCartAndItemIds(cart.getId(),itemRequest.getItemId()).orElseThrow(()->new NoCartException(cart.getId()));
-        orderItem = orderItemRepository.findById(orderItem.getId()).orElseThrow(()->new NoCartException(cart.getId()));
+        OrderItem orderItem = orderItemRepository.findByCartAndItemIds(cart.getId(), itemRequest.getItemId()).orElseThrow(() -> new NoCartException(cart.getId()));
+        orderItem = orderItemRepository.findById(orderItem.getId()).orElseThrow(() -> new NoCartException(cart.getId()));
         orderItem.setRequestedEndDate(itemRequest.getRequestedEndDate());
         orderItemRepository.save(orderItem);
     }
 
-    private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time,Client client) {
+    private Long FindAndOccupyFreeRentalBook(long bookID, LocalDate end_time, Client client) {
         Optional<RentalBook> optRentalBook = rentalBookRepository.findById(bookID);
         if (optRentalBook.isEmpty())
             return 0L;
@@ -110,10 +123,10 @@ public class CartService {
         List<Long> noFreeBooks = new ArrayList<>();
         boolean error = false;
         int i = cart.getOrderItems().size();
-        Client client = clientRepository.findClientByCartId(cart.getId()).orElseThrow(()->new UnassignedCartException(cart.getId()));
-        while (i>0) {
-            OrderItem item = cart.getOrderItems().get(i-1);
-            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(), item.getRequestedEndDate(),client);
+        Client client = clientRepository.findClientByCartId(cart.getId()).orElseThrow(() -> new UnassignedCartException(cart.getId()));
+        while (i > 0) {
+            OrderItem item = cart.getOrderItems().get(i - 1);
+            Long freeBookID = FindAndOccupyFreeRentalBook(item.getItemId(), item.getRequestedEndDate(), client);
             if (freeBookID.equals(0L)) {
                 error = true;
                 noFreeBooks.add(item.getItemId());
@@ -128,7 +141,7 @@ public class CartService {
                 unavailableBuilder.append(" , ");
             }
             String unavailable = unavailableBuilder.toString();
-            throw new BooksUnavailableHelperException(unavailable,noFreeBooks);
+            throw new BooksUnavailableHelperException(unavailable, noFreeBooks);
         }
         clientRepository.save(client);
         orderItemRepository.deleteAllByCartId(cart.getId());
@@ -139,41 +152,41 @@ public class CartService {
     public List<Reservation> getReservations(long clientID) {
         return reservationRepository.findAllByClientId(clientID);
     }
-    public List<Reservation> getAllPendingReservations()
-    {
+
+    public List<Reservation> getAllPendingReservations() {
         return reservationRepository.findAllByStatus(ReservationStatus.PENDING);
     }
-    public List<Reservation> getAllReservations()
-    {
+
+    public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
+
     @Transactional
-    public void changeReservationStatus(long reservationID,ReservationStatus requiredStatus, ReservationStatus newStatus)
-    {
+    public void changeReservationStatus(long reservationID, ReservationStatus requiredStatus, ReservationStatus newStatus) {
         Optional<Reservation> optReservation = reservationRepository.findById(reservationID);
-        Reservation reservation = optReservation.orElseThrow(()->new NoReservationException(reservationID));
-        if(reservation.getStatus()!=requiredStatus)
+        Reservation reservation = optReservation.orElseThrow(() -> new NoReservationException(reservationID));
+        if (reservation.getStatus() != requiredStatus)
             throw new ReservationAlreadyHandledException(reservationID);
         reservation.setStatus(newStatus);
-        if(newStatus.equals(ReservationStatus.RETURNED))
+        if (newStatus.equals(ReservationStatus.RETURNED))
             reservation.setReturned(true);
         reservationRepository.save(reservation);
     }
-    public Reservation findReservationBySerialNumber(long serialNumber)
-    {
-        return reservationRepository.findByBookSerial(serialNumber).orElseThrow(()-> new NoReservedBookException(serialNumber));
+
+    public Reservation findReservationBySerialNumber(long serialNumber) {
+        return reservationRepository.findByBookSerial(serialNumber).orElseThrow(() -> new NoReservedBookException(serialNumber));
     }
+
     @Transactional
-    public void unlockReservationBook(long reservationID)
-    {
-        RentalBook rentalBook = reservationRepository.findById(reservationID).orElseThrow(()->new NoReservationException(reservationID)).getRentalBook();
-        if(rentalBook!=null) {
+    public void unlockReservationBook(long reservationID) {
+        RentalBook rentalBook = reservationRepository.findById(reservationID).orElseThrow(() -> new NoReservationException(reservationID)).getRentalBook();
+        if (rentalBook != null) {
             rentalBook.Free();
             rentalBookRepository.save(rentalBook);
         }
     }
-    public byte[] getReport(LocalDate startDate, LocalDate endDate)
-    {
+
+    public byte[] getReport(LocalDate startDate, LocalDate endDate) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         //Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8, Font.NORMAL, new CMYKColor(0, 0, 0, 255));
         Document document = new Document();
@@ -182,19 +195,17 @@ public class CartService {
             document.open();
             document.add(new Paragraph("Reservations:"));
             com.itextpdf.text.List list = new com.itextpdf.text.List(com.itextpdf.text.List.UNORDERED);
-            List<Reservation> reservations = reservationRepository.findByStartTimeGreaterThanEqualAndStartTimeLessThanEqual(startDate,endDate);
+            List<Reservation> reservations = reservationRepository.findByStartTimeGreaterThanEqualAndStartTimeLessThanEqual(startDate, endDate);
             for (Reservation reservation : reservations) {
                 list.add(new ListItem(reservation.getReport()
-                        +" User: "
-                        +clientRepository.findClientByReservationId(reservation.getId()).orElseThrow(()->new NoReservationException(reservation.getId())).getUsername()));
+                        + " User: "
+                        + clientRepository.findClientByReservationId(reservation.getId()).orElseThrow(() -> new NoReservationException(reservation.getId())).getUsername()));
             }
             document.add(list);
             document.close();
             writer.close();
             return baos.toByteArray();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException("Error while creating file:" + e.getMessage());
         }
     }
