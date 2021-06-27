@@ -63,8 +63,8 @@ public class UserController extends BaseController {
                 .body(reqRepMapper.getAllUsersResponse(users));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GetUserResponse> getUserById(@PathVariable long userId) {
+    @GetMapping()
+    public ResponseEntity<GetUserResponse> getUserById(@RequestParam("id") int userId) {
         Optional<UserDTO> user = userService.loadUserById(userId);
         return user
                 .map(userDTO ->

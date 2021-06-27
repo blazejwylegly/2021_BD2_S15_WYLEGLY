@@ -143,7 +143,7 @@ public class UserReqRepMapper {
 
     public GetUserResponse getSingleUserResponse(UserDTO userDTO) {
         return GetUserResponse.getUserResponseBuilder()
-                .status(HttpStatus.NO_CONTENT)
+                .status(HttpStatus.OK)
                 .message("User retrieved successfully!")
                 .timestamp(new Date())
                 .userDTO(userDTO)
