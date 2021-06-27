@@ -21,13 +21,13 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class DeliveryArticleService {
     private final DeliveryArticleRepository deliveryArticleRepository;
+    private final BookService bookService;
     private final BookDetailsRepository bookDetailsRepository;
 
     public DeliveryArticle createDeliveryArticle(DeliveryArticleDTO articleDTO, Delivery delivery){
         final DeliveryArticle deliveryArticle = new DeliveryArticle();
         deliveryArticle.setDelivery(delivery);
-        deliveryArticle.setArticleDetails(bookDetailsRepository.findById(articleDTO.getArticleDetailId())
-                .orElseThrow(() -> new DeliveryCantBeCreatedException("Delivery cannot be created because article details with id: " + articleDTO.getArticleDetailId() + "doesnt exists")));
+        deliveryArticle.setArticleDetails(bookService.findById(articleDTO.getArticleDetailId()).getDetails());
         deliveryArticle.setAmount(articleDTO.getAmount());
         return deliveryArticle;
     }
