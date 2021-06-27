@@ -21,4 +21,8 @@ public class DeliveryArticle {
     @ManyToOne
     @JoinColumn(name = "details_id")
     private ArticleDetails articleDetails;
+
+    @ManyToOne
+    @JoinColumn(name = "orderedItems")
+    private Delivery delivery;
 }

@@ -114,7 +114,7 @@ public class BookService {
         return bookRepository.findAll(pageable);
     }
 
-    private Book findById(Long id) {
+    public Book findById(Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new NoSuchBookException(id));
     }
 

@@ -21,12 +21,13 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class DeliveryArticleService {
     private final DeliveryArticleRepository deliveryArticleRepository;
+    private final BookService bookService;
     private final BookDetailsRepository bookDetailsRepository;
 
     public DeliveryArticle createDeliveryArticle(DeliveryArticleDTO articleDTO, Delivery delivery){
         final DeliveryArticle deliveryArticle = new DeliveryArticle();
-        deliveryArticle.setArticleDetails(bookDetailsRepository.findById(articleDTO.getArticleDetailId())
-                .orElseThrow(() -> new DeliveryCantBeCreatedException("Delivery cannot be created because article details with id: " + articleDTO.getArticleDetailId() + "doesnt exists")));
+        deliveryArticle.setDelivery(delivery);
+        deliveryArticle.setArticleDetails(bookService.findById(articleDTO.getArticleDetailId()).getDetails());
         deliveryArticle.setAmount(articleDTO.getAmount());
         return deliveryArticle;
     }
@@ -48,19 +49,19 @@ public class DeliveryArticleService {
 
     }
 
-//    @Transactional
-//    public boolean update(Long id, Integer amount, Long deliveryId) {
-//        Optional<DeliveryArticle> deliveryArticle = deliveryArticleRepository.findByArticleDetailsIdAndDeliveryId(id, deliveryId);
-//        if (deliveryArticle.isPresent()) {
-//            deliveryArticle.get().setAmount(deliveryArticle.get().getAmount() + amount);
-//            if (deliveryArticle.get().getAmount() <= 0) {
-//                deliveryArticleRepository.deleteById(deliveryArticle.get().getId());
-//            } else
-//                save(deliveryArticle.get());
-//
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+   @Transactional
+    public boolean update(Long id, Integer amount, Long deliveryId) {
+        Optional<DeliveryArticle> deliveryArticle = deliveryArticleRepository.findByArticleDetailsIdAndDeliveryId(id, deliveryId);
+        if (deliveryArticle.isPresent()) {
+            deliveryArticle.get().setAmount(deliveryArticle.get().getAmount() + amount);
+            if (deliveryArticle.get().getAmount() <= 0) {
+                deliveryArticleRepository.deleteById(deliveryArticle.get().getId());
+            } else
+                save(deliveryArticle.get());
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
