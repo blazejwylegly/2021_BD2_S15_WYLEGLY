@@ -1,4 +1,8 @@
 # 2021_BD2_S15_WYLEGLY
+### Description
+Project was created on behalf of University project - it's main goal was to familiarize team members with techniques of creating enterprise applications.
+Due to strict university deadlines, some of the features have not been implemented in a acceptable way, and therefore require redesign and reimplementation - the project was mainly a learning experience.
+
 ### Git
 1) DO NOT push any changes directly to main or develop branch
 
