@@ -17,4 +17,4 @@ Due to strict university deadlines, some of the features have not been implement
 
    _(*) Even though we are not using any CI/CD pipelines (as of this day), we are trying to apply purist code integration approach_
 
-You can visit http://<host_name>/swagger-ui/ (http://localhost:8080/swagger-ui/ locally)
+You can visit https://bookstore-api-scholar.herokuapp.com/swagger-ui/#/ to explore dedicated API for management of simple bookstore system.
